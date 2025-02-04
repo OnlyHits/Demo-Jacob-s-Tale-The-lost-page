@@ -2,12 +2,26 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
 
+using static Comic.Comic;
+
 namespace Comic
 {
     public partial class Player : Character
     {
         [Header("Inputs")]
         [SerializeField] private PlayerInputsController m_inputsController;
+
+        [Header("Sprite")]
+        [SerializeField] private SpriteRenderer m_spriteHead;
+        [SerializeField] private SpriteRenderer m_spriteBody;
+
+        [Space]
+        [SerializeField] private Color m_baseColor = Color.white;
+        [SerializeField] private Color m_shadowColor = Color.black;
+
+        [Header("Collider")]
+        [SerializeField] private Collider2D m_triggerCollider;
+        [SerializeField, ReadOnly] private bool m_isInWall = false;
 
         [Header("Grounded")]
         [SerializeField, ReadOnly] private bool m_isGrounded = false;
@@ -25,6 +39,8 @@ namespace Comic
 
         [Header("Others")]
         [SerializeField] private PageManager m_pageManager;
+
+        public bool IsInWall() => m_isInWall;
 
         protected override void Awake()
         {
@@ -91,10 +107,56 @@ namespace Comic
             base.OnLateUpdate(elapsed_time);
         }
 
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
+            {
+                Debug.Log(">>> IN");
+                m_isInWall = true;
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
+            {
+                Debug.Log(">>> OUT");
+                m_isInWall = false;
+            }
+        }
+
+        #region VISUAL
+
+        public void EnableVisual(bool enable)
+        {
+            m_spriteHead.enabled = enable;
+            m_spriteBody.enabled = enable;
+        }
+
+        public void EnableShadowVisual(bool enable, bool fade = false)
+        {
+            if (enable)
+            {
+                m_spriteHead.color = m_shadowColor;
+                m_spriteBody.color = m_shadowColor;
+            }
+            else
+            {
+                m_spriteHead.color = m_baseColor;
+                m_spriteBody.color = m_baseColor;
+            }
+        }
+
+        #endregion VISUAL
+
+        #region GROUNDED
+
         private bool IsGrounded()
         {
             return true;
         }
+
+        #endregion GROUNDED
 
         #region MOVE
         private void StartMove(Vector2 v)
@@ -148,7 +210,6 @@ namespace Comic
             m_rb.AddForce(m_jumpForce * direction, ForceMode2D.Impulse);
         }
         #endregion JUMP
-
 
         #region FALL
         private void TryFall()

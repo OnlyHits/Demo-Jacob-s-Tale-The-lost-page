@@ -5,8 +5,12 @@ namespace Comic
 {
     public static class Comic
     {
+        // Layers
         public static readonly string playerLayerName = "Player";
+        public static readonly string caseColliderLayerName = "CaseCollider";
 
+
+        // Sorting Layer
         public static readonly string frontLayerName = "SwitchPage";
         public static readonly string backLayerName = "NotSwitchPage";
         public static readonly string defaultLayerName = "Default";
