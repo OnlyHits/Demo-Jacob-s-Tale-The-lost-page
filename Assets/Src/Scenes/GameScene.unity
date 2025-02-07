@@ -1360,10 +1360,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5134419036449432626, guid: 8a9f9ced45577190abb68163f21740aa, type: 3}
       insertIndex: -1
       addedObject: {fileID: 215274502}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5586157193768037910, guid: 8a9f9ced45577190abb68163f21740aa, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a9f9ced45577190abb68163f21740aa, type: 3}
 --- !u!4 &204332197 stripped
 Transform:
@@ -4264,7 +4261,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 785141332}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe0dbd81070e6cfa9a1790a006dcca8c, type: 3}
+  m_Script: {fileID: 11500000, guid: 11b8b22a39ad9eddd8aafca1f9caf36c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
@@ -4276,6 +4273,7 @@ MonoBehaviour:
   - {fileID: 344114433}
   - {fileID: 419533724}
   - {fileID: 1501100009}
+  m_spawnPoint: {fileID: 0}
 --- !u!114 &794721815 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5831114726095507624, guid: cee6b1959853e16b1b084401e36890c5, type: 3}
@@ -5729,6 +5727,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1143465283}
+  - component: {fileID: 1143465284}
   m_Layer: 0
   m_Name: Comic-Pages
   m_TagString: Untagged
@@ -5752,6 +5751,28 @@ Transform:
   - {fileID: 785141335}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1143465284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143465282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7923f11ace47f1db44b9c0259d6740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_pause: 0
+  m_pageList: []
+  m_currentPage: {fileID: 0}
+  m_currentPageIndex: 0
+  m_unlockedPageList: []
+  m_pageVisual: {fileID: 0}
+  m_durationStartGame: 5
+  m_durationEndGame: 10
+  m_durationSwitchPage: 1
+  m_canvasDuplicated: {fileID: 0}
 --- !u!1001 &1171886266
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22337,7 +22358,6 @@ MonoBehaviour:
   m_bgBookVisual: {fileID: 0}
   m_coverPage: {fileID: 3118378337682383448}
   m_endPage: {fileID: 128818495583463857}
-  m_pageVisuals: []
 --- !u!1 &7403997927596089173
 GameObject:
   m_ObjectHideFlags: 0
