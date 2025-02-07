@@ -119,6 +119,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &212117013 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3738079250973514455, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+  m_PrefabInstance: {fileID: 2045178320}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &212117015 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4094600446499539654, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+  m_PrefabInstance: {fileID: 2045178320}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212117013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33ae5062bdd4e67c2ad9997ed05912f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &212117018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212117013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dc3f71d6ce7cb8e6822ae7d0116a4a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unlock: 1
+--- !u!114 &212117019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212117013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87e3aab7c42bfe93984390fed2c1dd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameCore: {fileID: 212117015}
+  m_forceInitHUD: 1
+  m_forceInitGame: 0
 --- !u!1 &239580185
 GameObject:
   m_ObjectHideFlags: 0
@@ -1322,7 +1366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5448202137927222160, guid: 554c16cc19d06629a8f8745d176095c2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4.912506
+      value: -4.9124756
       objectReference: {fileID: 0}
     - target: {fileID: 5448202137927222160, guid: 554c16cc19d06629a8f8745d176095c2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2503,7 +2547,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9158024469771789629, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1257929575}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3738079250973514455, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 212117018}
+    - targetCorrespondingSourceObject: {fileID: 3738079250973514455, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 212117019}
   m_SourcePrefab: {fileID: 100100000, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
 --- !u!4 &2045178321 stripped
 Transform:
