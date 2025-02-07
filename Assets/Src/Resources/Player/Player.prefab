@@ -9,11 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2108855957422711135}
+  - component: {fileID: 3625392227356046605}
   - component: {fileID: 1201119695036820635}
   - component: {fileID: 4049376364462170266}
   - component: {fileID: 1141544891393073915}
   - component: {fileID: 1952538670905112991}
-  - component: {fileID: 3625392227356046605}
+  - component: {fileID: 8945407140214950461}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -39,6 +40,28 @@ Transform:
   - {fileID: 368653005528985960}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &3625392227356046605
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52946288444514457}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 30b3038519fe7488bb1f524d608ce1cd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1201119695036820635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,6 +83,12 @@ MonoBehaviour:
   m_rb: {fileID: 1141544891393073915}
   m_collider: {fileID: 1952538670905112991}
   m_inputsController: {fileID: 4049376364462170266}
+  m_spriteHead: {fileID: 4240220470202902033}
+  m_spriteBody: {fileID: 6289555180810094471}
+  m_baseColor: {r: 1, g: 1, b: 1, a: 1}
+  m_shadowColor: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_triggerCollider: {fileID: 8945407140214950461}
+  m_isInWall: 0
   m_isGrounded: 0
   m_isMoving: 0
   m_speed: 250
@@ -91,7 +120,6 @@ MonoBehaviour:
   m_pause: 0
   m_inputActionStructsV2: []
   m_inputActionStructsBool: []
-  m_inputActionAsset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!50 &1141544891393073915
 Rigidbody2D:
   serializedVersion: 5
@@ -165,28 +193,52 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.1871331, y: 1.5024793}
   m_EdgeRadius: 0
---- !u!95 &3625392227356046605
-Animator:
-  serializedVersion: 7
+--- !u!61 &8945407140214950461
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 52946288444514457}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 30b3038519fe7488bb1f524d608ce1cd, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.09356663, y: -0.25123966}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.49, y: 1.78}
+  m_EdgeRadius: 0
 --- !u!1 &1638711758764528416
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,7 +324,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2869591667291440841
 GameObject:
@@ -359,7 +411,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &3697266330499355254
 GameObject:

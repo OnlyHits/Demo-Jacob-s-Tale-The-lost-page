@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using CustomArchitecture;
 using DG.Tweening;
-using Unity.Cinemachine;
 using UnityEngine;
 
 namespace Comic

@@ -1,8 +1,6 @@
 using UnityEngine;
 using CustomArchitecture;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 
 namespace Comic
 {
@@ -30,7 +28,7 @@ namespace Comic
         }
 
         private void OnTriggerEnter2D(Collider2D other)
-        {            
+        {
             if (other.gameObject.GetComponent<Player>() != null)
             {
                 if (m_scaleTween != null)
@@ -40,7 +38,7 @@ namespace Comic
                 }
 
                 transform.localScale = m_baseScale;
-                
+
                 m_scaleTween = transform
                     .DOScale(m_baseScale * m_scaleFactor, m_tweenDuration)
                     .SetEase(m_easeType)

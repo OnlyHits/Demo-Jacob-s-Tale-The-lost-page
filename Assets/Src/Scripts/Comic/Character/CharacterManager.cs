@@ -166,7 +166,7 @@ namespace Comic
 
         private void OnAfterSwitchPage(bool nextPage, Page p1, Page p2)
         {
-            PauseAllCharacters(false);
+            //PauseAllCharacters(false);
         }
 
         public void PauseAllCharacters(bool pause = true)

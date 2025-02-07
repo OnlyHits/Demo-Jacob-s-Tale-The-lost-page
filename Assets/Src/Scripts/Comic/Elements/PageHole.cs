@@ -17,6 +17,9 @@ public class PageHole : BaseBehaviour
     private AnimHoleElements m_animHole;
     private SpriteRenderer m_spriteRd;
 
+    public float GetDuration() => m_duration;
+    public int GetNbFrames() => m_animHoleElements[0].m_spriteFrames.Count;
+
     public void Init()
     {
         m_spriteRd = GetComponentInChildren<SpriteRenderer>();
@@ -37,9 +40,9 @@ public class PageHole : BaseBehaviour
         m_duration = totalDurationAnim;
     }
 
-    public void Play()
+    public void Play(float startDelay = 0f)
     {
-        float delay = 0;
+        float delay = startDelay;
         float delayToAdd = m_duration / m_animHole.m_spriteFrames.Count;
 
         m_spriteRd.sprite = m_animHole.m_spriteFrames[0];
