@@ -122,10 +122,10 @@ namespace Comic
         // make all dynamic instantiation here
         public override void OnLoadingEnded()
         {
-            // if (GetUnlockChaptersData().Count == 0)
-            // {
-            //     UnlockChapter(Chapters.The_Prequel, false, false);
-            // }
+            if (GetUnlockChaptersData().Count == 0)
+            {
+                UnlockChapter(Chapters.The_Prequel, false, false);
+            }
 
             InitGame();
             InitHud();

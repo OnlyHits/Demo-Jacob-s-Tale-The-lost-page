@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Comic;
 using UnityEngine;
 
@@ -15,9 +17,18 @@ public class Shortcuts : MonoBehaviour
         { KeyCode.Alpha4, Chapters.The_Fourth_Chapter },
     };
 
+    public Dictionary<KeyCode, System.Type> keyByViews = new Dictionary<KeyCode, System.Type>()
+    {
+        { KeyCode.Alpha1, typeof(DialogueView) },
+        { KeyCode.Alpha2, typeof(CreditView) },
+        { KeyCode.Alpha3, typeof(ProgressionView) },
+        { KeyCode.Alpha4, typeof(PauseView) },
+    };
+
     private void Update()
     {
-        CheckInputSave();
+        //CheckInputSave();
+        CheckInputViews();
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
@@ -28,14 +39,51 @@ public class Shortcuts : MonoBehaviour
         {
             Time.timeScale = 10f;
         }
-        if (Input.GetKeyUp(KeyCode.LeftShift)) {
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
             Time.timeScale = 1f;
+        }
+    }
+
+    private void CheckInputViews()
+    {
+        bool hasComputeKey = false;
+        System.Type viewTypeCompute = default;
+
+        foreach (KeyCode key in keyByViews.Keys)
+        {
+            if (Input.GetKeyDown(key))
+            {
+                hasComputeKey = true;
+                viewTypeCompute = keyByViews[key];
+                break;
+            }
+        }
+
+        if (hasComputeKey)
+        {
+            var viewManager = ComicGameCore.Instance.MainGameMode.GetViewManager();
+
+            // Relfection on function and type
+            MethodInfo showMethod = viewManager.GetType()
+                .GetMethods()
+                .FirstOrDefault(m =>
+                m.Name == "Show" &&
+                m.IsGenericMethodDefinition &&
+                m.GetParameters().Length == 1 &&
+                m.GetParameters()[0].ParameterType == typeof(bool));
+
+            if (showMethod != null)
+            {
+                MethodInfo genericShowMethod = showMethod.MakeGenericMethod(viewTypeCompute);
+                genericShowMethod.Invoke(viewManager, new object[] { false });
+            }
         }
     }
 
     private void CheckInputSave()
     {
-        bool hasComputeChaptersKey = false;
+        bool hasComputeKey = false;
         Chapters chapterComputed = Chapters.Chapter_None;
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -47,13 +95,13 @@ public class Shortcuts : MonoBehaviour
         {
             if (Input.GetKeyDown(key))
             {
-                hasComputeChaptersKey = true;
+                hasComputeKey = true;
                 chapterComputed = keyByChapters[key];
                 break;
             }
         }
 
-        if (hasComputeChaptersKey)
+        if (hasComputeKey)
         {
             if (unlock)
                 ComicGameCore.Instance.MainGameMode.UnlockChapter(chapterComputed, true, true);
