@@ -8,9 +8,9 @@ namespace CustomArchitecture
     {
         private static T m_instance;
 
-        private List<AGameMode<T>>  m_gameModes = new();
-        private AGameMode<T>        m_currentGameMode = null;
-        private AGameMode<T>        m_startingGameMode = null;
+        private List<AGameMode<T>> m_gameModes = new();
+        private AGameMode<T> m_currentGameMode = null;
+        private AGameMode<T> m_startingGameMode = null;
         private Settings m_settings = null;
         public Settings GetSettings() => m_settings;
 
