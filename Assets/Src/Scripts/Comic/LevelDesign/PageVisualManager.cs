@@ -97,6 +97,7 @@ namespace Comic
                 {
                     if (player.IsInWall())
                     {
+                        Debug.Log("CANCEL SWITCH PAGE !!!");
                         ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPageManager().TryPrevPage();
                     }
                     else
@@ -112,6 +113,7 @@ namespace Comic
                 {
                     if (player.IsInWall())
                     {
+                        Debug.Log("CANCEL SWITCH PAGE !!!");
                         ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPageManager().TryNextPage();
                     }
                     else

@@ -107,7 +107,7 @@ namespace Comic
             base.OnLateUpdate(elapsed_time);
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
             {
@@ -116,7 +116,7 @@ namespace Comic
             }
         }
 
-        private void OnTriggerExit2D(Collider2D collision)
+        private void OnCollisionExit2D(Collision2D collision)
         {
             if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
             {
@@ -124,6 +124,25 @@ namespace Comic
                 m_isInWall = false;
             }
         }
+        /*
+        private void OnTriggerEnter2D(Collider2D collider)
+        {
+            if (collider.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
+            {
+                Debug.Log(">>> IN");
+                m_isInWall = true;
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
+            {
+                Debug.Log(">>> OUT");
+                m_isInWall = false;
+            }
+        }
+        */
 
         #region VISUAL
 
