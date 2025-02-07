@@ -8,11 +8,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Page
+  - 
   - Water
   - UI
-  - Player
-  - CaseCollider
+  - 
+  - 
   - 
   - 
   - 
@@ -40,12 +40,6 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: NotSwitchPage
-    uniqueID: 3514049459
-    locked: 0
-  - name: SwitchPage
-    uniqueID: 1398416093
     locked: 0
   m_RenderingLayers:
   - Default

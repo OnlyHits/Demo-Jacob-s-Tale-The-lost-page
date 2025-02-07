@@ -8,11 +8,11 @@ namespace Comic
 {
     public class PageVisualManager : BaseBehaviour
     {
-        [Header("Switch Page Anim")]
-        [SerializeField] private Transform m_destTransform;
-        [SerializeField, ReadOnly] private Quaternion m_destRotQuat;
-        [SerializeField, ReadOnly] private float m_duration = 1f;
-        private Tween m_switchPageTween = null;
+        // [Header("Switch Page Anim")]
+        // [SerializeField] private Transform m_destTransform;
+        // [SerializeField, ReadOnly] private Quaternion m_destRotQuat;
+        // [SerializeField, ReadOnly] private float m_duration = 1f;
+        // private Tween m_switchPageTween = null;
 
         [Header("Animation Hole")]
         [SerializeField] private PageHole m_holePrefab;
@@ -22,27 +22,29 @@ namespace Comic
         public GameObject m_bgBookVisual;
         public GameObject m_coverPage;
         public GameObject m_endPage;
-        [SerializeField, ReadOnly] private List<PageVisual> m_pageVisuals = new List<PageVisual>();
+        // [SerializeField, ReadOnly] private List<PageVisual> m_pageVisuals = new List<PageVisual>();
 
-        private void Awake()
-        {
-            m_destRotQuat = m_destTransform.rotation;
+        // private void Awake()
+        // {
+        // }
 
-            var pages = GetComponentsInChildren<PageVisual>(true);
-            m_pageVisuals.AddRange(pages);
-        }
-
-        private void Start()
-        {
-            Init();
-        }
+        // Now is init into PageManager.Init()
+        // private void Start()
+        // {
+        //     Init();
+        // }
 
         public void Init()
         {
-            ComicGameCore.Instance.GetGameMode<MainGameMode>().SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
-            ComicGameCore.Instance.GetGameMode<MainGameMode>().SubscribeToAfterSwitchPage(OnAfterSwitchPage);
+            ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
+            ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
 
-            m_duration = ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPageManager().GetSwitchPageDuration();
+            // m_duration = ComicGameCore.Instance.MainGameMode.GetPageManager().GetSwitchPageDuration();
+
+            // m_destRotQuat = m_destTransform.rotation;
+
+            // var pages = GetComponentsInChildren<PageVisual>(true);
+            // m_pageVisuals.AddRange(pages);
         }
 
 
@@ -50,6 +52,7 @@ namespace Comic
 
         private void OnBeforeSwitchPage(bool nextPage, Page currentPage, Page newPage)
         {
+            /*
             if (nextPage == true)
             {
                 Quaternion from = m_destRotQuat;
@@ -66,10 +69,12 @@ namespace Comic
 
                 ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPlayer().EnableShadowVisual(true);
             }
+            */
         }
 
         private void OnAfterSwitchPage(bool nextPage, Page currentPage, Page newPage)
         {
+            /*
             float shadowAnimCanel = 0.5f;
             Player player = ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPlayer();
 
@@ -123,11 +128,12 @@ namespace Comic
                     }
                 }));
             }
+            */
         }
 
         private void InstantiateHole(Page page, float delayPlay = 0f)
         {
-            Vector3 playerPos = ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPlayer().transform.position;
+            Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().transform.position;
 
             m_hole = Instantiate(m_holePrefab, page.transform);
             m_hole.Init();
@@ -135,30 +141,31 @@ namespace Comic
             m_hole.Play(delayPlay);
         }
 
-        private void TranslatePage(Quaternion from, Quaternion to, Page page)
-        {
-            if (m_switchPageTween != null)
-            {
-                m_switchPageTween.Kill();
-            }
+        // private void TranslatePage(Quaternion from, Quaternion to, Page page)
+        // {
+        //     if (m_switchPageTween != null)
+        //     {
+        //         m_switchPageTween.Kill();
+        //     }
 
-            if (Quaternion.Dot(from, to) < 0)
-            {
-                to = new Quaternion(-to.x, -to.y, -to.z, -to.w);
-            }
+        //     if (Quaternion.Dot(from, to) < 0)
+        //     {
+        //         to = new Quaternion(-to.x, -to.y, -to.z, -to.w);
+        //     }
 
-            m_switchPageTween = page.GetVisualTransform().DORotateQuaternion(to, m_duration)
-                .From(from)
-                .SetEase(Ease.Linear)
-                .OnComplete(() =>
-                {
-                    ResetTransformToBase(page);
-                });
-        }
-        private void ResetTransformToBase(Page page)
-        {
-            page.ResetBaseVisualRot();
-        }
+        //     m_switchPageTween = page.GetVisualTransform().DORotateQuaternion(to, m_duration)
+        //         .From(from)
+        //         .SetEase(Ease.Linear)
+        //         .OnComplete(() =>
+        //         {
+        //             ResetTransformToBase(page);
+        //         });
+        // }
+
+        // private void ResetTransformToBase(Page page)
+        // {
+        //     page.ResetBaseVisualRot();
+        // }
 
         #endregion SWITCH PAGE
 
