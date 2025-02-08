@@ -12,6 +12,8 @@ namespace Comic
         private AView m_currentView;
         private readonly Stack<AView> m_history = new Stack<AView>();
 
+        public AView GetCurrentView() => m_currentView;
+
         public T GetView<T>() where T : AView
         {
             for (int i = 0; i < m_views.Length; i++)

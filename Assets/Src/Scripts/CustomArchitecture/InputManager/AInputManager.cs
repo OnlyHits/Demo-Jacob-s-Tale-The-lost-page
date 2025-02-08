@@ -32,6 +32,7 @@ namespace CustomArchitecture
             public InputAction action;
             public Action<InputType, T> callback;
             public T value;
+
             // Invoke the callback each frame the key is pressed
             public bool computeEachFrame;
 

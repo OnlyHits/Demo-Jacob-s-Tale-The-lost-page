@@ -1,9 +1,5 @@
-using CustomArchitecture;
-using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using Sirenix.OdinInspector;
 using TMPro;
 
@@ -11,14 +7,14 @@ namespace Comic
 {
     public class ProgressionView : AView
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [SerializeField, OnValueChanged("DebugGraphic")] private bool m_activeGraphic = true;
 
         private void DebugGraphic()
         {
             ActiveGraphic(m_activeGraphic);
         }
-        #endif
+#endif
 
         public override void ActiveGraphic(bool active)
         {

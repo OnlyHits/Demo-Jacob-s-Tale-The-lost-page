@@ -28,7 +28,7 @@ public class ForceInitManager : MonoBehaviour
         }
         if (m_forceInitGame)
         {
-            gameCore.MainGameMode.InitHud();
+            gameCore.MainGameMode.InitGame();
         }
 
     }

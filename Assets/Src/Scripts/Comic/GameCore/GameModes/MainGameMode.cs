@@ -53,7 +53,7 @@ namespace Comic
         private GameProgression m_gameProgression;
         private SceneLoader m_sceneLoader;
         private URP_CameraManager m_cameraManager;
-        private NavigationInput m_navigationInput;
+        //private NavigationInput m_navigationInput;
 
         // local datas
         private HudManager m_hudManager;
@@ -76,7 +76,6 @@ namespace Comic
         // ---- MainGameCore dependencies ----
 
         public InputActionAsset GetInputAsset() => m_gameCore.GetInputAsset();
-        public NavigationInput GetNavigationInput() => m_navigationInput;
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
 
@@ -87,6 +86,7 @@ namespace Comic
         public PowerManager GetPowerManager() => m_gameManager?.GetPowerManager();
         public DialogueManager GetDialogueManager() => m_gameManager?.GetDialogueManager();
         public ViewManager GetViewManager() => m_hudManager?.GetViewManager();
+        public NavigationInput GetNavigationInput() => m_hudManager?.GetNavigationInput();
 
 
         // This function is called right after Init()
@@ -111,7 +111,7 @@ namespace Comic
 
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
-            m_navigationInput = GetComponent<NavigationInput>();
+            //m_navigationInput = GetComponent<NavigationInput>();
             m_cameraManager = GetComponentInChildren<URP_CameraManager>();
             // init here cause there no dependency and its a global object
             m_cameraManager.Init();
@@ -131,7 +131,7 @@ namespace Comic
             InitHud();
 
             // tricky but w/e for the moment
-            m_navigationInput.Init();
+            //m_navigationInput.Init();
 
             // same
             GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
@@ -194,7 +194,7 @@ namespace Comic
         public void PlayEndGame()
         {
             // fix some issues
-            m_navigationInput.Pause(true);
+            GetNavigationInput().Pause(true);
             GetCharacterManager().GetPlayer().Pause(true);
 
             GetViewManager().Show<CreditView>();
@@ -432,12 +432,12 @@ namespace Comic
             {
                 Debug.Log("Pause game");
 
-                m_navigationInput.Pause(false);
+                GetNavigationInput().Pause(false);
                 // pause player
             }
             else
             {
-                m_navigationInput.Pause(true);
+                GetNavigationInput().Pause(true);
                 // resume player
             }
         }
