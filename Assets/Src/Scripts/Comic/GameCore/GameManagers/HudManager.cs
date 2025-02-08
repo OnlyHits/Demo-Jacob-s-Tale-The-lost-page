@@ -17,6 +17,7 @@ namespace Comic
             m_viewManager = gameObject.GetComponent<ViewManager>();
             m_cameras = gameObject.GetComponent<HudCameraRegister>();
 
+            m_cameras.Init(ComicGameCore.Instance.MainGameMode.GetCameraManager().GetCameraBase(), ComicGameCore.Instance.MainGameMode.GetCameraManager().GetScreenshotBounds());
             m_viewManager.Init();
         }
     }

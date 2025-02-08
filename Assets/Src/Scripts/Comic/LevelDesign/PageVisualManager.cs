@@ -36,8 +36,8 @@ namespace Comic
 
         public void Init()
         {
-            ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
-            ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
+            // ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
+            // ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
 
             // m_duration = ComicGameCore.Instance.MainGameMode.GetPageManager().GetSwitchPageDuration();
 

@@ -38,43 +38,60 @@ namespace Comic
 
         public void PreviousPage()
         {
-            // gameObject.SetActive(true);
-            
-            // if (m_turnSequence != null)
-            // {
-            //     m_turnSequence.Kill();
-            //     m_turnSequence = null;
-            // }
+            gameObject.SetActive(true);
 
-            // m_turningPage.sprite = m_backSprite;
-            
-            // RectTransform rect = m_turningPage.GetComponent<RectTransform>();
+            if (m_turnSequence != null)
+            {
+                m_turnSequence.Kill();
+                m_turnSequence = null;
+            }
 
-            // rect.eulerAngles = new Vector3(0, 180, 0);
+            RectTransform rect = m_turningPage.GetComponent<RectTransform>();
 
-            // var right_color = m_rightShadow.color;
-            // right_color.a = 0f;
-            // m_rightShadow.color = right_color;
-            // right_color.a = 1f;
+            rect.eulerAngles = new Vector3(0, 0, 0);
 
-            // var left_color = m_leftShadow.color;
-            // left_color.a = 1f;
-            // m_leftShadow.color = left_color;
-            // left_color.a = 0f;
+            var right_color = m_rightShadow.color;
+            right_color.a = 0f;
+            m_rightShadow.color = right_color;
+            right_color.a = 1f;
 
-            // m_turnSequence = DOTween.Sequence();
+            var left_color = m_leftShadow.color;
+            left_color.a = 1f;
+            m_leftShadow.color = left_color;
+            left_color.a = 0f;
 
-            // m_turnSequence.Append(rect.DORotate(new Vector3(0, 90, 0), m_turnDuration * 0.5f, RotateMode.FastBeyond360)
-            //     .SetEase(Ease.InQuad));
-            // m_turnSequence.Append(rect.DORotate(Vector3.zero, m_turnDuration * 0.5f, RotateMode.FastBeyond360)
-            //     .SetEase(Ease.OutQuad));
-            // m_turnSequence.OnComplete(() => m_turnSequence = null);
+            SetupRect(false);
+            m_turningPage.sprite = m_backSprite;
 
-            // m_shadowSequence = DOTween.Sequence();
+            m_turnSequence = DOTween.Sequence();
 
-            // m_shadowSequence.Append(m_leftShadow.DOColor(left_color, m_turnDuration * .5f).SetEase(Ease.InQuad));
-            // m_shadowSequence.Append(m_rightShadow.DOColor(right_color, m_turnDuration * .5f).SetEase(Ease.OutQuad));
-            // m_shadowSequence.OnComplete(() => m_shadowSequence = null);
+            Sequence rotate_sequence = DOTween.Sequence();
+            Sequence shadow_sequence = DOTween.Sequence();
+
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 270, 0), m_turnDuration * 0.5f)
+                .SetEase(Ease.InQuad)
+                .OnComplete(() => {
+                    Vector3 rotation = rect.eulerAngles;
+                    rotation.y = 90f;
+                    rect.eulerAngles = rotation;
+
+                    SetupRect(true);
+
+                    m_turningPage.sprite = m_frontSprite;
+                }));
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 0, 0), m_turnDuration * 0.5f)
+                .SetEase(Ease.OutQuad));
+
+            shadow_sequence.Append(m_leftShadow.DOColor(left_color, m_turnDuration * .5f).SetEase(Ease.InQuad));
+            shadow_sequence.Append(m_rightShadow.DOColor(right_color, m_turnDuration * .5f).SetEase(Ease.OutQuad));
+
+            m_turnSequence.Join(rotate_sequence);
+            m_turnSequence.Join(shadow_sequence);
+            m_turnSequence.OnComplete(() => {
+                m_onEndTurning?.Invoke();
+                m_turnSequence = null;
+                gameObject.SetActive(false);
+            });
         }
 
         public void NextPage()
@@ -86,8 +103,6 @@ namespace Comic
                 m_turnSequence.Kill();
                 m_turnSequence = null;
             }
-
-            m_turningPage.sprite = m_frontSprite;
 
             RectTransform rect = m_turningPage.GetComponent<RectTransform>();
 
@@ -104,6 +119,7 @@ namespace Comic
             left_color.a = 1f;
 
             SetupRect(true);
+            m_turningPage.sprite = m_frontSprite;
 
             m_turnSequence = DOTween.Sequence();
 
@@ -114,7 +130,7 @@ namespace Comic
                 .SetEase(Ease.InQuad)
                 .OnComplete(() => {
                     Vector3 rotation = rect.eulerAngles;
-                    rotation.y = 280f;
+                    rotation.y = 270f;
                     rect.eulerAngles = rotation;
 
                     SetupRect(false);

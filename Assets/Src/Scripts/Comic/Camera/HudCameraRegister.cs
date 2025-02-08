@@ -29,9 +29,9 @@ namespace Comic
                     world_camera.WorldToScreenPoint(maxWorld));
         }
 
-        public void TurnPage(bool previous)
+        public void TurnPage(bool next_page)
         {
-            if (previous)
+            if (!next_page)
                 m_turningPage.PreviousPage();
             else
                 m_turningPage.NextPage();
