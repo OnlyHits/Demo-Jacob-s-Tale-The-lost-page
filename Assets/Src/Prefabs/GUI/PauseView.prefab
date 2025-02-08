@@ -691,9 +691,9 @@ RectTransform:
   - {fileID: 5924933885690440012}
   m_Father: {fileID: 6175401655589360424}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 70.655, y: -176.07748}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4716853860955437889
@@ -1084,9 +1084,9 @@ RectTransform:
   - {fileID: 6873465575615649451}
   m_Father: {fileID: 7404429555217891366}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 120.655, y: -243.14648}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7567122950750462982
@@ -1205,9 +1205,9 @@ RectTransform:
   - {fileID: 7342864683676300469}
   m_Father: {fileID: 6175401655589360424}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 70.655, y: -35.215496}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1789067809276502885
@@ -2242,14 +2242,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
+  m_debug: 0
   m_panelsData:
   - type: 1
     panelObj: {fileID: 8428126399640409542}
-    startButton: {fileID: 7714812570166790948}
-    buttons:
-    - {fileID: 7714812570166790948}
-    - {fileID: 7567242818705628491}
-    - {fileID: 8303638316550564248}
     startElement: {fileID: 7714812570166790948}
     selectableElements:
     - {fileID: 7714812570166790948}
@@ -2257,9 +2253,6 @@ MonoBehaviour:
     - {fileID: 8303638316550564248}
   - type: 2
     panelObj: {fileID: 4735935572965733061}
-    startButton: {fileID: 7923620925541289260}
-    buttons:
-    - {fileID: 7923620925541289260}
     startElement: {fileID: 2367502117502054490}
     selectableElements:
     - {fileID: 2367502117502054490}
@@ -2270,18 +2263,15 @@ MonoBehaviour:
   m_bOptions: {fileID: 7567242818705628491}
   m_bExit: {fileID: 8303638316550564248}
   m_bBack: {fileID: 7968778681712537735}
+  m_tLanguage: {fileID: 2367502117502054490}
   isCd: 0
   cd: 0.2
   m_currentPanelData:
     type: 0
     panelObj: {fileID: 0}
-    startButton: {fileID: 0}
-    buttons: []
     startElement: {fileID: 0}
     selectableElements: []
-  m_currentButtonIdx: 0
   m_currentElementIdx: 0
-  m_currentButton: {fileID: 0}
   m_currentElement: {fileID: 0}
   m_basePanelType: 1
   m_currentPanelType: 0
@@ -2449,9 +2439,9 @@ RectTransform:
   - {fileID: 2027073948577575566}
   m_Father: {fileID: 6175401655589360424}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 70.655, y: -105.646484}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7283448578621238208

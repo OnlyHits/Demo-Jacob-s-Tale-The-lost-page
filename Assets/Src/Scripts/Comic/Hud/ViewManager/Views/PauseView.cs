@@ -142,6 +142,7 @@ namespace Comic
                 ComicGameCore.Instance.GetSettings().m_settingDatas.m_effectVolume = volume;
                 ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume = volume;
             }
+
             // Move language (the only text is the lang)
             else if (m_currentElement is TextMeshProUGUI text)
             {
