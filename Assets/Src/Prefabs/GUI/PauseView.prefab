@@ -852,8 +852,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1366,8 +1366,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1551,7 +1551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1691,7 +1691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2129,8 +2129,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2250,12 +2250,22 @@ MonoBehaviour:
     - {fileID: 7714812570166790948}
     - {fileID: 7567242818705628491}
     - {fileID: 8303638316550564248}
+    startElement: {fileID: 7714812570166790948}
+    selectableElements:
+    - {fileID: 7714812570166790948}
+    - {fileID: 7567242818705628491}
+    - {fileID: 8303638316550564248}
   - type: 2
     panelObj: {fileID: 4735935572965733061}
     startButton: {fileID: 7923620925541289260}
     buttons:
     - {fileID: 7923620925541289260}
-  m_baseColorButtonText: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    startElement: {fileID: 2367502117502054490}
+    selectableElements:
+    - {fileID: 2367502117502054490}
+    - {fileID: 2039015840579732169}
+  m_baseColorElement: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_selectedColor: {r: 1, g: 0, b: 0, a: 1}
   m_bPlay: {fileID: 7714812570166790948}
   m_bOptions: {fileID: 7567242818705628491}
   m_bExit: {fileID: 8303638316550564248}
@@ -2267,10 +2277,15 @@ MonoBehaviour:
     panelObj: {fileID: 0}
     startButton: {fileID: 0}
     buttons: []
+    startElement: {fileID: 0}
+    selectableElements: []
   m_currentButtonIdx: 0
+  m_currentElementIdx: 0
   m_currentButton: {fileID: 0}
-  m_currentPanel: 0
-  m_lastPanel: 0
+  m_currentElement: {fileID: 0}
+  m_basePanelType: 1
+  m_currentPanelType: 0
+  m_lastPanelType: 0
 --- !u!1 &8428126399640409542
 GameObject:
   m_ObjectHideFlags: 0
@@ -2595,8 +2610,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2731,8 +2746,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System;
 using CustomArchitecture;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
+using UnityEngine.EventSystems;
+using UnityEditor.Rendering;
 
 namespace Comic
 {
@@ -16,8 +17,13 @@ namespace Comic
         {
             public PanelType type;
             public GameObject panelObj;
-            public Button startButton;
-            public List<Button> buttons;
+
+            // Old usage
+            [HideInInspector] public Button startButton;
+            [HideInInspector] public List<Button> buttons;
+
+            public UIBehaviour startElement;
+            public List<UIBehaviour> selectableElements;
         }
 
         public enum PanelType
@@ -31,7 +37,9 @@ namespace Comic
         [SerializeField] private List<PanelData> m_panelsData = new List<PanelData>();
 
         [Header("Buttons")]
-        [SerializeField] private Color m_baseColorButtonText = Color.black;
+        [SerializeField] private Color m_baseColorElement = Color.black;
+        [SerializeField] private Color m_selectedColor = Color.red;
+
         [Space]
         [SerializeField] private Button m_bPlay;
         [SerializeField] private Button m_bOptions;
@@ -45,12 +53,18 @@ namespace Comic
 
         [Header("Panels Datas")]
         [SerializeField, ReadOnly] private PanelData m_currentPanelData;
-        [SerializeField, ReadOnly] private int m_currentButtonIdx = 0;
-        [SerializeField, ReadOnly] private Button m_currentButton;
+        [SerializeField, ReadOnly] private int m_currentElementIdx = 0;
+        [SerializeField, ReadOnly] private UIBehaviour m_currentElement;
+
+        // Old usage
+        // private int m_currentButtonIdx = 0;
+        // private Button m_currentButton;
 
         [SerializeField, ReadOnly] private PanelType m_basePanelType = PanelType.BASE;
         [SerializeField, ReadOnly] private PanelType m_currentPanelType = PanelType.NONE;
         [SerializeField, ReadOnly] private PanelType m_lastPanelType = PanelType.NONE;
+
+        #region UNITY CALLBACKS
 
         private void Awake()
         {
@@ -59,6 +73,23 @@ namespace Comic
             m_bExit.onClick.AddListener(Exit);
             m_bBack.onClick.AddListener(ShowBasePanel);
         }
+
+        protected override void OnUpdate(float elapsed_time)
+        {
+            base.OnUpdate(elapsed_time);
+
+            if (isCd)
+            {
+                timer += elapsed_time;
+                if (timer >= cd)
+                {
+                    isCd = false;
+                    timer = 0f;
+                }
+            }
+        }
+
+        #endregion UNITY CALLBACKS
 
         #region INTERNAL
 
@@ -80,17 +111,45 @@ namespace Comic
 
         #region CALLBACKS
 
-        protected override void OnUpdate(float elapsed_time)
+        private void OnInputVertical(Vector2 value)
         {
-            base.OnUpdate(elapsed_time);
+            int destIndex = m_currentElementIdx;
 
-            if (isCd)
+            if (value.y < 0)
             {
-                timer += elapsed_time;
-                if (timer >= cd)
+                destIndex = m_currentElementIdx + 1 >= m_currentPanelData.buttons.Count ? 0 : m_currentElementIdx + 1;
+            }
+            else if (value.y > 0)
+            {
+                destIndex = m_currentElementIdx - 1 < 0 ? m_currentPanelData.buttons.Count - 1 : m_currentElementIdx - 1;
+            }
+
+            if (destIndex == m_currentElementIdx)
+                return;
+
+            // TrySetElement(out m_currentElement)
+            if (TrySetElementByIndex(out m_currentElement, destIndex))
+            {
+                m_currentElementIdx = destIndex;
+                Debug.Log("---- > Navigate on button = " + m_currentElement.name);
+            }
+        }
+        private void OnInputHorizontal(Vector2 value)
+        {
+            if (m_currentElement is Slider slider)
+            {
+                slider.value = slider.value + (value.x / 10);
+            }
+            else if (m_currentElement is TextMeshProUGUI text)
+            {
+                if (value.x > 0)
                 {
-                    isCd = false;
-                    timer = 0f;
+                    text.text = (text.text == "english") ? "french" : "english";
+                }
+                else
+                {
+                    text.text = (text.text == "english") ? "french" : "english";
+
                 }
             }
         }
@@ -100,21 +159,13 @@ namespace Comic
             if (isCd) return;
             isCd = true;
 
-            int destIndex = m_currentButtonIdx;
-
-            if (value.y < 0)
+            if (value.y > 0 || value.y < 0)
             {
-                destIndex = m_currentButtonIdx + 1 >= m_currentPanelData.buttons.Count ? 0 : m_currentButtonIdx + 1;
+                OnInputVertical(value);
             }
-            else if (value.y > 0)
+            else if (value.x > 0 || value.x < 0)
             {
-                destIndex = m_currentButtonIdx - 1 < 0 ? m_currentPanelData.buttons.Count - 1 : m_currentButtonIdx - 1;
-            }
-
-            if (TrySetButtonByIndex(out m_currentButton, destIndex))
-            {
-                m_currentButtonIdx = destIndex;
-                Debug.Log("---- > Navigate on button = " + m_currentButton.name);
+                OnInputHorizontal(value);
             }
         }
         private void OnValidateInput(InputType inputType, bool value)
@@ -122,7 +173,10 @@ namespace Comic
             if (value)
             {
                 Debug.Log("---> Validate " + value.ToString());
-                m_currentButton.onClick?.Invoke();
+                if (m_currentElement is Button button)
+                {
+                    button.onClick?.Invoke();
+                }
             }
         }
         private void OnCanceledInput(InputType inputType, bool value)
@@ -137,73 +191,150 @@ namespace Comic
         #endregion CALLBACKS
 
 
-        #region BUTTONS
+        #region UI ELEMENTS
 
-        private bool TrySetStartingButton(out Button button)
+        private bool TrySetStartingElement(out UIBehaviour element)
         {
-            Button startButton = m_currentPanelData.startButton;
+            UIBehaviour startElement = m_currentPanelData.startElement;
 
-            if (TrySetButton(out button, startButton))
+            if (TrySetElement(out element, startElement))
             {
-                SelectButton(button, m_currentPanelData.buttons);
+                SelectElement(element, m_currentPanelData.selectableElements);
                 return true;
             }
-            Debug.LogWarning("Starting button [" + m_currentPanelData.startButton.name + "] of PauseView panels is not in panel button list.");
+            Debug.LogWarning("Starting element [" + m_currentPanelData.startElement.name + "] of PauseView panels is not in panel elements list.");
             return false;
         }
 
-        private bool TrySetButtonByIndex(out Button destButton, int newIndex)
+        private bool TrySetElementByIndex(out UIBehaviour destElement, int newIndex)
         {
-            Button newButton = m_currentPanelData.buttons.ElementAt(newIndex);
+            UIBehaviour newElement = m_currentPanelData.selectableElements.ElementAt(newIndex);
 
-            if (newButton == null)
+            if (newElement == null)
             {
-                destButton = m_currentButton;
-                Debug.LogWarning("Failed to select button by index");
+                destElement = m_currentElement;
+                Debug.LogWarning("Failed to select element at index " + newIndex.ToString() + ".");
                 return false;
             }
-
-            if (TrySetButton(out destButton, newButton))
+            if (TrySetElement(out destElement, newElement))
             {
-                SelectButton(destButton, m_currentPanelData.buttons);
+                SelectElement(destElement, m_currentPanelData.selectableElements);
                 return true;
             }
-            Debug.LogWarning("Failed to select button by index");
+            Debug.LogWarning("Failed to select element by index");
             return false;
         }
-
-        private bool TrySetButton(out Button destButton, Button button)
+        private bool TrySetElement(out UIBehaviour destElement, UIBehaviour element)
         {
-            List<Button> buttons = m_currentPanelData.buttons;
+            List<UIBehaviour> elements = m_currentPanelData.selectableElements;
 
-            m_currentButtonIdx = buttons.IndexOf(button);
-            if (m_currentButtonIdx < 0)
+            m_currentElementIdx = elements.IndexOf(element);
+            if (m_currentElementIdx < 0)
             {
-                m_currentButtonIdx = 0;
-                destButton = m_currentButton;
+                m_currentElementIdx = 0;
+                destElement = m_currentElement;
                 return false;
             }
-            destButton = buttons[m_currentButtonIdx];
+            destElement = elements[m_currentElementIdx];
             return true;
         }
 
-        private void SelectButton(Button selectedButton, List<Button> others)
+        private void SelectElement(UIBehaviour selectedElement, List<UIBehaviour> others)
         {
-            foreach (Button button in others)
+            foreach (UIBehaviour element in others)
             {
-                if (button == selectedButton)
-                {
-                    button.transform.GetComponentInChildren<TextMeshProUGUI>().color = Color.red;
-                    button.image.color = Color.red;
-                }
+                Color destColor = default;
+
+                if (element == selectedElement)
+                    destColor = m_selectedColor;
                 else
+                    destColor = m_baseColorElement;
+
+                if (element is Button button)
                 {
-                    button.transform.GetComponentInChildren<TextMeshProUGUI>().color = m_baseColorButtonText;
-                    button.image.color = Color.white;
+                    button.transform.GetComponentInChildren<TextMeshProUGUI>().color = destColor;
+                    button.image.color = destColor;
+                }
+                else if (element is Slider slider)
+                {
+                    slider.handleRect.GetComponentInChildren<Image>().color = destColor;
+                    slider.fillRect.GetComponentInChildren<Image>().color = destColor;
+                }
+                else if (element is TextMeshProUGUI textMesh)
+                {
+                    textMesh.color = destColor;
                 }
             }
         }
 
+        #endregion
+
+        // Old Usage
+        #region BUTTONS
+        /*
+                private bool TrySetStartingButton(out Button button)
+                {
+                    Button startButton = m_currentPanelData.startButton;
+
+                    if (TrySetButton(out button, startButton))
+                    {
+                        SelectButton(button, m_currentPanelData.buttons);
+                        return true;
+                    }
+                    Debug.LogWarning("Starting button [" + m_currentPanelData.startButton.name + "] of PauseView panels is not in panel button list.");
+                    return false;
+                }
+                private bool TrySetButtonByIndex(out Button destButton, int newIndex)
+                {
+                    Button newButton = m_currentPanelData.buttons.ElementAt(newIndex);
+
+                    if (newButton == null)
+                    {
+                        destButton = m_currentButton;
+                        Debug.LogWarning("Failed to select button by index");
+                        return false;
+                    }
+
+                    if (TrySetButton(out destButton, newButton))
+                    {
+                        SelectButton(destButton, m_currentPanelData.buttons);
+                        return true;
+                    }
+                    Debug.LogWarning("Failed to select button by index");
+                    return false;
+                }
+                private bool TrySetButton(out Button destButton, Button button)
+                {
+                    List<Button> buttons = m_currentPanelData.buttons;
+
+                    m_currentButtonIdx = buttons.IndexOf(button);
+                    if (m_currentButtonIdx < 0)
+                    {
+                        m_currentButtonIdx = 0;
+                        destButton = m_currentButton;
+                        return false;
+                    }
+                    destButton = buttons[m_currentButtonIdx];
+                    return true;
+                }
+
+                private void SelectButton(Button selectedButton, List<Button> others)
+                {
+                    foreach (Button button in others)
+                    {
+                        if (button == selectedButton)
+                        {
+                            button.transform.GetComponentInChildren<TextMeshProUGUI>().color = Color.red;
+                            button.image.color = Color.red;
+                        }
+                        else
+                        {
+                            button.transform.GetComponentInChildren<TextMeshProUGUI>().color = m_baseColorElement;
+                            button.image.color = Color.white;
+                        }
+                    }
+                }
+        */
         #endregion BUTTONS
 
 
@@ -227,7 +358,8 @@ namespace Comic
                 }
             }
 
-            TrySetStartingButton(out m_currentButton);
+            //TrySetStartingButton(out m_currentButton);
+            TrySetStartingElement(out m_currentElement);
         }
 
         private void ShowBasePanel()
