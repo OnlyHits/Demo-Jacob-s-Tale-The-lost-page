@@ -155,7 +155,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 212117013}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87e3aab7c42bfe93984390fed2c1dd61, type: 3}
   m_Name: 
@@ -2579,10 +2579,6 @@ PrefabInstance:
     - target: {fileID: 7348973613296757067, guid: 6f06f0c118f867f0a8ec37c0c525cd26, type: 3}
       propertyPath: m_Name
       value: PauseView
-      objectReference: {fileID: 0}
-    - target: {fileID: 7873665218797990553, guid: 6f06f0c118f867f0a8ec37c0c525cd26, type: 3}
-      propertyPath: cd
-      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8816994342392603206, guid: 6f06f0c118f867f0a8ec37c0c525cd26, type: 3}
       propertyPath: m_AnchorMax.y

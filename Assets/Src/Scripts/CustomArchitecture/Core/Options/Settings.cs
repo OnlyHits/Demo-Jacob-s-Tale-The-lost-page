@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 
 namespace CustomArchitecture
 {
     public enum Language
     {
-        French,
-        English
+        French = 0,
+        English = 1,
     }
 
     [System.Serializable]
@@ -19,8 +18,8 @@ namespace CustomArchitecture
 
     public class Settings
     {
-        public SettingDatas                             m_settingDatas = null;
-        private readonly SaveUtilitary<SettingDatas>    m_saveUtilitary;
+        public SettingDatas m_settingDatas = null;
+        private readonly SaveUtilitary<SettingDatas> m_saveUtilitary;
 
         public Settings()
         {
