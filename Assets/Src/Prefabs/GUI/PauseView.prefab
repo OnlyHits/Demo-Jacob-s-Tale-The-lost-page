@@ -2499,14 +2499,14 @@ MonoBehaviour:
   m_pause: 0
   m_debug: 0
   m_panelsData:
-  - type: 1
+  - panelIndex: 0
     panelObj: {fileID: 8428126399640409542}
     startElement: {fileID: 7714812570166790948}
     selectableElements:
     - {fileID: 7714812570166790948}
     - {fileID: 7567242818705628491}
     - {fileID: 8303638316550564248}
-  - type: 2
+  - panelIndex: 1
     panelObj: {fileID: 4735935572965733061}
     startElement: {fileID: 2367502117502054490}
     selectableElements:
@@ -2515,6 +2515,18 @@ MonoBehaviour:
     - {fileID: 3291373059600366214}
   m_baseColorElement: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_selectedColor: {r: 1, g: 0, b: 0, a: 1}
+  isCd: 0
+  cd: 0.25
+  m_currentPanelData:
+    panelIndex: 0
+    panelObj: {fileID: 0}
+    startElement: {fileID: 0}
+    selectableElements: []
+  m_currentElementIdx: 0
+  m_currentElement: {fileID: 0}
+  m_basePanelIndex: 0
+  m_currentPanelIndex: -1
+  m_lastPanelIndex: -1
   m_bPlay: {fileID: 7714812570166790948}
   m_bOptions: {fileID: 7567242818705628491}
   m_bExit: {fileID: 8303638316550564248}
@@ -2522,18 +2534,6 @@ MonoBehaviour:
   m_tLanguage: {fileID: 2367502117502054490}
   m_sVolumeEffect: {fileID: 2039015840579732169}
   m_sVolumeMusic: {fileID: 3291373059600366214}
-  isCd: 0
-  cd: 0.25
-  m_currentPanelData:
-    type: 0
-    panelObj: {fileID: 0}
-    startElement: {fileID: 0}
-    selectableElements: []
-  m_currentElementIdx: 0
-  m_currentElement: {fileID: 0}
-  m_basePanelType: 1
-  m_currentPanelType: 0
-  m_lastPanelType: 0
 --- !u!1 &8428126399640409542
 GameObject:
   m_ObjectHideFlags: 0

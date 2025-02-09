@@ -41,6 +41,8 @@ namespace Comic
                         m_currentView.Hide();
                     }
                     m_views[i].Show();
+                    // added
+                    m_views[i].ActiveGraphic(true);
                     m_currentView = m_views[i];
                 }
             }
@@ -57,6 +59,8 @@ namespace Comic
                 m_currentView.Hide();
             }
             view.Show();
+            // added
+            view.ActiveGraphic(true);
             m_currentView = view;
         }
 

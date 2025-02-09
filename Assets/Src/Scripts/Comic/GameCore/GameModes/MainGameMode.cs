@@ -302,6 +302,20 @@ namespace Comic
             m_onLockPowerCallback?.Invoke(m_gameConfig.GetPowerByChapter(type));
         }
 
+        public bool IsChapterUnlocked(Chapters chapterType)
+        {
+            List<ChapterSavedData> chapterDatas = m_gameProgression.GetUnlockedChaptersDatas();
+
+            foreach (var data in chapterDatas)
+            {
+                if (data.m_chapterType == chapterType)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         #endregion
 
         public void ClearSaveDebug()
