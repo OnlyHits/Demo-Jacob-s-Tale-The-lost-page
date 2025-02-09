@@ -2906,6 +2906,14 @@ PrefabInstance:
       propertyPath: m_rightScreenshot
       value: 
       objectReference: {fileID: 1257929576}
+    - target: {fileID: 8303299829472940196, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_Cameras.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8303299829472940196, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: 'm_Cameras.Array.data[0]'
+      value: 
+      objectReference: {fileID: 728016370}
     - target: {fileID: 9158024469771789629, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_LocalPosition.z
       value: -10

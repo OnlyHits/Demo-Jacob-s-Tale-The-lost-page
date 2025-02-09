@@ -52,8 +52,8 @@ namespace Comic
             m_onScreenshotSprite += OnScreenshotSprite;
             m_baseCamera = GetComponent<Camera>();
 
-            // important for hud instantiation 
-            // ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).Init(m_baseCamera, GetScreenshotBounds());
+            // important for hud instantiation
+            //((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).Init(m_baseCamera, GetScreenshotBounds());
         }
 
         public void RegisterCameras(GameCameraRegister game_camera)

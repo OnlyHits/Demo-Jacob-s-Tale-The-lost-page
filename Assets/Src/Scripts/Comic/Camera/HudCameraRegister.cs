@@ -1,10 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
-using CustomArchitecture;
-using UnityEngine.Rendering;
 using System;
 
 namespace Comic
@@ -41,7 +35,7 @@ namespace Comic
         {
             if (m_cameras.Count > 0 && m_cameras[0] != null)
                 return m_cameras[0];
-            
+
             return null;
         }
 
@@ -77,6 +71,6 @@ namespace Comic
                 Debug.LogError("Rect transform for screenshot is null");
                 return null;
             }
-        } 
+        }
     }
 }
