@@ -2,7 +2,6 @@ using CustomArchitecture;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 
 namespace Comic
 {
@@ -49,9 +48,9 @@ namespace Comic
 
         private void FindAction()
         {
+            m_navigationAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Navigation");
             m_cancelAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Cancel");
             m_validateAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Validate");
-            m_navigationAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Navigation");
         }
 
         private void InitInputActions()
@@ -69,5 +68,5 @@ namespace Comic
         {
             base.OnUpdate(elapsed_time);
         }
-   }
+    }
 }

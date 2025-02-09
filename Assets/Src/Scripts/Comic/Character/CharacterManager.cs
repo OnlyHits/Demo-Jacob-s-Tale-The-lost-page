@@ -30,7 +30,7 @@ namespace Comic
 
         private void SpawnCharacters()
         {
-            foreach (var data in ComicGameCore.Instance.MainGameMode.GetUnlockChaptersData())
+            foreach (ChapterSavedData data in ComicGameCore.Instance.MainGameMode.GetUnlockChaptersData())
             {
                 // Spawn NPCS
                 TrySpawnNPCsByChapter(data.m_chapterType);

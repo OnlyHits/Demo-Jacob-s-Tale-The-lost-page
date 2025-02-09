@@ -64,6 +64,8 @@ public class Shortcuts : MonoBehaviour
         {
             var viewManager = ComicGameCore.Instance.MainGameMode.GetViewManager();
 
+            if (viewManager == null) return;
+
             // Relfection on function and type
             MethodInfo showMethod = viewManager.GetType()
                 .GetMethods()
@@ -77,6 +79,7 @@ public class Shortcuts : MonoBehaviour
             {
                 MethodInfo genericShowMethod = showMethod.MakeGenericMethod(viewTypeCompute);
                 genericShowMethod.Invoke(viewManager, new object[] { false });
+                ComicGameCore.Instance.MainGameMode.GetViewManager().GetCurrentView().ActiveGraphic(true);
             }
         }
     }

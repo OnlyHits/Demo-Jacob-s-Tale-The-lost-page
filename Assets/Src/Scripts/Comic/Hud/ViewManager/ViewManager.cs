@@ -12,6 +12,8 @@ namespace Comic
         private AView m_currentView;
         private readonly Stack<AView> m_history = new Stack<AView>();
 
+        public AView GetCurrentView() => m_currentView;
+
         public T GetView<T>() where T : AView
         {
             for (int i = 0; i < m_views.Length; i++)
@@ -39,6 +41,8 @@ namespace Comic
                         m_currentView.Hide();
                     }
                     m_views[i].Show();
+                    // added
+                    m_views[i].ActiveGraphic(true);
                     m_currentView = m_views[i];
                 }
             }
@@ -55,6 +59,8 @@ namespace Comic
                 m_currentView.Hide();
             }
             view.Show();
+            // added
+            view.ActiveGraphic(true);
             m_currentView = view;
         }
 

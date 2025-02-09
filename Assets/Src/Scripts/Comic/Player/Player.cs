@@ -46,7 +46,7 @@ namespace Comic
         {
             base.Awake();
 
-            //m_inputsController = gameObject.AddComponent<PlayerInputsController>();
+            // Init callbacks BEFORE initializating the AInputManager
             m_inputsController.onMoveAction += OnMove;
             m_inputsController.onLookAction += OnLook;
             m_inputsController.onJumpAction += OnJump;
