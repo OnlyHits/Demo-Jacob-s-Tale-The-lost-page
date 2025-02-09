@@ -2523,7 +2523,7 @@ MonoBehaviour:
   m_sVolumeEffect: {fileID: 2039015840579732169}
   m_sVolumeMusic: {fileID: 3291373059600366214}
   isCd: 0
-  cd: 0.2
+  cd: 0.25
   m_currentPanelData:
     type: 0
     panelObj: {fileID: 0}

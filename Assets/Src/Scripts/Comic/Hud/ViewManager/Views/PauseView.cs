@@ -170,7 +170,7 @@ namespace Comic
                 }
                 else if (value.x < 0)
                 {
-                    int nextValue = ((int)currentLang - 1) % langCount;
+                    int nextValue = ((int)currentLang - 1 + langCount) % langCount;
                     destLang = (Language)nextValue;
                 }
 

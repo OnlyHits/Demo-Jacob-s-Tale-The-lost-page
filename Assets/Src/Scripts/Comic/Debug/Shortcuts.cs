@@ -64,6 +64,8 @@ public class Shortcuts : MonoBehaviour
         {
             var viewManager = ComicGameCore.Instance.MainGameMode.GetViewManager();
 
+            if (viewManager == null) return;
+
             // Relfection on function and type
             MethodInfo showMethod = viewManager.GetType()
                 .GetMethods()
