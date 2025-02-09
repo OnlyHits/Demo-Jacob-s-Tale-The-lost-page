@@ -33,8 +33,6 @@ namespace Comic
 
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnChapterUnlocked);
 
-
-
             SpawnPagesUI();
         }
 
@@ -45,6 +43,7 @@ namespace Comic
 
         private void OnNavigateInputChanged(InputType inputType, Vector2 value)
         {
+            if (!gameObject.activeSelf) return;
             if (isCd) return;
             isCd = true;
 

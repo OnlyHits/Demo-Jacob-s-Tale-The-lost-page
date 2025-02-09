@@ -13,11 +13,11 @@ namespace CustomArchitecture
 
         protected override void OnUpdate(float elapsed_time)
         {
-            if (Input.GetKey(KeyCode.Space)) // Hold Space to flip the page
-            {
-                flipAmount = Mathf.PingPong(Time.time * flipSpeed, 1);
-                pageFlipMaterial.SetFloat("_FlipAmount", flipAmount);
-            }
+            //if (Input.GetKey(KeyCode.Space)) // Hold Space to flip the page
+            //{
+            //    flipAmount = Mathf.PingPong(Time.time * flipSpeed, 1);
+            //    pageFlipMaterial.SetFloat("_FlipAmount", flipAmount);
+            //}
         }
     }
 }

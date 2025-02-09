@@ -74,9 +74,9 @@ namespace Comic
             {
                 Debug.LogWarning("Game camera data is null");
             }
-            
+
             UniversalAdditionalCameraData base_camera_data = m_baseCamera.GetComponent<UniversalAdditionalCameraData>();
-            
+
             if (base_camera_data == null)
             {
                 Debug.LogError("Base Camera is missing UniversalAdditionalCameraData component!");
@@ -112,9 +112,9 @@ namespace Comic
             {
                 Debug.LogWarning("Hud camera data is null");
             }
-            
+
             UniversalAdditionalCameraData base_camera_data = m_baseCamera.GetComponent<UniversalAdditionalCameraData>();
-            
+
             if (base_camera_data == null)
             {
                 Debug.LogError("Base Camera is missing UniversalAdditionalCameraData component!");
@@ -208,10 +208,10 @@ namespace Comic
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                StartCoroutine(ScreenAndApplyTexture());
-            }
+            // if (Input.GetKeyDown(KeyCode.H))
+            // {
+            //     StartCoroutine(ScreenAndApplyTexture());
+            // }
         }
 
         #region Screenshot
@@ -252,7 +252,7 @@ namespace Comic
             // Create cropped texture with the same format as the source
             Texture2D cropped_texture = new Texture2D(width, height, source_texture.format, false);
             cropped_texture.SetPixels(source_texture.GetPixels(x, y, width, height));
-//            cropped_texture.Apply(); // Apply changes to the texture
+            //            cropped_texture.Apply(); // Apply changes to the texture
 
             return cropped_texture;
         }
@@ -272,7 +272,7 @@ namespace Comic
 
             Texture2D processedTexture = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
             processedTexture.SetPixels(texture.GetPixels());
-            processedTexture.Apply(false, false); 
+            processedTexture.Apply(false, false);
 
             return processedTexture;
         }
@@ -375,7 +375,7 @@ namespace Comic
             {
                 cropped_texture = CropTexture(screenshot, min.Value, max.Value);
 
-//                m_onScreenshotSprite?.Invoke(camera_type, ConvertTextureToSprite(cropped_texture));
+                //                m_onScreenshotSprite?.Invoke(camera_type, ConvertTextureToSprite(cropped_texture));
 
 #if UNITY_EDITOR
                 SaveTextureAsPNG(cropped_texture, "Tests/screenshot.png");
@@ -385,7 +385,7 @@ namespace Comic
             }
             else
             {
-//                m_onScreenshotSprite?.Invoke(camera_type, ConvertTextureToSprite(screenshot));
+                //                m_onScreenshotSprite?.Invoke(camera_type, ConvertTextureToSprite(screenshot));
 
                 Destroy(screenshot);
             }

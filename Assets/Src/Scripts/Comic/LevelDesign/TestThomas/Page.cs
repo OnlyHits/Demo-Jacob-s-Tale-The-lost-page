@@ -52,7 +52,7 @@ namespace Comic
             gameObject.SetActive(enable);
         }
 
-#region PageEdition
+        #region PageEdition
 
 #if UNITY_EDITOR
 
@@ -87,13 +87,13 @@ namespace Comic
 #if UNITY_EDITOR
             // will spawn a panel on every active page
             // doesnt work for some reason
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                InstantiatePanel();
-            }
+            // if (Input.GetKeyDown(KeyCode.P))
+            // {
+            //     InstantiatePanel();
+            // }
 #endif
         }
 
-#endregion
+        #endregion
     }
 }

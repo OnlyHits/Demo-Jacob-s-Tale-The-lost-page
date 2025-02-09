@@ -56,8 +56,8 @@ public class TMPDialogue : MonoBehaviour
     [Serializable]
     public struct DialogueDynamicData
     {
-        
-    } 
+
+    }
 
     [SerializeField] protected Dialogue[] _dialogues;
     [SerializeField] private float _waveSpeed;
@@ -153,9 +153,9 @@ public class TMPDialogue : MonoBehaviour
         if (d._colorModifier == TextColor.SOLID)
             return;
         _colors[vertexIndex] = Color32.Lerp(d._solidColor, d._gradientColor, Mathf.PingPong(Time.time * d._colorRandomSpeed[colorIndex] - (d._colorModifier == TextColor.HORIZONTAL_GRADIENT ? _vertices[vertexIndex].x : _vertices[vertexIndex].y) * 0.01f, 1.0f));
-        _colors[vertexIndex + 1] = Color32.Lerp(d._solidColor, d._gradientColor, Mathf.PingPong(Time.time * d._colorRandomSpeed[colorIndex] - (d._colorModifier == TextColor.HORIZONTAL_GRADIENT ? _vertices[vertexIndex + 1].x : _vertices[vertexIndex + 1].y)* 0.01f, 1.0f));
-        _colors[vertexIndex + 2] = Color32.Lerp(d._solidColor, d._gradientColor, Mathf.PingPong(Time.time * d._colorRandomSpeed[colorIndex] - (d._colorModifier == TextColor.HORIZONTAL_GRADIENT ? _vertices[vertexIndex + 2].x : _vertices[vertexIndex + 2].y)* 0.01f, 1.0f));
-        _colors[vertexIndex + 3] = Color32.Lerp(d._solidColor, d._gradientColor, Mathf.PingPong(Time.time * d._colorRandomSpeed[colorIndex] - (d._colorModifier == TextColor.HORIZONTAL_GRADIENT ? _vertices[vertexIndex + 3].x : _vertices[vertexIndex + 3].y)* 0.01f, 1.0f));
+        _colors[vertexIndex + 1] = Color32.Lerp(d._solidColor, d._gradientColor, Mathf.PingPong(Time.time * d._colorRandomSpeed[colorIndex] - (d._colorModifier == TextColor.HORIZONTAL_GRADIENT ? _vertices[vertexIndex + 1].x : _vertices[vertexIndex + 1].y) * 0.01f, 1.0f));
+        _colors[vertexIndex + 2] = Color32.Lerp(d._solidColor, d._gradientColor, Mathf.PingPong(Time.time * d._colorRandomSpeed[colorIndex] - (d._colorModifier == TextColor.HORIZONTAL_GRADIENT ? _vertices[vertexIndex + 2].x : _vertices[vertexIndex + 2].y) * 0.01f, 1.0f));
+        _colors[vertexIndex + 3] = Color32.Lerp(d._solidColor, d._gradientColor, Mathf.PingPong(Time.time * d._colorRandomSpeed[colorIndex] - (d._colorModifier == TextColor.HORIZONTAL_GRADIENT ? _vertices[vertexIndex + 3].x : _vertices[vertexIndex + 3].y) * 0.01f, 1.0f));
     }
 
     private bool PopCharacter(int vertexIndex, float time, TMP_CharacterInfo info)
@@ -166,7 +166,7 @@ public class TMPDialogue : MonoBehaviour
         _vertices[vertexIndex + 1] = Vector3.Lerp(center, info.topLeft, time);
         _vertices[vertexIndex + 2] = Vector3.Lerp(center, info.topRight, time);
         _vertices[vertexIndex + 3] = Vector3.Lerp(center, info.bottomRight, time);
-            
+
         if (_vertices[vertexIndex] == info.bottomLeft && _vertices[vertexIndex + 1] == info.topLeft
             && _vertices[vertexIndex + 2] == info.topRight && _vertices[vertexIndex + 3] == info.bottomRight)
         {
@@ -198,7 +198,7 @@ public class TMPDialogue : MonoBehaviour
 
                     int vertexIndex = info.vertexIndex;
 
-                    if (info.character == ' '|| info.character == '\n')
+                    if (info.character == ' ' || info.character == '\n')
                     {
                         if (inc == i)
                         {
@@ -219,8 +219,8 @@ public class TMPDialogue : MonoBehaviour
                             {
                                 i++;
                                 time = 0.0f;
-                                
-                            }                            
+
+                            }
                         }
                         else
                             updateI = true;
@@ -393,6 +393,7 @@ public class TMPDialogue : MonoBehaviour
 
     private void UpdateInput()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Return))
         {
             if (_popCoroutine == null)
@@ -425,6 +426,7 @@ public class TMPDialogue : MonoBehaviour
                 _canSkip = true;
             _currentPopSpeed = _popDuration;
         }
+        */
     }
 
     private void Update()
@@ -463,10 +465,11 @@ public class TMPDialogue : MonoBehaviour
 
     public string[] GetDialogueNames()
     {
-        string[] dialogNames = new string[_dialogues.Length]; 
+        string[] dialogNames = new string[_dialogues.Length];
         int index = 0;
-        
-        foreach (var dialog in _dialogues) {
+
+        foreach (var dialog in _dialogues)
+        {
             dialogNames[index] = dialog.dialogueName;
             ++index;
         }

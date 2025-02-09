@@ -3,7 +3,7 @@ using Comic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(ComicGameCore))]
+//[RequireComponent(typeof(ComicGameCore))]
 [DefaultExecutionOrder(-5)]
 public class ForceInitManager : MonoBehaviour
 {

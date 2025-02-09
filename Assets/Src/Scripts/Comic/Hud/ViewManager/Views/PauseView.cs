@@ -123,6 +123,7 @@ namespace Comic
 
         private void OnNavigateInputChanged(InputType inputType, Vector2 value)
         {
+            if (!gameObject.activeSelf) return;
             if (isCd) return;
             isCd = true;
 

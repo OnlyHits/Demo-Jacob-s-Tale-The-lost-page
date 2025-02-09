@@ -12,7 +12,7 @@ namespace Comic
         #region ACTIONS
         private InputAction m_nextPageAction;
         private InputAction m_prevPageAction;
-        
+
         #endregion ACTIONS
 
         #region CALLBACKS
@@ -22,14 +22,16 @@ namespace Comic
 
         #endregion CALLBACKS
 
-        public override void Init() {}
+        public override void Init() { }
 
         public void Awake()
         {
+            /*
             onNextPageAction += NextPage;
             onPrevPageAction += PrevPage;
             FindAction();
             InitInputActions();
+            */
         }
 
         private void FindAction()
