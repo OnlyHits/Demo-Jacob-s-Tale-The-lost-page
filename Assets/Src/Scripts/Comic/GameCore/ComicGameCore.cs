@@ -1,7 +1,6 @@
 using UnityEngine;
 using CustomArchitecture;
 using UnityEngine.InputSystem;
-using System;
 
 namespace Comic
 {
@@ -29,11 +28,7 @@ namespace Comic
             }
 
             CreateGameMode<MainGameMode>(m_sceneLoader);
-<<<<<<< HEAD
-
-=======
->>>>>>> 1d8b04878c20e66b4a6a17084c556efa5454df66
-            SetStartingGameMode<MainGameMode>();
+            //SetStartingGameMode<MainGameMode>();
         }
     }
 }

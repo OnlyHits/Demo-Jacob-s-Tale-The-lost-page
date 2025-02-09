@@ -2,12 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
-using CustomArchitecture;
 
 namespace Comic
 {
@@ -52,12 +48,9 @@ namespace Comic
             m_overlayCameras = new();
             m_onScreenshotSprite += OnScreenshotSprite;
             m_baseCamera = GetComponent<Camera>();
-<<<<<<< HEAD
-=======
 
             // important for hud instantiation
             //((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).Init(m_baseCamera, GetScreenshotBounds());
->>>>>>> 1d8b04878c20e66b4a6a17084c556efa5454df66
         }
 
         public void RegisterCameras(GameCameraRegister game_camera)
@@ -227,17 +220,10 @@ namespace Comic
 
         private void Update()
         {
-<<<<<<< HEAD
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-//                StartCoroutine(ScreenAndApplyTexture());
-            }
-=======
             // if (Input.GetKeyDown(KeyCode.H))
             // {
             //     StartCoroutine(ScreenAndApplyTexture());
             // }
->>>>>>> 1d8b04878c20e66b4a6a17084c556efa5454df66
         }
 
         #region Screenshot
