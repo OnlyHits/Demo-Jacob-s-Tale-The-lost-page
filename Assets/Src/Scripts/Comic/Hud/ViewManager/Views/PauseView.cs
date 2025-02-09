@@ -48,6 +48,10 @@ namespace Comic
         [Header("Text")]
         [SerializeField] private TextMeshProUGUI m_tLanguage;
 
+        [Header("Slider")]
+        [SerializeField] private Slider m_sVolumeEffect;
+        [SerializeField] private Slider m_sVolumeMusic;
+
         [Header("Cooldowns")]
         [SerializeField, ReadOnly] private bool isCd = false;
         [SerializeField] private float cd = 0.5f;
@@ -67,6 +71,8 @@ namespace Comic
         private void Awake()
         {
             m_tLanguage.text = ComicGameCore.Instance.GetSettings().m_settingDatas.m_language.ToString();
+            m_sVolumeEffect.value = ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume;
+            m_sVolumeMusic.value = ComicGameCore.Instance.GetSettings().m_settingDatas.m_effectVolume;
             m_bPlay.onClick.AddListener(Play);
             m_bOptions.onClick.AddListener(() => ShowPanel(PanelType.OPTIONS));
             m_bExit.onClick.AddListener(Exit);
@@ -133,14 +139,21 @@ namespace Comic
         }
         private void OnInputHorizontal(Vector2 value)
         {
-            // Move volume (the only slider is the volume)
             if (m_currentElement is Slider slider)
             {
                 float volume = slider.value + (value.x / 10);
 
                 slider.value = volume;
-                ComicGameCore.Instance.GetSettings().m_settingDatas.m_effectVolume = volume;
-                ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume = volume;
+                // Move music volume (the only slider is the volume)
+                if (slider == m_sVolumeEffect)
+                {
+                    ComicGameCore.Instance.GetSettings().m_settingDatas.m_effectVolume = volume;
+                }
+                // Move effect volume (the only slider is the volume)
+                else if (slider == m_sVolumeMusic)
+                {
+                    ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume = volume;
+                }
             }
 
             // Move language (the only text is the lang)
