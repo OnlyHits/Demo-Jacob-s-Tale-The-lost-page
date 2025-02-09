@@ -28,7 +28,7 @@ namespace Comic
             }
 
             CreateGameMode<MainGameMode>(m_sceneLoader);
-            //SetStartingGameMode<MainGameMode>();
+            SetStartingGameMode<MainGameMode>();
         }
     }
 }

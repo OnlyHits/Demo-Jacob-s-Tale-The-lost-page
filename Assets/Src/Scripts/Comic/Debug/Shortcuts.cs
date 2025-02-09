@@ -19,15 +19,15 @@ public class Shortcuts : MonoBehaviour
 
     public Dictionary<KeyCode, System.Type> keyByViews = new Dictionary<KeyCode, System.Type>()
     {
-        { KeyCode.Alpha1, typeof(DialogueView) },
-        { KeyCode.Alpha2, typeof(CreditView) },
-        { KeyCode.Alpha3, typeof(ProgressionView) },
-        { KeyCode.Alpha4, typeof(PauseView) },
+        { KeyCode.Alpha6, typeof(DialogueView) },
+        { KeyCode.Alpha7, typeof(CreditView) },
+        { KeyCode.Alpha8, typeof(ProgressionView) },
+        { KeyCode.Alpha9, typeof(PauseView) },
     };
 
     private void Update()
     {
-        //CheckInputSave();
+        CheckInputSave();
         CheckInputViews();
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
