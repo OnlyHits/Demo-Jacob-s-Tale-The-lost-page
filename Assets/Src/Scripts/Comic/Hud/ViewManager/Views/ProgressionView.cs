@@ -77,12 +77,12 @@ namespace Comic
 
         private void OnValidateInput(InputType inputType, bool value)
         {
-            ShowPanelByIndex(1);
+            //ShowPanelByIndex(1);
         }
 
         private void OnCanceledInput(InputType inputType, bool value)
         {
-            ShowBasePanel();
+            //ShowBasePanel();
         }
 
         private void OnChapterUnlocked(Chapters typeUnlocked)
