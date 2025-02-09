@@ -143,13 +143,14 @@ namespace Comic
         public void InitHud()
         {
             m_hudManager = SceneUtils.FindObjectAcrossScenes<HudManager>();
-            
+
             if (m_hudManager == null)
             {
                 Debug.LogWarning("Can't find HudManager. Try to load the scene before initialize");
                 return;
             }
 
+            Debug.Log("Init HUD");
             m_hudManager.Init();
             m_cameraManager.RegisterCameras(m_hudManager.GetRegisteredCameras());
         }
@@ -157,13 +158,14 @@ namespace Comic
         public void InitGame()
         {
             m_gameManager = SceneUtils.FindObjectAcrossScenes<GameManager>();
-            
+
             if (m_gameManager == null)
             {
                 Debug.LogWarning("Can't find GameManager. Try to load the scene before initialize");
                 return;
             }
 
+            Debug.Log("Init Game");
             m_gameManager.Init();
             m_cameraManager.RegisterCameras(m_gameManager.GetRegisteredCameras());
         }

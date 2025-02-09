@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -8,8 +9,6 @@ namespace Comic
     {
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
-
             MainGameMode game_mode = (MainGameMode)target;
 
             // Create a button in the Inspector
@@ -18,10 +17,14 @@ namespace Comic
                 game_mode.InitGame();
             }
 
+            // Create a button in the Inspector
             if (GUILayout.Button("Init hud"))
             {
                 game_mode.InitHud();
             }
+
+            DrawDefaultInspector();
         }
     }
 }
+#endif
