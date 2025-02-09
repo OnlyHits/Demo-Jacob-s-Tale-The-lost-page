@@ -13,8 +13,8 @@ namespace Comic
     {
         public void Start()
         {
-            ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(After);
-            ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(Unactiv);
+            // ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(After);
+            // ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(Unactiv);
  //           ComicGameCore.Instance.MainGameMode.SubscribeToMiddleSwitchPage(Middle);
         }
 

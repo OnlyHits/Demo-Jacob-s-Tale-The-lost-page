@@ -114,6 +114,7 @@ namespace Comic
             //m_navigationInput = GetComponent<NavigationInput>();
             m_cameraManager = GetComponentInChildren<URP_CameraManager>();
             // init here cause there no dependency and its a global object
+
             m_cameraManager.Init();
 
             m_sceneLoader.SubscribeToEndLoading(OnLoadingEnded);

@@ -19,7 +19,7 @@ namespace Comic
             m_cameras = gameObject.GetComponent<HudCameraRegister>();
             m_navigationInput = GetComponent<NavigationInput>();
 
-            // Init BEFORE navigation input
+            m_cameras.Init(ComicGameCore.Instance.MainGameMode.GetCameraManager().GetCameraBase(), ComicGameCore.Instance.MainGameMode.GetCameraManager().GetScreenshotBounds());
             m_viewManager.Init();
 
             // Init AFTER views

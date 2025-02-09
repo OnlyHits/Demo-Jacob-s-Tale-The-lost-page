@@ -54,12 +54,28 @@ namespace Comic
             return m_durationSwitchPage;
         }
 
-        private void SwitchPage(bool isNextPage, int idxNewPage)
+        private void SwitchPage(bool is_next_page, int idxNewPage)
         {
+            Page current_page = m_unlockedPageList[m_currentPageIndex];
+            Page new_page = m_unlockedPageList[idxNewPage];
+//            m_onBeforeSwitchPageCallback?.Invoke(isNextPage, currentPage, newPage);
+
             if (ComicGameCore.Instance.MainGameMode.GetCameraManager().IsCameraRegister(URP_OverlayCameraType.Camera_Hud))
             {
-                StartCoroutine(ComicGameCore.Instance.MainGameMode.GetCameraManager().ScreenAndApplyTexture());
+                current_page.Enable(!is_next_page);
+                new_page.Enable(is_next_page);
+
+                StartCoroutine(ComicGameCore.Instance.MainGameMode.GetCameraManager().ScreenAndApplyTexture(is_next_page));
+
+                current_page.Enable(is_next_page);
+                new_page.Enable(!is_next_page);
+
+                ComicGameCore.Instance.MainGameMode.GetCameraManager().Test(is_next_page);
             }
+
+
+            m_currentPageIndex = idxNewPage;
+            SwitchPageByIndex(m_currentPageIndex);
 
 
             // Page currentPage = m_unlockedPageList[m_currentPageIndex];
@@ -88,8 +104,6 @@ namespace Comic
 
             // StartCoroutine(CoroutineUtils.InvokeOnDelay(m_durationSwitchPage, () =>
             // {
-            //     m_currentPageIndex = idxNewPage;
-            //     SwitchPageByIndex(m_currentPageIndex);
             //     DestroyCanvasCopy();
             //     m_onAfterSwitchPageCallback?.Invoke(isNextPage, currentPage, newPage);
             // }));

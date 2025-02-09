@@ -55,19 +55,19 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.GetViewManager().Pause(true);
 
             foreach (var page in m_pageList) page.gameObject.SetActive(false);
-            m_pageVisual.m_coverPage.SetActive(true);
-            m_pageVisual.m_bgBookVisual.SetActive(false);
-            m_pageVisual.m_endPage.SetActive(false);
+            // m_pageVisual.m_coverPage.SetActive(true);
+            // m_pageVisual.m_bgBookVisual.SetActive(false);
+            // m_pageVisual.m_endPage.SetActive(false);
 
             StartCoroutine(CoroutineUtils.InvokeOnDelay(m_durationStartGame, () =>
             {
                 ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().Pause(false);
                 ComicGameCore.Instance.MainGameMode.GetViewManager().Pause(false);
 
-                foreach (var page in m_pageList) page.gameObject.SetActive(true);
-                m_pageVisual.m_coverPage.SetActive(false);
-                m_pageVisual.m_bgBookVisual.SetActive(true);
-                m_pageVisual.m_endPage.SetActive(false);
+//                foreach (var page in m_pageList) page.gameObject.SetActive(true);
+                // m_pageVisual.m_coverPage.SetActive(false);
+                // m_pageVisual.m_bgBookVisual.SetActive(true);
+                // m_pageVisual.m_endPage.SetActive(false);
             }));
 
         }

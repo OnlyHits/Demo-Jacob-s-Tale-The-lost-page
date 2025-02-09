@@ -205,7 +205,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3440096593138438679}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11b8b22a39ad9eddd8aafca1f9caf36c, type: 3}
   m_Name: 
@@ -214,11 +214,7 @@ MonoBehaviour:
   m_panelContainer: {fileID: 7612396681501764009}
   m_margin: {fileID: 987974861091948808}
   m_panelPrefab: {fileID: 3512051811473100434, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
-  m_currentPanels:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  m_currentPanels: []
   m_spawnPoint: {fileID: 0}
 --- !u!1 &3986884412030509908
 GameObject:
