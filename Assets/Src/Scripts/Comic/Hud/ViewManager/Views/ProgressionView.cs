@@ -5,6 +5,7 @@ using CustomArchitecture;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Sirenix.Utilities;
 
 namespace Comic
 {
@@ -29,6 +30,10 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
             ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidateInput);
             ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCanceledInput);
+
+            ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnChapterUnlocked);
+
+
 
             SpawnPagesUI();
         }
@@ -80,10 +85,52 @@ namespace Comic
             ShowBasePanel();
         }
 
+        private void OnChapterUnlocked(Chapters typeUnlocked)
+        {
+            UpdatePagesUI();
+        }
+
         #endregion CALLBACKS
+
+        private void UpdatePagesUI()
+        {
+            if (m_panelsData.IsNullOrEmpty()) return;
+
+            PanelData firstPanelData = m_panelsData[0];
+            Dictionary<Chapters, ChapterConfig> chapterTypeByConfig = ComicGameCore.Instance.MainGameMode.GetGameConfig().m_config;
+            int indexPageUI = 0;
+            int lastPageIndex = firstPanelData.selectableElements.Count - 1;
+
+            foreach (Chapters chapterType in chapterTypeByConfig.Keys)
+            {
+                bool chapterIsUnlocked = ComicGameCore.Instance.MainGameMode.IsChapterUnlocked(chapterType);
+                List<int> pageIndexes = ComicGameCore.Instance.MainGameMode.GetGameConfig().GetPagesByChapter(chapterType);
+
+                foreach (int index in pageIndexes)
+                {
+                    PageGUI pageGUI = firstPanelData.selectableElements[indexPageUI].GetComponent<PageGUI>();
+
+                    if (indexPageUI >= lastPageIndex)
+                    {
+                        pageGUI.SetSpecial();
+                    }
+                    else
+                    {
+                        if (chapterIsUnlocked)
+                            pageGUI.SetUnlocked();
+                        else
+                            pageGUI.SetLocked();
+                    }
+
+                    indexPageUI += 1;
+                }
+            }
+        }
 
         private void SpawnPagesUI()
         {
+            if (m_panelsData.IsNullOrEmpty()) return;
+
             PanelData firstPanelData = m_panelsData[0];
             Dictionary<Chapters, ChapterConfig> chapterTypeByConfig = ComicGameCore.Instance.MainGameMode.GetGameConfig().m_config;
 
