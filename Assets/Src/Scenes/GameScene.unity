@@ -4046,7 +4046,7 @@ MonoBehaviour:
     m_Bits: 65
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -10332,6 +10332,10 @@ PrefabInstance:
       propertyPath: 'm_Cameras.Array.data[1]'
       value: 
       objectReference: {fileID: 366690549}
+    - target: {fileID: 8303299829472940196, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_VolumeFrameworkUpdateModeOption
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
