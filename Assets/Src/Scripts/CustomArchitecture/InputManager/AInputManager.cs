@@ -81,6 +81,9 @@ namespace CustomArchitecture
             }
         }
 
+        /// <summary>
+        /// Call this Init method after have set the callbacks, it will bind all callbacks to InputActions
+        /// </summary>
         abstract public void Init();
 
         protected override void OnLateUpdate(float elapsed_time)
