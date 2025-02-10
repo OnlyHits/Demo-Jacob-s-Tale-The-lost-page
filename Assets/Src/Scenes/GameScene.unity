@@ -767,6 +767,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 2133567825}
@@ -6259,9 +6263,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 884956324}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_currentPanels.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: 'm_currentPanels.Array.data[0]'
       value: 
@@ -14250,6 +14262,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 979215575}
@@ -16153,6 +16169,7 @@ MonoBehaviour:
   m_pageVisual: {fileID: 1143465284}
   m_durationStartGame: 5
   m_durationEndGame: 10
+  m_skipSwitchPageAnimation: 0
 --- !u!114 &1889044441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17725,9 +17742,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 1687064788}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_currentPanels.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: 'm_currentPanels.Array.data[0]'
       value: 

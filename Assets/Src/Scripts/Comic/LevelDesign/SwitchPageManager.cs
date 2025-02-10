@@ -71,7 +71,7 @@ namespace Comic
                 current_page.Enable(is_next_page);
                 new_page.Enable(!is_next_page);
 
-                ComicGameCore.Instance.MainGameMode.GetCameraManager().Test(is_next_page);
+                ComicGameCore.Instance.MainGameMode.GetCameraManager().TurnPage(is_next_page);
 
                 yield return new WaitUntil(() => m_hasFinishTurning == true);
 

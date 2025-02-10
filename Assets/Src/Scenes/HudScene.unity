@@ -256,10 +256,10 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0
+  near clip plane: 0.01
   far clip plane: 5000
   field of view: 11.5
-  orthographic: 1
+  orthographic: 0
   orthographic size: 10
   m_Depth: 0
   m_CullingMask:
@@ -2920,12 +2920,16 @@ PrefabInstance:
       objectReference: {fileID: 1257929576}
     - target: {fileID: 8303299829472940196, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_Cameras.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8303299829472940196, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: 'm_Cameras.Array.data[0]'
       value: 
       objectReference: {fileID: 728016370}
+    - target: {fileID: 8303299829472940196, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: 'm_Cameras.Array.data[1]'
+      value: 
+      objectReference: {fileID: 239580187}
     - target: {fileID: 9158024469771789629, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_LocalPosition.z
       value: -10
