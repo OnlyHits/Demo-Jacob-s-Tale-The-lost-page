@@ -1,4 +1,5 @@
 using CustomArchitecture;
+using UnityEngine;
 
 namespace Comic
 {
@@ -30,6 +31,8 @@ namespace Comic
 
             if (ComicGameCore.Instance.MainGameMode.GetViewManager() != null)
             {
+                Debug.Log("Init dialogue manager");
+
                 DialogueView dialogue_view = ComicGameCore.Instance.MainGameMode.GetViewManager().GetView<DialogueView>();
                 CreditView credit_view = ComicGameCore.Instance.MainGameMode.GetViewManager().GetView<CreditView>();
 
