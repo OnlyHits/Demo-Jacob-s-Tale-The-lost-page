@@ -274,11 +274,16 @@ namespace Comic
 
             m_gameProgression.UnlockChapter(type);
 
-            if (unlock_voice)
-                UnlockVoice(m_gameConfig.GetChapterDatas(type).m_voiceType, false);
+            ChapterConfig chapterConfig = m_gameConfig.GetChapterDatas(type);
 
-            if (unlock_power)
-                UnlockPower(m_gameConfig.GetChapterDatas(type).m_powerType, false);
+            if (chapterConfig != null)
+            {
+                if (unlock_voice)
+                    UnlockVoice(chapterConfig.m_voiceType, false);
+
+                if (unlock_power)
+                    UnlockPower(chapterConfig.m_powerType, false);
+            }
 
             m_onUnlockChapterCallback?.Invoke(type);
         }
