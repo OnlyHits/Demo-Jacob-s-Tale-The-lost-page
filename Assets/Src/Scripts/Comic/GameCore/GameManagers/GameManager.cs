@@ -28,21 +28,23 @@ namespace Comic
             m_pageManager.Init();
             m_characterManager.Init();
             m_powerManager.Init();
+            m_dialogueManager.Init();
+        }
 
-            if (ComicGameCore.Instance.MainGameMode.GetViewManager() != null)
+        public void LateInit()
+        {
+            var viewManager = ComicGameCore.Instance.MainGameMode.GetViewManager();
+
+            if (viewManager != null)
             {
-                Debug.Log("Init dialogue manager");
+                DialogueView dialogue_view = viewManager.GetView<DialogueView>();
+                CreditView credit_view = viewManager.GetView<CreditView>();
 
-                DialogueView dialogue_view = ComicGameCore.Instance.MainGameMode.GetViewManager().GetView<DialogueView>();
-                CreditView credit_view = ComicGameCore.Instance.MainGameMode.GetViewManager().GetView<CreditView>();
+                m_dialogueManager.LateInit(dialogue_view, credit_view);
+            }
 
-                m_dialogueManager.Init(dialogue_view, credit_view);
-            }
-            else
-            {
-                // null case is handle inside (not for credit lmao)
-                m_dialogueManager.Init(null, null);
-            }
+            m_dialogueManager.SubscribeToEndDialogue(ComicGameCore.Instance.GetGameMode<MainGameMode>().OnEndMainDialogue);
+            m_pageManager.RegisterSwitchPageManagerCallbacks();
         }
     }
 }
