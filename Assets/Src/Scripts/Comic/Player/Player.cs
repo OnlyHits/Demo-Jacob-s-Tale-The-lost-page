@@ -63,6 +63,7 @@ namespace Comic
         {
             base.Init();
 
+            // Init AInputManager AFTER initializating the callbacks
             InitInputController();
 
             m_pageManager = ComicGameCore.Instance.MainGameMode.GetPageManager();

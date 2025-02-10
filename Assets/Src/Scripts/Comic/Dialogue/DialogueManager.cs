@@ -1,11 +1,9 @@
 using System;
-using Sirenix.Serialization;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using CustomArchitecture;
 using System.Collections;
-using ExtensionMethods;
 
 namespace Comic
 {
@@ -13,7 +11,7 @@ namespace Comic
     {
         [SerializeField] private DialogueView m_dialogueView;
         [SerializeField] private CreditView m_creditView;
-        
+
         private JacobDialogueConfig m_dialogueConfig;
         private Coroutine m_dialogueCoroutine;
         private Action<PowerType> m_changePowerCallback;
@@ -154,7 +152,7 @@ namespace Comic
             if (m_mainStory.ContainsKey(type))
                 m_mainStory[type] = true;
 
-           m_dialogueCoroutine = StartCoroutine(DialogueCoroutine(type));
+            m_dialogueCoroutine = StartCoroutine(DialogueCoroutine(type));
 
             return true;
         }
