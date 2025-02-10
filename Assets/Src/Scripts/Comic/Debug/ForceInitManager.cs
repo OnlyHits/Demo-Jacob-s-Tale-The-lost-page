@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using Comic;
 using UnityEngine;
 
 
-//[RequireComponent(typeof(ComicGameCore))]
 [DefaultExecutionOrder(-5)]
 public class ForceInitManager : MonoBehaviour
 {

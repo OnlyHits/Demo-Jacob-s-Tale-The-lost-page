@@ -2,10 +2,8 @@ using System;
 using Sirenix.OdinInspector;
 using CustomArchitecture;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
 
 namespace Comic
 {
@@ -36,10 +34,8 @@ namespace Comic
         public void SubscribeToNextPower(Action function);
         public void SubscribeToPrevPower(Action function);
 
-        public void SubscribeToBeforeSwitchPage(Action<bool, Page, Page> function);
-        public void SubscribeToMiddleSwitchPage(Action<bool, Page, Page> function);
-        public void SubscribeToAfterSwitchPage(Action<bool, Page, Page> function);
-        public void SubscribeToAfterCloneCanvasCallback(Action<bool> function);
+        public void SubscribeToBeforeSwitchPage(Action<bool> function);
+        public void SubscribeToAfterSwitchPage(Action<bool> function);
 
         public void TriggerDialogue(DialogueName type);
 
@@ -129,14 +125,10 @@ namespace Comic
                 UnlockChapter(Chapters.The_Prequel, false, false);
             }
 
-
             InitGame();
             InitHud();
 
             // tricky but w/e for the moment
-            //m_navigationInput.Init();
-
-            // same
             GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
             GetPageManager().RegisterSwitchPageManagerCallbacks();
 
@@ -282,11 +274,16 @@ namespace Comic
 
             m_gameProgression.UnlockChapter(type);
 
-            if (unlock_voice)
-                UnlockVoice(m_gameConfig.GetChapterDatas(type).m_voiceType, false);
+            ChapterConfig chapterConfig = m_gameConfig.GetChapterDatas(type);
 
-            if (unlock_power)
-                UnlockPower(m_gameConfig.GetChapterDatas(type).m_powerType, false);
+            if (chapterConfig != null)
+            {
+                if (unlock_voice)
+                    UnlockVoice(chapterConfig.m_voiceType, false);
+
+                if (unlock_power)
+                    UnlockPower(chapterConfig.m_powerType, false);
+            }
 
             m_onUnlockChapterCallback?.Invoke(type);
         }
@@ -362,7 +359,7 @@ namespace Comic
             GetCharacterManager().GetPlayer().SubscribeToPrevPower(function);
         }
 
-        public void SubscribeToBeforeSwitchPage(Action<bool, Page, Page> function)
+        public void SubscribeToBeforeSwitchPage(Action<bool> function)
         {
             if (GetPageManager() == null)
             {
@@ -373,18 +370,7 @@ namespace Comic
             GetPageManager().SubscribeToBeforeSwitchPage(function);
         }
 
-        public void SubscribeToMiddleSwitchPage(Action<bool, Page, Page> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToMiddleSwitchPage(function);
-        }
-
-        public void SubscribeToAfterSwitchPage(Action<bool, Page, Page> function)
+        public void SubscribeToAfterSwitchPage(Action<bool> function)
         {
             if (GetPageManager() == null)
             {
@@ -393,17 +379,6 @@ namespace Comic
             }
 
             GetPageManager().SubscribeToAfterSwitchPage(function);
-        }
-
-        public void SubscribeToAfterCloneCanvasCallback(Action<bool> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToAfterCloneCanvasCallback(function);
         }
 
         public void SubscribeToLockChapter(Action<Chapters> function)

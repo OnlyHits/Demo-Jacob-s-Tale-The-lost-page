@@ -2,44 +2,27 @@ using System;
 using System.Collections;
 using CustomArchitecture;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 namespace Comic
 {
     public partial class PageManager : BaseBehaviour
     {
-        private Action<bool, Page, Page> m_onBeforeSwitchPageCallback;
-        // remove
-        private Action<bool, Page, Page> m_onMiddleSwitchPageCallback;
-        private Action<bool, Page, Page> m_onAfterSwitchPageCallback;
+        private Action<bool> m_onBeforeSwitchPageCallback;
+        private Action<bool> m_onAfterSwitchPageCallback;
+
         private Coroutine m_switchPageCoroutine;
         [SerializeField] private bool m_skipSwitchPageAnimation = false;
         private bool m_hasFinishTurning = false;
 
-        // remove
-        private Action<bool> m_onAfterCloneCanvasCallback;
-
         #region CALLBACKS
 
-        public void SubscribeToAfterCloneCanvasCallback(Action<bool> function)
-        {
-            m_onAfterCloneCanvasCallback -= function;
-            m_onAfterCloneCanvasCallback += function;
-        }
-
-        public void SubscribeToBeforeSwitchPage(Action<bool, Page, Page> function)
+        public void SubscribeToBeforeSwitchPage(Action<bool> function)
         {
             m_onBeforeSwitchPageCallback -= function;
             m_onBeforeSwitchPageCallback += function;
         }
 
-        public void SubscribeToMiddleSwitchPage(Action<bool, Page, Page> function)
-        {
-            m_onMiddleSwitchPageCallback -= function;
-            m_onMiddleSwitchPageCallback += function;
-        }
-
-        public void SubscribeToAfterSwitchPage(Action<bool, Page, Page> function)
+        public void SubscribeToAfterSwitchPage(Action<bool> function)
         {
             m_onAfterSwitchPageCallback -= function;
             m_onAfterSwitchPageCallback += function;
@@ -57,8 +40,10 @@ namespace Comic
         {
             if (m_skipSwitchPageAnimation)
             {
+                m_onBeforeSwitchPageCallback?.Invoke(is_next_page);
                 m_currentPageIndex = idxNewPage;
                 SwitchPageByIndex(m_currentPageIndex);
+                m_onAfterSwitchPageCallback?.Invoke(is_next_page);
             }
             else
             {
@@ -71,6 +56,8 @@ namespace Comic
 
         private IEnumerator SwitchPageCoroutine(bool is_next_page, int idxNewPage)
         {
+            m_onBeforeSwitchPageCallback?.Invoke(is_next_page);
+
             if (ComicGameCore.Instance.MainGameMode.GetCameraManager().IsCameraRegister(URP_OverlayCameraType.Camera_Hud))
             {
                 Page current_page = m_unlockedPageList[m_currentPageIndex];
@@ -95,39 +82,10 @@ namespace Comic
             m_currentPageIndex = idxNewPage;
             SwitchPageByIndex(m_currentPageIndex);
 
+            m_onAfterSwitchPageCallback?.Invoke(is_next_page);
+
             yield return null;
         }
-
-            // Page currentPage = m_unlockedPageList[m_currentPageIndex];
-            // Page newPage = m_unlockedPageList[idxNewPage];
-
-            // m_onBeforeSwitchPageCallback?.Invoke(isNextPage, currentPage, newPage);
-
-            // SwitchCanvas(isNextPage, idxNewPage);
-
-            // m_onAfterCloneCanvasCallback?.Invoke(isNextPage);
-
-            // float delayEnableCurrentPage = isNextPage ? 0 : 0;
-            // float delayDisableCurrentPage = isNextPage ? m_durationSwitchPage : m_durationSwitchPage / 2;
-            // float delayEnableNewPage = isNextPage ? m_durationSwitchPage / 2 : 0;
-            // float delayDisableNewPage = isNextPage ? m_durationSwitchPage : m_durationSwitchPage;
-
-            // if (!isNextPage) StartCoroutine(CoroutineUtils.InvokeOnDelay(delayEnableCurrentPage, () => currentPage.Enable(true)));
-            // StartCoroutine(CoroutineUtils.InvokeOnDelay(delayDisableCurrentPage, () => currentPage.Enable(false)));
-            // StartCoroutine(CoroutineUtils.InvokeOnDelay(delayEnableNewPage, () => newPage.Enable(true)));
-            // if (isNextPage) StartCoroutine(CoroutineUtils.InvokeOnDelay(delayDisableNewPage, () => newPage.Enable(false)));
-
-            // StartCoroutine(CoroutineUtils.InvokeOnDelay(m_durationSwitchPage / 2, () =>
-            // {
-            //     m_onMiddleSwitchPageCallback?.Invoke(isNextPage, currentPage, newPage);
-            // }));
-
-            // StartCoroutine(CoroutineUtils.InvokeOnDelay(m_durationSwitchPage, () =>
-            // {
-            //     DestroyCanvasCopy();
-            //     m_onAfterSwitchPageCallback?.Invoke(isNextPage, currentPage, newPage);
-            // }));
-        // }
 
         public static void DisableAllMonoBehaviours(GameObject parent)
         {
@@ -148,14 +106,6 @@ namespace Comic
                 DisableAllMonoBehaviours(child.gameObject);
             }
         }
-
-        // private void DestroyCanvasCopy()
-        // {
-        //     if (m_canvasDuplicated != null)
-        //     {
-        //         Destroy(m_canvasDuplicated);
-        //     }
-        // }
 
         private void SwitchPageByIndex(int index)
         {

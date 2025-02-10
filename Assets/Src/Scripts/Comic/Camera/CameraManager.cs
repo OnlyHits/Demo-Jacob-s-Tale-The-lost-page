@@ -63,10 +63,10 @@ namespace Comic
         {
             ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
             //ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
-//            m_durationSwitchPage = ComicGameCore.Instance.MainGameMode.GetPageManager().GetSwitchPageDuration();
+            //            m_durationSwitchPage = ComicGameCore.Instance.MainGameMode.GetPageManager().GetSwitchPageDuration();
         }
 
-        private void OnBeforeSwitchPage(bool nextPage, Page p1, Page p2)
+        private void OnBeforeSwitchPage(bool nextPage)
         {
             float duration = m_durationSwitchPage / 2;
 

@@ -51,7 +51,7 @@ namespace Comic
             Character beloved = Resources.Load<Character>("NPC/Beloved");
             Character bully = Resources.Load<Character>("NPC/Bully");
             Character boss = Resources.Load<Character>("NPC/Boss");
-            Character mom = Resources.Load<Character>("NPC/Mom");
+            //Character mom = Resources.Load<Character>("NPC/Mom");
 
             m_player = Instantiate(playerPrefab);
             m_npcs = new()
@@ -60,7 +60,7 @@ namespace Comic
                 { VoiceType.Voice_Beloved,       Instantiate(beloved)},
                 { VoiceType.Voice_Bully,         Instantiate(bully)},
                 { VoiceType.Voice_Boss,          Instantiate(boss)},
-                { VoiceType.Voice_Mom,           Instantiate(mom)},
+                //{ VoiceType.Voice_Mom,           Instantiate(mom)},
             };
         }
 
@@ -159,14 +159,14 @@ namespace Comic
 
         #region SWITCH PAGE
 
-        private void OnBeforeSwitchPage(bool nextPage, Page p1, Page p2)
+        private void OnBeforeSwitchPage(bool nextPage)
         {
             PauseAllCharacters(true);
         }
 
-        private void OnAfterSwitchPage(bool nextPage, Page p1, Page p2)
+        private void OnAfterSwitchPage(bool nextPage)
         {
-            //PauseAllCharacters(false);
+            PauseAllCharacters(false);
         }
 
         public void PauseAllCharacters(bool pause = true)
