@@ -108,9 +108,8 @@ namespace Comic
 
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
-            //m_navigationInput = GetComponent<NavigationInput>();
             m_cameraManager = GetComponentInChildren<URP_CameraManager>();
-            // init here cause there no dependency and its a global object
+            //m_navigationInput = GetComponent<NavigationInput>();
 
             m_cameraManager.Init();
 

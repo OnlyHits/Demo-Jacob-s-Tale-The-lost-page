@@ -1,8 +1,6 @@
-using CustomArchitecture;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using System;
 using Sirenix.OdinInspector;
 using UnityEngine.UI;
 using TMPro;
@@ -26,23 +24,23 @@ namespace Comic
         [SerializeField] protected Transform m_bubbleContainer;
         [SerializeField] protected Transform m_iconContainer;
         [SerializeField] protected Transform m_mainIconContainer;
-        
+
         private Dictionary<DialogueBubbleType, BubbleGraphicData> m_bubbles;
 
         private Dictionary<VoiceType, VoiceViewDatas> m_datas;
 
-        private NpcIcon             m_mainIcon;
+        private NpcIcon m_mainIcon;
 
         private Dictionary<NpcIconType, Sprite> m_iconSprites;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [SerializeField, OnValueChanged("DebugGraphic")] private bool m_activeGraphic = true;
 
         private void DebugGraphic()
         {
             ActiveGraphic(m_activeGraphic);
         }
-        #endif
+#endif
 
         public override void ActiveGraphic(bool active)
         {
@@ -85,7 +83,7 @@ namespace Comic
                 { DialogueBubbleType.BubbleType_Exclamation, new BubbleGraphicData() },
                 { DialogueBubbleType.BubbleType_Thinking, new BubbleGraphicData() },
             };
-            
+
             m_bubbles[DialogueBubbleType.BubbleType_Speech].m_regularBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Speech_Regular"), m_bubbleContainer);
             m_bubbles[DialogueBubbleType.BubbleType_Speech].m_choiceBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Speech_Choice"), m_bubbleContainer);
 
@@ -142,7 +140,7 @@ namespace Comic
             {
                 d.Value.m_icon.Pause(pause);
             }
-            
+
             foreach (var b in m_bubbles)
             {
                 b.Value.m_regularBubble.GetComponent<Bubble>().Pause(pause);
@@ -164,7 +162,7 @@ namespace Comic
                 {
                     data.Value.m_icon.Highlight(false);
                 }
-           }
+            }
         }
 
         public void RemoveVoice(VoiceType type)
@@ -191,7 +189,7 @@ namespace Comic
             }
 
             GameObject icon = Instantiate(Resources.Load<GameObject>("GUI/Icon/IconFrame_Voice"), m_iconContainer);
-  
+
             m_datas.Add(type, new VoiceViewDatas());
             m_datas[type].m_icon = icon.GetComponent<NpcIcon>();
 
@@ -230,12 +228,12 @@ namespace Comic
                 GetBubbleByType(config.m_bubbleType, true).SetupDialogue(config.m_associatedDialogue);
                 ((BubbleChoice)GetBubbleByType(config.m_bubbleType, true)).SetupChoiceOne(((PartOfDialogueChoiceConfig)config).m_choiceOneDialogue);
                 ((BubbleChoice)GetBubbleByType(config.m_bubbleType, true)).SetupChoiceTwo(((PartOfDialogueChoiceConfig)config).m_choiceTwoDialogue);
-        
+
                 if (target_main)
                     GetBubbleByType(config.m_bubbleType, true).SetTarget(m_mainIcon);
                 else
                     GetBubbleByType(config.m_bubbleType, true).SetTarget(m_datas[config.m_speaker].m_icon);
-        
+
                 yield return StartCoroutine(GetBubbleByType(config.m_bubbleType, true).DialogueCoroutine(config.m_intensity, true, target_main));
             }
             else
@@ -277,7 +275,7 @@ namespace Comic
                     GetBubbleByType(config.m_bubbleType, false).gameObject.SetActive(true);
 
                 m_datas[config.m_speaker].m_icon.SetIconSprite(m_iconSprites[config.m_iconType]);
-    
+
                 yield return StartCoroutine(SetupAndStartDialogue(config, false));
             }
         }
