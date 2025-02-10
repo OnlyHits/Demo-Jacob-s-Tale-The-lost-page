@@ -80,5 +80,19 @@ namespace CustomArchitecture
             T loadedObject = SerializationUtility.DeserializeValue<T>(jsonBytes, m_dataFormat);
             return loadedObject;
         }
+
+        public void DeleteSaveFile()
+        {
+            var path = GetPath(false);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                Debug.Log("Save file deleted: " + path);
+            }
+            else
+            {
+                Debug.LogWarning("Save file not found: " + path);
+            }
+        }
     }
 }

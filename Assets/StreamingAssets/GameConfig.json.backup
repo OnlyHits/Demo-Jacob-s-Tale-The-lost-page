@@ -8,7 +8,7 @@
         "$rcontent": [
         ]
     },
-    "$rlength": 5,
+    "$rlength": 4,
     "$rcontent": [
         {
             "$k": 1,
@@ -104,44 +104,14 @@
             }
         },
         {
-            "$k": 4,
-            "$v": {
-                "$id": 12,
-                "$type": 2,
-                "m_voiceType": 3,
-                "m_powerType": 3,
-                "m_pages": {
-                    "$id": 13,
-                    "$type": 3,
-                    "$rlength": 0,
-                    "$rcontent": [
-                    ]
-                },
-                "m_npcSpawnByPage": {
-                    "$id": 14,
-                    "$type": 4,
-                    "comparer": {
-                        "$id": 15,
-                        "$type": 5,
-                        "$rlength": 0,
-                        "$rcontent": [
-                        ]
-                    },
-                    "$rlength": 0,
-                    "$rcontent": [
-                    ]
-                }
-            }
-        },
-        {
             "$k": 0,
             "$v": {
-                "$id": 16,
+                "$id": 12,
                 "$type": 2,
                 "m_voiceType": 6,
                 "m_powerType": 4,
                 "m_pages": {
-                    "$id": 17,
+                    "$id": 13,
                     "$type": 3,
                     "$rlength": 1,
                     "$rcontent": [
@@ -149,7 +119,7 @@
                     ]
                 },
                 "m_npcSpawnByPage": {
-                    "$id": 18,
+                    "$id": 14,
                     "$type": 4,
                     "comparer": $iref:5,
                     "$rlength": 1,
