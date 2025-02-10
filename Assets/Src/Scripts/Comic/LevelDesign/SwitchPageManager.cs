@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using CustomArchitecture;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Comic
 {
@@ -10,6 +12,9 @@ namespace Comic
         // remove
         private Action<bool, Page, Page> m_onMiddleSwitchPageCallback;
         private Action<bool, Page, Page> m_onAfterSwitchPageCallback;
+        private Coroutine m_switchPageCoroutine;
+        [SerializeField] private bool m_skipSwitchPageAnimation = false;
+        private bool m_hasFinishTurning = false;
 
         // remove
         private Action<bool> m_onAfterCloneCanvasCallback;
@@ -42,29 +47,56 @@ namespace Comic
 
         #endregion CALLBACKS
 
+
+        public void RegisterSwitchPageManagerCallbacks()
+        {
+            ComicGameCore.Instance.MainGameMode.GetHudManager().RegisterToEndTurning(() => m_hasFinishTurning = true);
+        }
+
         private void SwitchPage(bool is_next_page, int idxNewPage)
         {
-            Page current_page = m_unlockedPageList[m_currentPageIndex];
-            Page new_page = m_unlockedPageList[idxNewPage];
-//            m_onBeforeSwitchPageCallback?.Invoke(isNextPage, currentPage, newPage);
+            if (m_skipSwitchPageAnimation)
+            {
+                m_currentPageIndex = idxNewPage;
+                SwitchPageByIndex(m_currentPageIndex);
+            }
+            else
+            {
+                if (m_switchPageCoroutine != null)
+                    return;
 
+                m_switchPageCoroutine = StartCoroutine(SwitchPageCoroutine(is_next_page, idxNewPage));
+            }
+        }
+
+        private IEnumerator SwitchPageCoroutine(bool is_next_page, int idxNewPage)
+        {
             if (ComicGameCore.Instance.MainGameMode.GetCameraManager().IsCameraRegister(URP_OverlayCameraType.Camera_Hud))
             {
+                Page current_page = m_unlockedPageList[m_currentPageIndex];
+                Page new_page = m_unlockedPageList[idxNewPage];
+
                 current_page.Enable(!is_next_page);
                 new_page.Enable(is_next_page);
 
-                StartCoroutine(ComicGameCore.Instance.MainGameMode.GetCameraManager().ScreenAndApplyTexture(is_next_page));
+                yield return StartCoroutine(ComicGameCore.Instance.MainGameMode.GetCameraManager().ScreenAndApplyTexture(is_next_page));
 
                 current_page.Enable(is_next_page);
                 new_page.Enable(!is_next_page);
 
                 ComicGameCore.Instance.MainGameMode.GetCameraManager().Test(is_next_page);
+
+                yield return new WaitUntil(() => m_hasFinishTurning == true);
+
+                m_hasFinishTurning = false;
             }
 
-
+            m_switchPageCoroutine = null;
             m_currentPageIndex = idxNewPage;
             SwitchPageByIndex(m_currentPageIndex);
 
+            yield return null;
+        }
 
             // Page currentPage = m_unlockedPageList[m_currentPageIndex];
             // Page newPage = m_unlockedPageList[idxNewPage];
@@ -95,7 +127,7 @@ namespace Comic
             //     DestroyCanvasCopy();
             //     m_onAfterSwitchPageCallback?.Invoke(isNextPage, currentPage, newPage);
             // }));
-        }
+        // }
 
         public static void DisableAllMonoBehaviours(GameObject parent)
         {

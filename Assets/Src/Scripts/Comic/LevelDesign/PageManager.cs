@@ -23,7 +23,7 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnUnlockChapter);
             ComicGameCore.Instance.MainGameMode.SubscribeToLockChapter(OnLockChapter);
             ComicGameCore.Instance.MainGameMode.SubscribeToEndGame(OnEndGame);
-            
+
             foreach (var data in ComicGameCore.Instance.MainGameMode.GetUnlockChaptersData())
             {
                 UnlockPages(ComicGameCore.Instance.MainGameMode.GetGameConfig().GetPagesByChapter(data.m_chapterType));

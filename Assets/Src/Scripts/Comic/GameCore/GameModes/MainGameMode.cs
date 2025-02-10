@@ -88,7 +88,7 @@ namespace Comic
         public DialogueManager GetDialogueManager() => m_gameManager?.GetDialogueManager();
         public ViewManager GetViewManager() => m_hudManager?.GetViewManager();
         public NavigationInput GetNavigationInput() => m_hudManager?.GetNavigationInput();
-
+        public HudManager GetHudManager() => m_hudManager;
 
         // This function is called right after Init()
         public override void StartGameMode()
@@ -138,6 +138,7 @@ namespace Comic
 
             // same
             GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
+            GetPageManager().RegisterSwitchPageManagerCallbacks();
 
             ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
