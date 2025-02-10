@@ -43,6 +43,8 @@ public class Shortcuts : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
+        if (Input.GetKeyDown(KeyCode.E))
+            ComicGameCore.Instance.MainGameMode.GetGameProgression().ClearGameProgression();
     }
 
     private void CheckInputViews()

@@ -6,9 +6,6 @@ namespace Comic
 {
     public partial class PageManager : BaseBehaviour
     {
-        [Header("Switch Page")]
-        [SerializeField] private float m_durationSwitchPage = 1f;
-
         private Action<bool, Page, Page> m_onBeforeSwitchPageCallback;
         // remove
         private Action<bool, Page, Page> m_onMiddleSwitchPageCallback;
@@ -16,9 +13,6 @@ namespace Comic
 
         // remove
         private Action<bool> m_onAfterCloneCanvasCallback;
-
-        [Header("Canvas Duplication")]
-        [SerializeField, ReadOnly] private GameObject m_canvasDuplicated;
 
         #region CALLBACKS
 
@@ -47,12 +41,6 @@ namespace Comic
         }
 
         #endregion CALLBACKS
-
-
-        public float GetSwitchPageDuration()
-        {
-            return m_durationSwitchPage;
-        }
 
         private void SwitchPage(bool is_next_page, int idxNewPage)
         {
@@ -109,17 +97,6 @@ namespace Comic
             // }));
         }
 
-        private void SwitchCanvas(bool isNextPage, int idxNewPage)
-        {
-            // m_canvasDuplicated = Instantiate(m_canvas);
-            // foreach (var d in m_canvasDuplicated.GetComponentsInChildren<AView>())
-            // {
-            //     if (d.gameObject.activeSelf)
-            //         d.Pause(true);
-            // }
-            DisableAllMonoBehaviours(m_canvasDuplicated);
-        }
-
         public static void DisableAllMonoBehaviours(GameObject parent)
         {
             if (parent == null)
@@ -153,6 +130,12 @@ namespace Comic
             foreach (var page in m_pageList)
             {
                 page.Enable(false);
+            }
+
+            if (m_currentPageIndex >= m_unlockedPageList.Count)
+            {
+                Debug.LogWarning("Try to switch to page " + index.ToString() + " which is not unlocked");
+                return;
             }
 
             m_currentPage = m_unlockedPageList[m_currentPageIndex];

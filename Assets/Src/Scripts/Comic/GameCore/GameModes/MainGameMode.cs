@@ -75,6 +75,7 @@ namespace Comic
 
         // ---- MainGameCore dependencies ----
 
+        public GameProgression GetGameProgression() => m_gameProgression;
         public InputActionAsset GetInputAsset() => m_gameCore.GetInputAsset();
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
@@ -127,6 +128,7 @@ namespace Comic
             {
                 UnlockChapter(Chapters.The_Prequel, false, false);
             }
+
 
             InitGame();
             InitHud();

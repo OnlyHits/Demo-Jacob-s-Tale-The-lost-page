@@ -23,8 +23,14 @@ namespace Comic
         {
             m_saveUtilitary = new SaveUtilitary<List<ChapterSavedData>>("ChapterSavedData", FileType.SaveFile);
             m_unlockChapters = m_saveUtilitary.Load();
+
             if (m_unlockChapters == null)
                 m_unlockChapters = new List<ChapterSavedData>();
+        }
+
+        public void ClearGameProgression()
+        {
+            m_saveUtilitary.DeleteSaveFile();
         }
 
         public List<ChapterSavedData> GetUnlockedChaptersDatas() => m_unlockChapters;
