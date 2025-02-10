@@ -2,10 +2,8 @@ using System;
 using Sirenix.OdinInspector;
 using CustomArchitecture;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
 
 namespace Comic
 {
@@ -39,7 +37,6 @@ namespace Comic
         public void SubscribeToBeforeSwitchPage(Action<bool, Page, Page> function);
         public void SubscribeToMiddleSwitchPage(Action<bool, Page, Page> function);
         public void SubscribeToAfterSwitchPage(Action<bool, Page, Page> function);
-        public void SubscribeToAfterCloneCanvasCallback(Action<bool> function);
 
         public void TriggerDialogue(DialogueName type);
 
@@ -129,14 +126,10 @@ namespace Comic
                 UnlockChapter(Chapters.The_Prequel, false, false);
             }
 
-
             InitGame();
             InitHud();
 
             // tricky but w/e for the moment
-            //m_navigationInput.Init();
-
-            // same
             GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
 
             ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
@@ -392,17 +385,6 @@ namespace Comic
             }
 
             GetPageManager().SubscribeToAfterSwitchPage(function);
-        }
-
-        public void SubscribeToAfterCloneCanvasCallback(Action<bool> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToAfterCloneCanvasCallback(function);
         }
 
         public void SubscribeToLockChapter(Action<Chapters> function)

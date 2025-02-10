@@ -22,7 +22,7 @@ namespace Comic
 
             if (otherObject.GetComponent<Player>() != null)
             {
-                ComicGameCore.Instance.MainGameMode.TriggerDialogue(m_dialogueType);
+                //ComicGameCore.Instance.MainGameMode.TriggerDialogue(m_dialogueType);
             }
         }
 

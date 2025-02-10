@@ -23,10 +23,13 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnUnlockChapter);
             ComicGameCore.Instance.MainGameMode.SubscribeToLockChapter(OnLockChapter);
             ComicGameCore.Instance.MainGameMode.SubscribeToEndGame(OnEndGame);
-            
+
             foreach (var data in ComicGameCore.Instance.MainGameMode.GetUnlockChaptersData())
             {
-                UnlockPages(ComicGameCore.Instance.MainGameMode.GetGameConfig().GetPagesByChapter(data.m_chapterType));
+                var gameConf = ComicGameCore.Instance.MainGameMode.GetGameConfig();
+                var pagesByChapter = gameConf.GetPagesByChapter(data.m_chapterType);
+
+                UnlockPages(pagesByChapter);
             }
 
             SwitchPageByIndex(m_currentPageIndex);
@@ -40,10 +43,10 @@ namespace Comic
 
             m_pageVisual.Init();
 
-// #if UNITY_EDITOR
-// #else
-//             OnStartGame();
-// #endif
+            // #if UNITY_EDITOR
+            // #else
+            //             OnStartGame();
+            // #endif
         }
 
         #region START & END GAME
@@ -64,7 +67,7 @@ namespace Comic
                 ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().Pause(false);
                 ComicGameCore.Instance.MainGameMode.GetViewManager().Pause(false);
 
-//                foreach (var page in m_pageList) page.gameObject.SetActive(true);
+                // foreach (var page in m_pageList) page.gameObject.SetActive(true);
                 // m_pageVisual.m_coverPage.SetActive(false);
                 // m_pageVisual.m_bgBookVisual.SetActive(true);
                 // m_pageVisual.m_endPage.SetActive(false);
@@ -96,12 +99,18 @@ namespace Comic
         #region ON LOCK & UNLOCK CHAPTERS
         private void OnUnlockChapter(Chapters chapterUnlocked)
         {
-            UnlockPages(ComicGameCore.Instance.MainGameMode.GetGameConfig().GetPagesByChapter(chapterUnlocked));
+            var gameConf = ComicGameCore.Instance.MainGameMode.GetGameConfig();
+            var pagesByChapter = gameConf.GetPagesByChapter(chapterUnlocked);
+
+            UnlockPages(pagesByChapter);
         }
 
         private void OnLockChapter(Chapters chapterUnlocked)
         {
-            LockPages(ComicGameCore.Instance.MainGameMode.GetGameConfig().GetPagesByChapter(chapterUnlocked));
+            var gameConf = ComicGameCore.Instance.MainGameMode.GetGameConfig();
+            var pagesByChapter = gameConf.GetPagesByChapter(chapterUnlocked);
+
+            LockPages(pagesByChapter);
         }
 
         #endregion ON LOCK & UNLOCK CHAPTERS
