@@ -767,6 +767,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 2133567825}
@@ -819,7 +823,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 56382966}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11b8b22a39ad9eddd8aafca1f9caf36c, type: 3}
   m_Name: 
@@ -6259,9 +6263,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 884956324}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_currentPanels.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: 'm_currentPanels.Array.data[0]'
       value: 
@@ -6311,7 +6323,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 666814813}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11b8b22a39ad9eddd8aafca1f9caf36c, type: 3}
   m_Name: 
@@ -6997,7 +7009,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1642673595192530691}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11b8b22a39ad9eddd8aafca1f9caf36c, type: 3}
   m_Name: 
@@ -14235,6 +14247,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 979215575}
@@ -14277,7 +14293,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1664423071}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11b8b22a39ad9eddd8aafca1f9caf36c, type: 3}
   m_Name: 
@@ -16138,6 +16154,7 @@ MonoBehaviour:
   m_pageVisual: {fileID: 1143465284}
   m_durationStartGame: 5
   m_durationEndGame: 10
+  m_skipSwitchPageAnimation: 0
 --- !u!114 &1889044441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17710,9 +17727,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: m_spawnPoint
       value: 
       objectReference: {fileID: 1687064788}
+    - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
+      propertyPath: m_currentPanels.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 9150635983154875196, guid: 3e717d77f4721137d865df8ddfbc4311, type: 3}
       propertyPath: 'm_currentPanels.Array.data[0]'
       value: 

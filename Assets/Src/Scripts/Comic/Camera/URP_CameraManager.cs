@@ -51,6 +51,7 @@ namespace Comic
             m_overlayCameras = new();
             m_onScreenshotSprite += OnScreenshotSprite;
             m_baseCamera = GetComponent<Camera>();
+
             m_leftRt = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
             m_rightRt = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
             m_leftRt.antiAliasing = 8;
@@ -207,17 +208,17 @@ namespace Comic
 
             if (is_next_page)
             {
-                CaptureAllCameraURPScreenshot(m_rightRt, m_rightScreenshot, true);
-                yield return null;
-                CaptureAllCameraURPScreenshot(m_leftRt, m_leftScreenshot, false);
-                yield return null;
+                
+                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_rightRt, m_rightScreenshot, true));
+                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_leftRt, m_leftScreenshot, false));
+//                yield return null;
             }
             else
             {
-                CaptureAllCameraURPScreenshot(m_leftRt, m_leftScreenshot, false);
-                yield return null;
-                CaptureAllCameraURPScreenshot(m_rightRt, m_rightScreenshot, true);
-                yield return null;
+                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_leftRt, m_leftScreenshot, false));
+                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_rightRt, m_rightScreenshot, true));
+                // yield return null;
+                // yield return null;
             }
         }
 
@@ -314,28 +315,31 @@ namespace Comic
             return (left ? m_leftRt : m_rightRt);
         }
 
-        public void CaptureAllCameraURPScreenshot(RenderTexture render_texture, SpriteRenderer sprite, bool front)
+        private IEnumerator CaptureAllCameraURPScreenshot(RenderTexture render_texture, SpriteRenderer sprite, bool front)
         {
+            yield return new WaitForEndOfFrame();
+
             // RenderTexture rt = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
 
-            RenderTexture original_rt = m_baseCamera.targetTexture;
+            // RenderTexture original_rt = m_baseCamera.targetTexture;
 
-            foreach (var registered_camera in m_overlayCameras)
-            {
-                foreach (var camera in registered_camera.Value.GetCameras())
-                {
-                    if (camera.gameObject.activeSelf)
-                    {
-                        camera.targetTexture = render_texture;
-                        camera.Render();
-                    }
-                }
-            }
+            // foreach (var registered_camera in m_overlayCameras)
+            // {
+            //     foreach (var camera in registered_camera.Value.GetCameras())
+            //     {
+            //         if (camera.gameObject.activeSelf)
+            //         {
+            //             camera.targetTexture = render_texture;
+            //             camera.Render();
+            //         }
+            //     }
+            // }
 
-            m_baseCamera.targetTexture = render_texture;
-            m_baseCamera.Render();
+            // m_baseCamera.targetTexture = render_texture;
+            // m_baseCamera.Render();
 
-            RenderTexture.active = render_texture;
+            // RenderTexture.active = render_texture;
+
             Texture2D screenshot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
             screenshot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
             screenshot.Apply(updateMipmaps: false, makeNoLongerReadable: false);
@@ -365,8 +369,8 @@ namespace Comic
                 Destroy(screenshot);
             }
 
-            RenderTexture.active = null;
-            m_baseCamera.targetTexture = null;
+            // RenderTexture.active = null;
+            // m_baseCamera.targetTexture = null;
         }
 
         public IEnumerator CaptureURPScreenshot(URP_OverlayCameraType camera_type)
