@@ -1,14 +1,20 @@
 using UnityEngine;
 using CustomArchitecture;
 using System;
+using DG.Tweening;
+using System.Collections.Generic;
 
 namespace Comic
 {
     [ExecuteAlways]
     public class Panel : BaseBehaviour
     {
-        [SerializeField] private PanelVisual m_panelVisual; 
+        [SerializeField] private PanelVisual m_panelVisual;
+        [SerializeField] private List<Transform> m_allElements;
         private SpriteRenderer m_margin;
+        private List<Tween> m_rotCaseTweens = new List<Tween>();
+        private bool m_isRotating = false;
+        private Vector3 m_currentRotation = Vector3.zero;
 
         public void Init(SpriteRenderer margin)
         {
@@ -34,12 +40,12 @@ namespace Comic
 
             Vector3 position = transform.position;
 
-            position.x = Mathf.Clamp(position.x, 
-                margin_bounds.min.x + (panel_bounds.size.x / 2), 
+            position.x = Mathf.Clamp(position.x,
+                margin_bounds.min.x + (panel_bounds.size.x / 2),
                 margin_bounds.max.x - (panel_bounds.size.x / 2));
 
-            position.y = Mathf.Clamp(position.y, 
-                margin_bounds.min.y + (panel_bounds.size.y / 2), 
+            position.y = Mathf.Clamp(position.y,
+                margin_bounds.min.y + (panel_bounds.size.y / 2),
                 margin_bounds.max.y - (panel_bounds.size.y / 2));
 
             transform.position = position;
@@ -53,57 +59,64 @@ namespace Comic
 
         public void Rotate180(float speed, Action endRotateCallback)
         {
-            // if (m_rotCaseTweens.Count > 0)
-            //     return;
+            if (m_rotCaseTweens.Count > 0)
+                return;
 
-            // m_isRotating = true;
+            m_isRotating = true;
 
-            // Vector3 destRot = m_currentRotation + new Vector3(0, 0, 180);
-            // m_currentRotation += new Vector3(0, 0, 180);
+            Vector3 destRot = m_currentRotation + new Vector3(0, 0, 180);
+            m_currentRotation += new Vector3(0, 0, 180);
 
-            // foreach (Transform t in m_allElements)
-            // {
-            //     Tween tween = t.DOLocalRotate(destRot, 0.5f);
-            //     tween.OnComplete(() =>
-            //         {
-            //             if (m_rotCaseTweens.Contains(tween))
-            //             {
-            //                 m_rotCaseTweens.Remove(tween);
-            //                 m_isRotating = false;
-            //                 endRotateCallback?.Invoke();
-            //             }
-            //             tween = null;
-            //         });
-            //     m_rotCaseTweens.Add(tween);
-            // }
+            foreach (Transform t in m_allElements)
+            {
+                Tween tween = t.DOLocalRotate(destRot, 0.5f);
+                tween.OnComplete(() =>
+                    {
+                        if (m_rotCaseTweens.Contains(tween))
+                        {
+                            m_rotCaseTweens.Remove(tween);
+                            m_isRotating = false;
+                            endRotateCallback?.Invoke();
+                        }
+                        tween = null;
+                    });
+                m_rotCaseTweens.Add(tween);
+            }
         }
 
         public bool IsPlayerInCase()
         {
-            return false;
-            // bool isPlayerIn = false;
-            // bool isInWidth = false;
-            // bool isInHeight = false;
+            SpriteRenderer sprite = m_panelVisual.PanelReference();
 
-            // Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().transform.position;
-            // Vector3 casePos = m_caseSprite.transform.position;
+            if (sprite == null)
+            {
+                Debug.LogWarning("Could not check if player in case, no panel visual sprite set");
+                return false;
+            }
 
-            // float width = m_caseSprite.bounds.size.x / 2f;
-            // float height = m_caseSprite.bounds.size.y / 2f;
+            bool isPlayerIn = false;
+            bool isInWidth = false;
+            bool isInHeight = false;
 
-            // if (casePos.x - width < playerPos.x && playerPos.x < casePos.x + width)
-            // {
-            //     isInWidth = true;
-            // }
+            Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().transform.position;
+            Vector3 casePos = sprite.transform.position;
 
-            // if (casePos.y - height < playerPos.y && playerPos.y < casePos.y + height)
-            // {
-            //     isInHeight = true;
-            // }
+            float width = sprite.bounds.size.x / 2f;
+            float height = sprite.bounds.size.y / 2f;
 
-            // isPlayerIn = isInHeight && isInWidth;
+            if (casePos.x - width < playerPos.x && playerPos.x < casePos.x + width)
+            {
+                isInWidth = true;
+            }
 
-            // return isPlayerIn;
+            if (casePos.y - height < playerPos.y && playerPos.y < casePos.y + height)
+            {
+                isInHeight = true;
+            }
+
+            isPlayerIn = isInHeight && isInWidth;
+
+            return isPlayerIn;
         }
     }
 }

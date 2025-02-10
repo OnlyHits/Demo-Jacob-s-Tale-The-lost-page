@@ -42,7 +42,8 @@ namespace Comic
         protected override void OnUpdate(float elapsed_time)
         {
 #if UNITY_EDITOR
-            ResizeSprite();
+            if (!Application.isPlaying)
+                ResizeSprite();
 #endif
         }
 
