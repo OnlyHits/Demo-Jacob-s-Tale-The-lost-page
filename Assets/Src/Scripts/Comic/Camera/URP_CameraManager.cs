@@ -200,16 +200,15 @@ namespace Comic
             if (is_next_page)
             {
                 
-                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_rightScreenshot, true));
-                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_leftScreenshot, false));
-//                yield return null;
+                StartCoroutine(CaptureAllCameraURPScreenshot(m_rightScreenshot, true));
+                StartCoroutine(CaptureAllCameraURPScreenshot(m_leftScreenshot, false));
+                yield return null;
             }
             else
             {
-                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_leftScreenshot, false));
-                yield return StartCoroutine(CaptureAllCameraURPScreenshot(m_rightScreenshot, true));
-                // yield return null;
-                // yield return null;
+                StartCoroutine(CaptureAllCameraURPScreenshot(m_leftScreenshot, false));
+                StartCoroutine(CaptureAllCameraURPScreenshot(m_rightScreenshot, true));
+                yield return null;
             }
         }
 
@@ -295,8 +294,6 @@ namespace Comic
 
         private IEnumerator CaptureAllCameraURPScreenshot(SpriteRenderer sprite, bool front)
         {
-            yield return new WaitForEndOfFrame();
-
             Texture2D screenshot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
             screenshot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
             screenshot.Apply(updateMipmaps: false, makeNoLongerReadable: false);
@@ -325,6 +322,8 @@ namespace Comic
 
                 Destroy(screenshot);
             }
+
+            yield return null;
         }
 
         public IEnumerator CaptureURPScreenshot(URP_OverlayCameraType camera_type)
