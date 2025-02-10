@@ -1,5 +1,6 @@
 using UnityEngine;
 using CustomArchitecture;
+using System;
 
 namespace Comic
 {
@@ -13,6 +14,8 @@ namespace Comic
         public HudCameraRegister GetRegisteredCameras() => m_cameras;
         public NavigationInput GetNavigationInput() => m_navigationInput;
 
+        public void RegisterToEndTurning(Action function) => m_cameras.RegisterToEndTurning(function);
+
         public void Init()
         {
             m_viewManager = gameObject.GetComponent<ViewManager>();
@@ -24,7 +27,6 @@ namespace Comic
 
             // Init AFTER views
             m_navigationInput.Init();
-
         }
     }
 }

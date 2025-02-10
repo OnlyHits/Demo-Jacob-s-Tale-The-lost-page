@@ -159,14 +159,14 @@ namespace Comic
 
         #region SWITCH PAGE
 
-        private void OnBeforeSwitchPage(bool nextPage, Page p1, Page p2)
+        private void OnBeforeSwitchPage(bool nextPage)
         {
             PauseAllCharacters(true);
         }
 
-        private void OnAfterSwitchPage(bool nextPage, Page p1, Page p2)
+        private void OnAfterSwitchPage(bool nextPage)
         {
-            //PauseAllCharacters(false);
+            PauseAllCharacters(false);
         }
 
         public void PauseAllCharacters(bool pause = true)

@@ -34,9 +34,8 @@ namespace Comic
         public void SubscribeToNextPower(Action function);
         public void SubscribeToPrevPower(Action function);
 
-        public void SubscribeToBeforeSwitchPage(Action<bool, Page, Page> function);
-        public void SubscribeToMiddleSwitchPage(Action<bool, Page, Page> function);
-        public void SubscribeToAfterSwitchPage(Action<bool, Page, Page> function);
+        public void SubscribeToBeforeSwitchPage(Action<bool> function);
+        public void SubscribeToAfterSwitchPage(Action<bool> function);
 
         public void TriggerDialogue(DialogueName type);
 
@@ -85,7 +84,7 @@ namespace Comic
         public DialogueManager GetDialogueManager() => m_gameManager?.GetDialogueManager();
         public ViewManager GetViewManager() => m_hudManager?.GetViewManager();
         public NavigationInput GetNavigationInput() => m_hudManager?.GetNavigationInput();
-
+        public HudManager GetHudManager() => m_hudManager;
 
         // This function is called right after Init()
         public override void StartGameMode()
@@ -131,6 +130,7 @@ namespace Comic
 
             // tricky but w/e for the moment
             GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
+            GetPageManager().RegisterSwitchPageManagerCallbacks();
 
             ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
@@ -359,7 +359,7 @@ namespace Comic
             GetCharacterManager().GetPlayer().SubscribeToPrevPower(function);
         }
 
-        public void SubscribeToBeforeSwitchPage(Action<bool, Page, Page> function)
+        public void SubscribeToBeforeSwitchPage(Action<bool> function)
         {
             if (GetPageManager() == null)
             {
@@ -370,18 +370,7 @@ namespace Comic
             GetPageManager().SubscribeToBeforeSwitchPage(function);
         }
 
-        public void SubscribeToMiddleSwitchPage(Action<bool, Page, Page> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToMiddleSwitchPage(function);
-        }
-
-        public void SubscribeToAfterSwitchPage(Action<bool, Page, Page> function)
+        public void SubscribeToAfterSwitchPage(Action<bool> function)
         {
             if (GetPageManager() == null)
             {

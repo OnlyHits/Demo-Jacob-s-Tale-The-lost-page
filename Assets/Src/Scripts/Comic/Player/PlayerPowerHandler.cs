@@ -86,12 +86,12 @@ namespace Comic
 
         #region ON SWITCH PAGE
 
-        private void OnBeforeSwitchPage(bool _1, Page p1, Page p2)
+        private void OnBeforeSwitchPage(bool isNextPage)
         {
             //DestroyDummies();
         }
 
-        private void OnAfterSwitchPage(bool _1, Page p1, Page p2)
+        private void OnAfterSwitchPage(bool isNextPage)
         {
 
         }
