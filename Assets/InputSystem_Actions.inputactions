@@ -468,15 +468,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pause",
-                    "type": "Button",
-                    "id": "ce76b1e1-7f1f-48fc-a06e-5dd597c15920",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "DialogueInput",
                     "type": "Button",
                     "id": "2b67c138-cfe0-49fd-8148-e42acd8c575d",
@@ -676,7 +667,35 @@
                 },
                 {
                     "name": "",
-                    "id": "bf3ccc3c-b9a2-434e-928b-362f1599ee14",
+                    "id": "cad3fbdf-658c-41db-aa74-9ca3799c62bf",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "DialogueInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Global",
+            "id": "39e3cae6-e355-4937-88f8-c0831dc0ff2c",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "ed8b951b-5655-4b03-af06-e37514a4e175",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "dff6f872-db9e-4d77-a4fb-4ee958580247",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
@@ -687,23 +706,12 @@
                 },
                 {
                     "name": "",
-                    "id": "1425fc08-04fd-46bf-9d6e-8fd54051ab27",
+                    "id": "8680dd66-eb61-497a-afde-aa10f5288919",
                     "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cad3fbdf-658c-41db-aa74-9ca3799c62bf",
-                    "path": "<Keyboard>/enter",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "DialogueInput",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

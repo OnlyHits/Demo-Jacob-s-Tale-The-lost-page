@@ -3,7 +3,7 @@ using CustomArchitecture;
 
 namespace Comic
 {
-    [ExecuteAlways]
+    //[ExecuteAlways]
     public class EditablePageMargin : BaseBehaviour
     {
         public SpriteRenderer parentSpriteRenderer;

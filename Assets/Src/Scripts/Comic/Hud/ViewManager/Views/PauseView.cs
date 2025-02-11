@@ -207,7 +207,8 @@ namespace Comic
 
         private void Play()
         {
-            ComicGameCore.Instance.MainGameMode.GetViewManager().ShowLast();
+            //OnPlay?.Invoke();
+            //ComicGameCore.Instance.MainGameMode.;
         }
 
         private void Exit()

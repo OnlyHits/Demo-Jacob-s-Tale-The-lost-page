@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Comic
 {
-    [ExecuteAlways]
+    //[ExecuteAlways]
     public class Panel : BaseBehaviour
     {
         [SerializeField] private PanelVisual m_panelVisual;

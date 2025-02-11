@@ -1,11 +1,11 @@
 using UnityEngine;
 using CustomArchitecture;
 using System.Collections.Generic;
-using UnityEditor.Rendering.Universal;
+//using UnityEditor.Rendering.Universal;
 
 namespace Comic
 {
-    [ExecuteAlways]
+    //[ExecuteAlways]
     public class Page : BaseBehaviour
     {
         [SerializeField] private Transform m_panelContainer;
