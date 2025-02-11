@@ -25,11 +25,8 @@ namespace Comic
             m_onEndDialogueCallback += function;
         }
 
-        public void Init(DialogueView dialogue_view, CreditView credit_view)
+        public void Init()
         {
-            m_dialogueView = dialogue_view;
-            m_creditView = credit_view;
-
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockVoice(UnlockVoice);
             ComicGameCore.Instance.MainGameMode.SubscribeToLockVoice(LockVoice);
 
@@ -49,6 +46,12 @@ namespace Comic
                 { DialogueName.Dialogue_UnlockBL, false},
                 { DialogueName.Dialogue_UnlockBoss, false},
             };
+        }
+
+        public void LateInit(DialogueView dialogue_view, CreditView credit_view)
+        {
+            m_dialogueView = dialogue_view;
+            m_creditView = credit_view;
         }
 
         public void SubscribeToPowerSelected(Action<PowerType> function)

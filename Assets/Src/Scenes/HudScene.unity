@@ -204,7 +204,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -2151,7 +2151,7 @@ MonoBehaviour:
     m_Bits: 32
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -2824,7 +2824,7 @@ MonoBehaviour:
   m_turningPage: {fileID: 6078714463451449702}
   m_leftShadow: {fileID: 804639869}
   m_rightShadow: {fileID: 496223441}
-  m_turnDuration: 3
+  m_turnDuration: 1
   m_canvas: {fileID: 1907668672}
 --- !u!1001 &2045178320
 PrefabInstance:

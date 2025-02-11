@@ -109,14 +109,12 @@ namespace Comic
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
             m_cameraManager = GetComponentInChildren<URP_CameraManager>();
-            //m_navigationInput = GetComponent<NavigationInput>();
 
             m_cameraManager.Init();
-
             m_sceneLoader.SubscribeToEndLoading(OnLoadingEnded);
         }
 
-        // make all dynamic instantiation here
+        // Make all dynamic instantiation here
         public override void OnLoadingEnded()
         {
             if (GetUnlockChaptersData().Count == 0)
@@ -127,9 +125,8 @@ namespace Comic
             InitGame();
             InitHud();
 
-            // tricky but w/e for the moment
-            GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
-            GetPageManager().RegisterSwitchPageManagerCallbacks();
+            LateInitHud();
+            LateInitGame();
 
             ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
@@ -162,6 +159,28 @@ namespace Comic
             Debug.Log("Init Game");
             m_gameManager.Init();
             m_cameraManager.RegisterCameras(m_gameManager.GetRegisteredCameras());
+        }
+
+        public void LateInitGame()
+        {
+            if (m_gameManager == null)
+            {
+                Debug.LogWarning("Can't find GameManager. Try to load the scene before initialize");
+                return;
+            }
+            Debug.Log("Late Init Game");
+            m_gameManager.LateInit();
+        }
+
+        public void LateInitHud()
+        {
+            if (m_hudManager == null)
+            {
+                Debug.LogWarning("Can't find HudManager. Try to load the scene before initialize");
+                return;
+            }
+            Debug.Log("Late Init Hud");
+            m_hudManager.LateInit();
         }
 
         public void OnEndMainDialogue(DialogueName type)
@@ -437,12 +456,6 @@ namespace Comic
         protected override void OnUpdate(float elapsed_time)
         {
             base.OnUpdate(elapsed_time);
-
-            // if (m_pause)
-            // {
-            //     m_navigationInput.OnUpdate();
-            // }
-
         }
 
         // destroy all managed objects

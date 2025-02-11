@@ -27,5 +27,9 @@ namespace Comic
             // Init AFTER views
             m_navigationInput.Init();
         }
+
+        public void LateInit()
+        {
+        }
     }
 }
