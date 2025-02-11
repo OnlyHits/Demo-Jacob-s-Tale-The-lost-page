@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Comic
 {
-    //[ExecuteAlways]
+    [ExecuteAlways]
     public class EditablePanelMargin : MonoBehaviour
     {
         [SerializeField] private float topOffset = 0.5f;

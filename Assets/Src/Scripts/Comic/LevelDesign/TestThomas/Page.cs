@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Comic
 {
-    //[ExecuteAlways]
+    [ExecuteAlways]
     public class Page : BaseBehaviour
     {
         [SerializeField] private Transform m_panelContainer;
