@@ -160,8 +160,6 @@ namespace Comic
         #region TRY NEXT & PREV PAGE
         public bool TryNextPage()
         {
-            Debug.Log("Next page");
-
             int nextIdx = m_currentPageIndex + 1;
             if (nextIdx >= m_unlockedPageList.Count)
             {
@@ -173,8 +171,6 @@ namespace Comic
 
         public bool TryPrevPage()
         {
-            Debug.Log("Previous page");
-
             int prevIdx = m_currentPageIndex - 1;
             if (prevIdx < 0)
             {

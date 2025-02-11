@@ -16,6 +16,8 @@ namespace Comic
         private bool m_isRotating = false;
         private Vector3 m_currentRotation = Vector3.zero;
 
+        public PanelVisual GetPanelVisual() => m_panelVisual;
+
         public void Init(SpriteRenderer margin)
         {
             m_margin = margin;

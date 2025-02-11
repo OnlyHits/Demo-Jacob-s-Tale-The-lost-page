@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
+using System.Linq;
 
 namespace Comic
 {
@@ -36,6 +38,38 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.GetHudManager().RegisterToEndTurning(() => m_hasFinishTurning = true);
         }
 
+        private void SnapPlayerPosition()
+        {
+            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+
+            Vector2 playerPosition = player.transform.position;
+            Bounds colliderBounds = player.GetCollider().bounds;
+            List<SpriteRenderer> sprites = m_currentPage.GetPanelsSpriteRenderer();
+
+            if (sprites == null || player == null)
+                return;
+
+            SpriteRenderer closestSprite = sprites
+                .OrderBy(sprite => DistanceToBounds(sprite.bounds, colliderBounds))
+                .FirstOrDefault();
+
+            Bounds spriteBounds = closestSprite.bounds;
+
+            Vector2 newPosition = playerPosition;
+            newPosition.x = Mathf.Clamp(newPosition.x, spriteBounds.min.x + colliderBounds.extents.x, spriteBounds.max.x - colliderBounds.extents.x);
+            newPosition.y = Mathf.Clamp(newPosition.y, spriteBounds.min.y + colliderBounds.extents.y, spriteBounds.max.y - colliderBounds.extents.y);
+
+            player.transform.position = newPosition;
+        }
+
+        private float DistanceToBounds(Bounds spriteBounds, Bounds colliderBounds)
+        {
+            float dx = Mathf.Max(0, spriteBounds.min.x - colliderBounds.max.x, colliderBounds.min.x - spriteBounds.max.x);
+            float dy = Mathf.Max(0, spriteBounds.min.y - colliderBounds.max.y, colliderBounds.min.y - spriteBounds.max.y);
+
+            return dx * dx + dy * dy;
+        }
+
         private void SwitchPage(bool is_next_page, int idxNewPage)
         {
             if (m_skipSwitchPageAnimation)
@@ -43,6 +77,7 @@ namespace Comic
                 m_onBeforeSwitchPageCallback?.Invoke(is_next_page);
                 m_currentPageIndex = idxNewPage;
                 SwitchPageByIndex(m_currentPageIndex);
+                SnapPlayerPosition();
                 m_onAfterSwitchPageCallback?.Invoke(is_next_page);
             }
             else
@@ -81,6 +116,7 @@ namespace Comic
             m_switchPageCoroutine = null;
             m_currentPageIndex = idxNewPage;
             SwitchPageByIndex(m_currentPageIndex);
+            SnapPlayerPosition();
 
             m_onAfterSwitchPageCallback?.Invoke(is_next_page);
 

@@ -23,6 +23,8 @@ namespace Comic
         [SerializeField] protected Collider2D m_collider;
         [HideInInspector] protected List<SpriteRenderer> m_sprites = new List<SpriteRenderer>();
 
+        public Collider2D GetCollider() => m_collider;
+
         protected virtual void Awake()
         {
             m_baseHeadLocalPos = m_head.localPosition;

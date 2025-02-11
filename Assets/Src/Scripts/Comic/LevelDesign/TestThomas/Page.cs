@@ -1,6 +1,7 @@
 using UnityEngine;
 using CustomArchitecture;
 using System.Collections.Generic;
+using UnityEditor.Rendering.Universal;
 
 namespace Comic
 {
@@ -22,6 +23,19 @@ namespace Comic
                     panel.Init(m_margin);
                 }
             }
+        }
+
+        public List<SpriteRenderer> GetPanelsSpriteRenderer()
+        {
+            if (m_currentPanels == null || m_currentPanels.Count == 0)
+                return null;
+
+            List<SpriteRenderer> sprites = new();
+
+            foreach (var panel in m_currentPanels)
+                sprites.Add(panel.GetPanelVisual().PanelReference());
+
+            return sprites;            
         }
 
         #region SPAWN POINT

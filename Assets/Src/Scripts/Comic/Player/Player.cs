@@ -19,10 +19,6 @@ namespace Comic
         [SerializeField] private Color m_baseColor = Color.white;
         [SerializeField] private Color m_shadowColor = Color.black;
 
-        [Header("Collider")]
-        [SerializeField] private Collider2D m_triggerCollider;
-        [SerializeField, ReadOnly] private bool m_isInWall = false;
-
         [Header("Grounded")]
         [SerializeField, ReadOnly] private bool m_isGrounded = false;
 
@@ -39,8 +35,6 @@ namespace Comic
 
         [Header("Others")]
         [SerializeField] private PageManager m_pageManager;
-
-        public bool IsInWall() => m_isInWall;
 
         protected override void Awake()
         {
@@ -108,23 +102,23 @@ namespace Comic
             base.OnLateUpdate(elapsed_time);
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
-            {
-                Debug.Log(">>> IN");
-                m_isInWall = true;
-            }
-        }
+        // private void OnCollisionEnter2D(Collision2D collision)
+        // {
+        //     if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
+        //     {
+        //         Debug.Log(">>> IN");
+        //         m_isInWall = true;
+        //     }
+        // }
 
-        private void OnCollisionExit2D(Collision2D collision)
-        {
-            if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
-            {
-                Debug.Log(">>> OUT");
-                m_isInWall = false;
-            }
-        }
+        // private void OnCollisionExit2D(Collision2D collision)
+        // {
+        //     if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
+        //     {
+        //         Debug.Log(">>> OUT");
+        //         m_isInWall = false;
+        //     }
+        // }
         /*
         private void OnTriggerEnter2D(Collider2D collider)
         {
