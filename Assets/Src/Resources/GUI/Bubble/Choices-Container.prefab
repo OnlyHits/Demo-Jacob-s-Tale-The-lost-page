@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7181787369201930008, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
+  - {fileID: -4413699467975361799, guid: e054a959b075577329e4984e8d94db75, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,8 +108,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
-  m_sharedMaterial: {fileID: 7181787369201930008, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e054a959b075577329e4984e8d94db75, type: 2}
+  m_sharedMaterial: {fileID: -4413699467975361799, guid: e054a959b075577329e4984e8d94db75, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 135.6
+  m_fontSize: 140
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -193,8 +193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
-  m_inputActionStructsV2: []
-  m_inputActionStructsBool: []
 --- !u!1 &4723054168319052931
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,7 +255,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7181787369201930008, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
+  - {fileID: -4413699467975361799, guid: e054a959b075577329e4984e8d94db75, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -303,8 +301,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
-  m_sharedMaterial: {fileID: 7181787369201930008, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e054a959b075577329e4984e8d94db75, type: 2}
+  m_sharedMaterial: {fileID: -4413699467975361799, guid: e054a959b075577329e4984e8d94db75, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -328,7 +326,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 135.6
+  m_fontSize: 140
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -388,8 +386,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
-  m_inputActionStructsV2: []
-  m_inputActionStructsBool: []
 --- !u!1 &5496898664311476602
 GameObject:
   m_ObjectHideFlags: 0

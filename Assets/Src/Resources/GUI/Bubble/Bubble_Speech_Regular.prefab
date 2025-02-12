@@ -280,7 +280,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1724459680731232108, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
+  - {fileID: -4413699467975361799, guid: e054a959b075577329e4984e8d94db75, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -326,8 +326,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
-  m_sharedMaterial: {fileID: -1724459680731232108, guid: 0a321ca1eb28de0438d49a3b933ad1f2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e054a959b075577329e4984e8d94db75, type: 2}
+  m_sharedMaterial: {fileID: -4413699467975361799, guid: e054a959b075577329e4984e8d94db75, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -411,8 +411,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
-  m_inputActionStructsV2: []
-  m_inputActionStructsBool: []
 --- !u!1 &8736295250032447315
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,7 +550,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.5, y: -2.4000092}
+  m_AnchoredPosition: {x: 1.5, y: -2.4000244}
   m_SizeDelta: {x: -45.000008, y: -45.20001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1136536356973316335
