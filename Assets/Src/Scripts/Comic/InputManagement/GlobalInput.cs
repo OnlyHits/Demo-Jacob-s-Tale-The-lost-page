@@ -1,14 +1,11 @@
 using CustomArchitecture;
 using UnityEngine.InputSystem;
-using UnityEngine;
 using System;
-using System.Collections.Generic;
 
 namespace Comic
 {
-    public class PauseInput : AInputManager
+    public class GlobalInput : AInputManager
     {
-        private bool m_extPause = false;
 
         #region ACTIONS
         private InputAction m_pauseAction;
@@ -22,14 +19,13 @@ namespace Comic
 
         public override void Init()
         {
-            onPause += OnPause;
             FindAction();
             InitInputActions();
         }
 
         private void FindAction()
         {
-            m_pauseAction = InputSystem.actions.FindAction("Pause");
+            m_pauseAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Pause");
         }
 
         private void InitInputActions()
@@ -42,21 +38,6 @@ namespace Comic
         protected override void OnUpdate(float elapsed_time)
         {
             base.OnUpdate(elapsed_time);
-        }
-
-        private void OnPause(InputType input, bool b)
-        {
-            if (input == InputType.PRESSED)
-            {
-            }
-            else if (input == InputType.COMPUTED)
-            {
-            }
-            else if (input == InputType.RELEASED)
-            {
-                m_extPause = !m_extPause;
-                ComicGameCore.Instance.MainGameMode.Pause(m_extPause);
-            }
         }
     }
 }

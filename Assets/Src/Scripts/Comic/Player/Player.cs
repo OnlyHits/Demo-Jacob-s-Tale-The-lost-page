@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using CustomArchitecture;
 using UnityEngine;
-
-using static Comic.Comic;
 
 namespace Comic
 {

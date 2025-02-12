@@ -321,5 +321,5 @@ public class UDictionary
             return height;
         }
     }
-#endif
 }
+#endif

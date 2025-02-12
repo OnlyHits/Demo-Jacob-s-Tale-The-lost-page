@@ -68,5 +68,10 @@ namespace Comic
         {
             base.OnUpdate(elapsed_time);
         }
+
+        public override void Pause(bool pause)
+        {
+            base.Pause(pause);
+        }
     }
 }

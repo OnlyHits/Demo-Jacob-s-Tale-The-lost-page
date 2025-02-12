@@ -49,6 +49,8 @@ namespace Comic
         private GameProgression m_gameProgression;
         private SceneLoader m_sceneLoader;
         private URP_CameraManager m_cameraManager;
+        private GlobalInput m_globalInput;
+
         //private NavigationInput m_navigationInput;
 
         // local datas
@@ -108,8 +110,12 @@ namespace Comic
 
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
+            m_globalInput = GetComponent<GlobalInput>();
             m_cameraManager = GetComponentInChildren<URP_CameraManager>();
 
+            m_globalInput.onPause += OnPause;
+
+            m_globalInput.Init();
             m_cameraManager.Init();
             m_sceneLoader.SubscribeToEndLoading(OnLoadingEnded);
         }
@@ -127,6 +133,8 @@ namespace Comic
 
             LateInitHud();
             LateInitGame();
+
+            ActivateGame();
 
             ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
@@ -436,20 +444,42 @@ namespace Comic
         }
 
         #endregion
+        
+        private void ActivateGame()
+        {
+            GetNavigationInput().Pause(true);
+            GetCharacterManager().PauseAllCharacters(false);
+            GetViewManager().Show<DialogueView>();
+        }
+
+        private void ActivateHud()
+        {
+            GetNavigationInput().Pause(false);
+            GetCharacterManager().PauseAllCharacters(true);
+            GetViewManager().Show<PauseView>();
+        }
+
+        private bool m_extPause = false;
+        private void OnPause(InputType input, bool b)
+        {
+            if (input == InputType.RELEASED)
+            {
+                m_extPause = !m_extPause;
+                Pause(m_extPause);
+            }
+        }
 
         public override void Pause(bool pause)
         {
             if (pause)
             {
                 Debug.Log("Pause game");
-
-                GetNavigationInput().Pause(false);
-                // pause player
+                ActivateHud();
             }
             else
             {
-                GetNavigationInput().Pause(true);
-                // resume player
+                Debug.Log("Reset game");
+                ActivateGame();
             }
         }
 
