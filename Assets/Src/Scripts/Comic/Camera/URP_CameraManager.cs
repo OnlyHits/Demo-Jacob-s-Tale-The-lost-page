@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine.Rendering.Universal;
 using System;
 using CustomArchitecture;
+using UnityEditor.ShaderGraph;
 
 namespace Comic
 {
@@ -32,6 +33,9 @@ namespace Comic
         public bool IsCameraRegister(URP_OverlayCameraType type) => m_overlayCameras != null && m_overlayCameras.ContainsKey(type);
         public Camera GetCameraBase() => m_baseCamera;
 
+        private Texture2D               m_screenLeft;
+        private Texture2D               m_screenRight;
+
         public void ClearCameraStack()
         {
             UniversalAdditionalCameraData baseCameraData = m_baseCamera.GetComponent<UniversalAdditionalCameraData>();
@@ -50,8 +54,37 @@ namespace Comic
             m_onScreenshotSprite += OnScreenshotSprite;
             m_baseCamera = GetComponent<Camera>();
 
+            InitScreenTexture(true);
+            InitScreenTexture(false);
+
             // important for hud instantiation
             //((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).Init(m_baseCamera, GetScreenshotBounds());
+        }
+
+        public void InitScreenTexture(bool left)
+        {
+            if (left)
+            {
+                Vector3 screenBottomLeft = Camera.main.WorldToScreenPoint(m_leftScreenshot.bounds.min);
+                Vector3 screenTopRight = Camera.main.WorldToScreenPoint(m_leftScreenshot.bounds.max);
+
+                int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
+                int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
+
+                m_screenLeft = new Texture2D(rectWidth, rectHeight, TextureFormat.RGB24, false);
+                m_screenLeft.filterMode = FilterMode.Point;
+            }
+            else
+            {
+                Vector3 screenBottomLeft = Camera.main.WorldToScreenPoint(m_rightScreenshot.bounds.min);
+                Vector3 screenTopRight = Camera.main.WorldToScreenPoint(m_rightScreenshot.bounds.max);
+
+                int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
+                int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
+
+                m_screenRight = new Texture2D(rectWidth, rectHeight, TextureFormat.RGB24, false);
+                m_screenRight.filterMode = FilterMode.Point;
+            }
         }
 
         public void RegisterCameras(GameCameraRegister game_camera)
@@ -200,14 +233,14 @@ namespace Comic
             if (is_next_page)
             {
                 
-                StartCoroutine(CaptureAllCameraURPScreenshot(m_rightScreenshot, true));
-                StartCoroutine(CaptureAllCameraURPScreenshot(m_leftScreenshot, false));
+                CaptureAllCameraURPScreenshot(m_screenRight, m_rightScreenshot, true);
+                CaptureAllCameraURPScreenshot(m_screenLeft, m_leftScreenshot, false);
                 yield return null;
             }
             else
             {
-                StartCoroutine(CaptureAllCameraURPScreenshot(m_leftScreenshot, false));
-                StartCoroutine(CaptureAllCameraURPScreenshot(m_rightScreenshot, true));
+                CaptureAllCameraURPScreenshot(m_screenLeft, m_leftScreenshot, false);
+                CaptureAllCameraURPScreenshot(m_screenRight, m_rightScreenshot, true);
                 yield return null;
             }
         }
@@ -233,153 +266,35 @@ namespace Comic
             File.WriteAllBytes(path, bytes);
         }
 
-        private Texture2D CropTexture(Texture2D source_texture, Vector3 screen_min, Vector3 screen_max)
-        {
-            if (source_texture == null || m_baseCamera == null)
-            {
-                Debug.LogError("Missing required components for cropping!");
-                return null;
-            }
-
-            // Convert screen space to texture coordinates with better accuracy
-            int x = Mathf.RoundToInt(screen_min.x * source_texture.width / Screen.width);
-            int y = Mathf.RoundToInt(screen_min.y * source_texture.height / Screen.height);
-            int width = Mathf.RoundToInt((screen_max.x - screen_min.x) * source_texture.width / Screen.width);
-            int height = Mathf.RoundToInt((screen_max.y - screen_min.y) * source_texture.height / Screen.height);
-
-            // Ensure cropping dimensions are within valid range
-            x = Mathf.Clamp(x, 0, source_texture.width);
-            y = Mathf.Clamp(y, 0, source_texture.height);
-            width = Mathf.Clamp(width, 1, source_texture.width - x);
-            height = Mathf.Clamp(height, 1, source_texture.height - y);
-
-            // Create cropped texture with the same format as the source
-            Texture2D cropped_texture = new Texture2D(width, height, source_texture.format, false);
-            cropped_texture.SetPixels(source_texture.GetPixels(x, y, width, height));
-            //            cropped_texture.Apply(); // Apply changes to the texture
-
-            return cropped_texture;
-        }
-
-        private Texture2D PrepareTextureForSprite(Texture2D texture)
-        {
-            if (texture == null)
-            {
-                Debug.LogError("Texture is NULL!");
-                return null;
-            }
-
-            texture.Apply(false, false);
-            texture.filterMode = FilterMode.Bilinear;
-            texture.wrapMode = TextureWrapMode.Clamp;
-            texture.anisoLevel = 1;
-
-            Texture2D processedTexture = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
-            processedTexture.SetPixels(texture.GetPixels());
-            processedTexture.Apply(false, false);
-
-            return processedTexture;
-        }
-
         private Sprite ConvertTextureToSprite(Texture2D texture)
         {
             if (texture == null)
                 return null;
 
-            texture = PrepareTextureForSprite(texture);
-
             Rect spriteRect = new Rect(0, 0, texture.width, texture.height);
             return Sprite.Create(texture, spriteRect, new Vector2(0.5f, 0.5f));
         }
 
-        private IEnumerator CaptureAllCameraURPScreenshot(SpriteRenderer sprite, bool front)
+        private void CaptureAllCameraURPScreenshot(Texture2D texture, SpriteRenderer render_area, bool front)
         {
-            Texture2D screenshot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-            screenshot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-            screenshot.Apply(updateMipmaps: false, makeNoLongerReadable: false);
+            Bounds spriteBounds = render_area.bounds;
 
-            Vector3? min = GetScreenshotMin(sprite);
-            Vector3? max = GetScreenshotMax(sprite);
+            Vector3 screenBottomLeft = Camera.main.WorldToScreenPoint(spriteBounds.min);
+            Vector3 screenTopRight = Camera.main.WorldToScreenPoint(spriteBounds.max);
 
-            Texture2D cropped_texture = null;
+            int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
+            int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
+            int rectX = Mathf.RoundToInt(screenBottomLeft.x);
+            int rectY = Mathf.RoundToInt(screenBottomLeft.y);
 
-            if (min != null && max != null)
-            {
-                cropped_texture = CropTexture(screenshot, min.Value, max.Value);
+            Rect captureRect = new Rect(rectX, rectY, rectWidth, rectHeight);
 
-                m_onScreenshotSprite?.Invoke(front, ConvertTextureToSprite(cropped_texture));
+            texture.ReadPixels(captureRect, 0, 0);
+            texture.Apply();
 
-// #if UNITY_EDITOR
-//                 SaveTextureAsPNG(cropped_texture, "Tests/screenshot" + "_" + (front ? "front" : "back") + ".png");
-// #endif
+            m_onScreenshotSprite?.Invoke(front, ConvertTextureToSprite(texture));
 
-                Destroy(cropped_texture);
-                Destroy(screenshot);
-            }
-            else
-            {
-                m_onScreenshotSprite?.Invoke(front, ConvertTextureToSprite(screenshot));
-
-                Destroy(screenshot);
-            }
-
-            yield return null;
-        }
-
-        public IEnumerator CaptureURPScreenshot(URP_OverlayCameraType camera_type)
-        {
-            Camera selected_camera = m_overlayCameras[camera_type].GetCameraForScreenshot();
-            RenderTexture rt = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.Default, RenderTextureReadWrite.Default);
-            rt.antiAliasing = 8;
-            rt.useMipMap = true;
-
-            RenderTexture original_rt = selected_camera.targetTexture;
-
-            List<bool> camera_active_states = UnactiveAllCameras(selected_camera);
-
-            selected_camera.targetTexture = rt;
-            selected_camera.Render();
-
-            m_baseCamera.targetTexture = rt;
-            m_baseCamera.Render();
-
-            RenderTexture.active = rt;
-            Texture2D screenshot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-            screenshot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-            screenshot.Apply(updateMipmaps: false, makeNoLongerReadable: false);
-
-            Vector3? min = m_overlayCameras[camera_type].GetScreenshotMin(m_baseCamera);
-            Vector3? max = m_overlayCameras[camera_type].GetScreenshotMax(m_baseCamera);
-
-            Texture2D cropped_texture = null;
-
-            if (min != null && max != null)
-            {
-                cropped_texture = CropTexture(screenshot, min.Value, max.Value);
-
-                //                m_onScreenshotSprite?.Invoke(camera_type, ConvertTextureToSprite(cropped_texture));
-
-#if UNITY_EDITOR
-                SaveTextureAsPNG(cropped_texture, "Tests/screenshot.png");
-#endif
-                Destroy(cropped_texture);
-                Destroy(screenshot);
-            }
-            else
-            {
-                //                m_onScreenshotSprite?.Invoke(camera_type, ConvertTextureToSprite(screenshot));
-
-                Destroy(screenshot);
-            }
-
-            selected_camera.targetTexture = original_rt;
-            RenderTexture.active = null;
-
-            RestoreActiveCameras(camera_active_states);
-
-            m_baseCamera.targetTexture = null;
-
-            yield return null;
+//            SaveTextureAsPNG(texture, "Screenshot" + (front ? "_front" : "_back"));
         }
 
         #endregion
