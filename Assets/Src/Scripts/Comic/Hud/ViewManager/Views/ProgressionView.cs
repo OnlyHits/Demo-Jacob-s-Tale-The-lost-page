@@ -1,10 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using CustomArchitecture;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Sirenix.Utilities;
 
 namespace Comic

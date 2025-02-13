@@ -1851,7 +1851,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5005408610379573529, guid: 554c16cc19d06629a8f8745d176095c2, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5448202137927222160, guid: 554c16cc19d06629a8f8745d176095c2, type: 3}
       propertyPath: m_Pivot.x
@@ -2844,7 +2844,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3738079250973514455, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3897897761463895517, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: far clip plane
@@ -2856,15 +2856,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3897897761463895517, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_BackGroundColor.b
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3897897761463895517, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_BackGroundColor.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3897897761463895517, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_BackGroundColor.r
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4094600446499539654, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_debugStandaloneScene
