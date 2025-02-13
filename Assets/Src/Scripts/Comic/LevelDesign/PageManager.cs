@@ -32,16 +32,15 @@ namespace Comic
                 UnlockPages(pagesByChapter);
             }
 
-            SwitchPageByIndex(m_currentPageIndex);
-
-            // int i = 1;
-            // foreach (var page in m_pageList)
-            // {
-            //     page.GetText().text = i.ToString() + "/" + m_pageList.Count.ToString(); 
-            //     ++i;
-            // }
+            foreach (var page in m_pageList)
+            {
+                page.Init();
+                page.gameObject.SetActive(false);
+            }
 
             m_pageVisual.Init();
+
+            SwitchPageByIndex(m_currentPageIndex);
 
             // #if UNITY_EDITOR
             // #else

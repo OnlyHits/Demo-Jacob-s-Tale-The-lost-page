@@ -11,18 +11,42 @@ namespace Comic
     {
         [SerializeField] private PanelVisual m_panelVisual;
         [SerializeField] private List<Transform> m_allElements;
+        [SerializeField] private Transform m_propsContainer;
+        private List<AProps> m_props = null;
         private SpriteRenderer m_margin;
         private List<Tween> m_rotCaseTweens = new List<Tween>();
         private bool m_isRotating = false;
         private Vector3 m_currentRotation = Vector3.zero;
 
         public PanelVisual GetPanelVisual() => m_panelVisual;
+        public List<AProps> GetProps() => m_props;
 
         public void Init(SpriteRenderer margin)
         {
             m_margin = margin;
             m_panelVisual.Init();
+
+            InitProps();
         }
+
+        private void InitProps()
+        {
+            if (m_props != null && m_props.Count != 0)
+                m_props.Clear();
+            else if (m_props == null)
+                m_props = new();
+
+            foreach (Transform child in m_propsContainer)
+            {
+                AProps component = child.GetComponent<AProps>();
+
+                if (component != null)
+                {
+                    m_props.Add(component);
+//                    component.Init(m_margin);
+                }
+            }
+        }        
 
         protected override void OnUpdate(float elapsed_time)
         {

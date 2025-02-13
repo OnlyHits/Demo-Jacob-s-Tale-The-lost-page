@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Rendering;
 
 namespace Comic
 {
@@ -75,8 +76,7 @@ namespace Comic
             if (m_skipSwitchPageAnimation)
             {
                 m_onBeforeSwitchPageCallback?.Invoke(is_next_page);
-                m_currentPageIndex = idxNewPage;
-                SwitchPageByIndex(m_currentPageIndex);
+                SwitchPageByIndex(idxNewPage);
                 SnapPlayerPosition();
                 m_onAfterSwitchPageCallback?.Invoke(is_next_page);
             }
@@ -98,6 +98,9 @@ namespace Comic
                 Page current_page = m_unlockedPageList[m_currentPageIndex];
                 Page new_page = m_unlockedPageList[idxNewPage];
 
+                current_page.Pause(true);
+                new_page.Pause(true);
+
                 current_page.Enable(!is_next_page);
                 new_page.Enable(is_next_page);
 
@@ -111,11 +114,13 @@ namespace Comic
                 yield return new WaitUntil(() => m_hasFinishTurning == true);
 
                 m_hasFinishTurning = false;
+
+                current_page.Pause(false);
+                new_page.Pause(false);
             }
 
             m_switchPageCoroutine = null;
-            m_currentPageIndex = idxNewPage;
-            SwitchPageByIndex(m_currentPageIndex);
+            SwitchPageByIndex(idxNewPage);
             SnapPlayerPosition();
 
             m_onAfterSwitchPageCallback?.Invoke(is_next_page);
@@ -145,19 +150,17 @@ namespace Comic
 
         private void SwitchPageByIndex(int index)
         {
-            foreach (var page in m_pageList)
-            {
-                page.Enable(false);
-            }
-
             if (m_currentPageIndex >= m_unlockedPageList.Count)
             {
                 Debug.LogWarning("Try to switch to page " + index.ToString() + " which is not unlocked");
                 return;
             }
 
+            m_unlockedPageList[m_currentPageIndex].DisablePage();
+            m_currentPageIndex = index;
+            m_unlockedPageList[m_currentPageIndex].EnablePage();
+
             m_currentPage = m_unlockedPageList[m_currentPageIndex];
-            m_currentPage.Enable(true);
         }
     }
 }
