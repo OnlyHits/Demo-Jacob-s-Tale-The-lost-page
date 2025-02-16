@@ -4,6 +4,9 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
+using System.Linq;
+using CustomArchitecture;
 
 namespace Comic
 {
@@ -25,6 +28,10 @@ namespace Comic
         [SerializeField] protected Transform m_iconContainer;
         [SerializeField] protected Transform m_mainIconContainer;
 
+        [Space]
+        [SerializeField] private RectTransform m_centerRect;
+        [SerializeField] private RectTransform m_topRect;
+
         private Dictionary<DialogueBubbleType, BubbleGraphicData> m_bubbles;
 
         private Dictionary<VoiceType, VoiceViewDatas> m_datas;
@@ -44,6 +51,7 @@ namespace Comic
 
         public override void ActiveGraphic(bool active)
         {
+            /*
             Image[] images = gameObject.GetComponentsInChildren<Image>(true);
             TMP_Text[] texts = gameObject.GetComponentsInChildren<TMP_Text>(true);
 
@@ -56,6 +64,39 @@ namespace Comic
             {
                 text.enabled = active;
             }
+            */
+        }
+
+        public override void Hide(bool partialy = false, bool instant = false)
+        {
+            m_iconContainer.GetComponent<RectTransform>().DOKillRect();
+
+            if (!partialy && instant)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+            if (partialy && instant)
+            {
+                m_iconContainer.GetComponent<RectTransform>().CopyRectTransform(m_topRect);
+                return;
+            }
+
+            m_iconContainer.GetComponent<RectTransform>().DORectTransform(m_topRect, 0.1f, Ease.OutQuart);
+        }
+
+        public override void Show(bool instant = false)
+        {
+            gameObject.SetActive(true);
+            m_iconContainer.GetComponent<RectTransform>().DOKillRect();
+
+            if (instant)
+            {
+                m_iconContainer.GetComponent<RectTransform>().CopyRectTransform(m_centerRect);
+                return;
+            }
+
+            m_iconContainer.GetComponent<RectTransform>().DORectTransform(m_centerRect, 0.25f, Ease.OutQuart);
         }
 
         public override void Init()
@@ -102,16 +143,8 @@ namespace Comic
             }
 
             InitMainIcon();
-
-            foreach (var data in ComicGameCore.Instance.MainGameMode.GetUnlockChaptersData())
-            {
-                if (data.m_hasUnlockVoice)
-                {
-                    AddVoice(ComicGameCore.Instance.MainGameMode.GetGameConfig().GetVoiceByChapter(data.m_chapterType));
-                }
-            }
+            InitNpcIcons();
         }
-
         private void InitMainIcon()
         {
             GameObject main_icon = Instantiate(Resources.Load<GameObject>("GUI/Icon/IconFrame_Speaker"), m_mainIconContainer);
@@ -126,11 +159,37 @@ namespace Comic
 
             foreach (var d in m_bubbles)
             {
-                d.Value.m_choiceBubble.GetComponent<Bubble>().SubscribeToAppearCallback(AppearIcon);
-                d.Value.m_choiceBubble.GetComponent<Bubble>().SubscribeToDisappearCallback(DisappearIcon);
+                d.Value.m_choiceBubble.GetComponent<Bubble>().SubscribeToAppearCallback(AppearMainIcon);
+                d.Value.m_choiceBubble.GetComponent<Bubble>().SubscribeToDisappearCallback(DisappearMainIcon);
 
-                d.Value.m_regularBubble.GetComponent<Bubble>().SubscribeToAppearCallback(AppearIcon);
-                d.Value.m_regularBubble.GetComponent<Bubble>().SubscribeToDisappearCallback(DisappearIcon);
+                d.Value.m_regularBubble.GetComponent<Bubble>().SubscribeToAppearCallback(AppearMainIcon);
+                d.Value.m_regularBubble.GetComponent<Bubble>().SubscribeToDisappearCallback(DisappearMainIcon);
+            }
+        }
+        private void InitNpcIcons()
+        {
+            // Init voices icons
+            var configs = ComicGameCore.Instance.MainGameMode.GetGameConfig();
+            foreach (var data in configs.m_config)
+            {
+                if (data.Value.m_voiceType == VoiceType.Voice_None) continue;
+                InitVoice(data.Value.m_voiceType);
+                DesactivateVoice(data.Value.m_voiceType);
+            }
+
+            // Activate only the unlocked voices
+            foreach (var data in ComicGameCore.Instance.MainGameMode.GetUnlockChaptersData())
+            {
+                if (data.m_hasUnlockVoice)
+                {
+                    ActivateVoice(ComicGameCore.Instance.MainGameMode.GetGameConfig().GetVoiceByChapter(data.m_chapterType));
+                }
+            }
+
+            // Hightlight one
+            if (IsOneHighlighted() == false)
+            {
+                Highlight(m_datas.FirstOrDefault().Key);
             }
         }
 
@@ -146,10 +205,18 @@ namespace Comic
                 b.Value.m_regularBubble.GetComponent<Bubble>().Pause(pause);
                 b.Value.m_choiceBubble.GetComponent<Bubble>().Pause(pause);
             }
-
-
         }
 
+        public bool IsOneHighlighted()
+        {
+            bool isOneHighlighted = false;
+
+            foreach (var data in m_datas)
+            {
+                isOneHighlighted |= data.Value.m_icon.IsHighlight();
+            }
+            return isOneHighlighted;
+        }
         public void Highlight(VoiceType type)
         {
             foreach (var data in m_datas)
@@ -165,7 +232,25 @@ namespace Comic
             }
         }
 
-        public void RemoveVoice(VoiceType type)
+        public void UnlockVoice(VoiceType type)
+        {
+            ActivateVoice(type);
+        }
+        public void LockVoice(VoiceType type)
+        {
+            DesactivateVoice(type);
+        }
+
+        public void DesactivateVoice(VoiceType type)
+        {
+            m_datas[type].m_icon.SetUnlock(false);
+        }
+        public void ActivateVoice(VoiceType type)
+        {
+            m_datas[type].m_icon.SetUnlock(true);
+        }
+
+        /*public void RemoveVoice(VoiceType type)
         {
             if (!m_datas.ContainsKey(type))
             {
@@ -178,9 +263,9 @@ namespace Comic
 
                 m_datas.Remove(type);
             }
-        }
-
-        public void AddVoice(VoiceType type)
+        }*/
+        //public void AddVoice(VoiceType type)
+        public void InitVoice(VoiceType type)
         {
             if (m_datas.ContainsKey(type))
             {
@@ -205,13 +290,12 @@ namespace Comic
                 m_datas[type].m_icon.Init(type, m_iconSprites[NpcIconType.Icon_Boss_1]);
         }
 
-        public void AppearIcon(float intensity)
+        public void AppearMainIcon(float intensity)
         {
             m_mainIcon.gameObject.SetActive(true);
             m_mainIcon.Appear(intensity);
         }
-
-        public void DisappearIcon(float intensity)
+        public void DisappearMainIcon(float intensity)
         {
             m_mainIcon.Disappear(intensity);
         }

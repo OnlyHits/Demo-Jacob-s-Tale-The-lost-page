@@ -167,13 +167,12 @@ namespace Comic
 
             m_bBack.gameObject.SetActive(panelIndex != m_basePanelIndex);
         }
-        
+
         #endregion PANELS
 
         private void Play()
         {
-            //OnPlay?.Invoke();
-            //ComicGameCore.Instance.MainGameMode.;
+            ComicGameCore.Instance.MainGameMode.Pause(false);
         }
 
         private void Exit()

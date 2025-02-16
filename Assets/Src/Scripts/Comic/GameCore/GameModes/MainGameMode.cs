@@ -444,12 +444,12 @@ namespace Comic
         }
 
         #endregion
-        
+
         private void ActivateGame()
         {
             GetNavigationInput().Pause(true);
             GetCharacterManager().PauseAllCharacters(false);
-            GetViewManager().Show<DialogueView>();
+            GetViewManager().Show<ProgressionView>();
         }
 
         private void ActivateHud()
@@ -459,18 +459,17 @@ namespace Comic
             GetViewManager().Show<PauseView>();
         }
 
-        private bool m_extPause = false;
         private void OnPause(InputType input, bool b)
         {
             if (input == InputType.RELEASED)
             {
-                m_extPause = !m_extPause;
-                Pause(m_extPause);
+                Pause(!m_pause);
             }
         }
 
         public override void Pause(bool pause)
         {
+            base.Pause(pause);
             if (pause)
             {
                 Debug.Log("Pause game");
