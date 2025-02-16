@@ -21,7 +21,7 @@ public class Shortcuts : MonoBehaviour
     {
         { KeyCode.Alpha0, typeof(DialogueView) },
         { KeyCode.Alpha9, typeof(ProgressionView) },
-        //{ KeyCode.Alpha9, typeof(PauseView) },
+        { KeyCode.Alpha8, typeof(PauseView) },
         //{ KeyCode.Alpha7, typeof(CreditView) },
     };
 

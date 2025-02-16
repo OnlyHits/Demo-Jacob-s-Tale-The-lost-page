@@ -11,6 +11,8 @@ namespace Comic
         [Header("Buttons")]
         [SerializeField] private Button m_bPlay;
         [SerializeField] private Button m_bOptions;
+        [SerializeField] private Button m_bControls;
+        [SerializeField] private Button m_bCredits;
         [SerializeField] private Button m_bExit;
         [SerializeField] private Button m_bBack;
 
@@ -32,6 +34,8 @@ namespace Comic
 
             m_bPlay.onClick.AddListener(Play);
             m_bOptions.onClick.AddListener(() => ShowPanelByIndex(1));
+            m_bControls.onClick.AddListener(() => ShowPanelByIndex(2));
+            m_bCredits.onClick.AddListener(() => ComicGameCore.Instance.MainGameMode.GetViewManager().Show<CreditView>());
             m_bExit.onClick.AddListener(Exit);
             m_bBack.onClick.AddListener(ShowBasePanel);
         }
@@ -81,6 +85,8 @@ namespace Comic
         }
         private void OnInputHorizontal(Vector2 value)
         {
+            //if (m_currentPanelIndex == 1)
+            //{
             if (m_currentElement is Slider slider)
             {
                 float volume = slider.value + (value.x / 10);
@@ -119,6 +125,7 @@ namespace Comic
                 ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = destLang;
                 text.text = destLang.ToString();
             }
+            //}
         }
 
         private void OnNavigateInputChanged(InputType inputType, Vector2 value)
@@ -144,6 +151,10 @@ namespace Comic
                 if (m_currentElement is Button button)
                 {
                     button.onClick?.Invoke();
+                }
+                if (m_currentPanelIndex == 2)
+                {
+                    Debug.Log("Listen for a key biding");
                 }
             }
         }
