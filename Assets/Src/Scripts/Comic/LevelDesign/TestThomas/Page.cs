@@ -37,6 +37,7 @@ namespace Comic
             {
                 { PropsType.Props_Lamp, new List<AProps>() },
                 { PropsType.Props_Painting, new List<AProps>() },
+                { PropsType.Props_Candle, new List<AProps>() },
             };
 
             foreach (var panel in m_currentPanels)
