@@ -15,15 +15,13 @@ namespace Comic
 
         private void Awake()
         {
-            m_baseRotation = transform.rotation;
         }
 
         public override void StartBehaviour()
         {
-            transform.rotation = Quaternion.Euler(0, 0, m_rotationAngle);
-
             if (m_move)
             {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
                 SetupRotate();
             }
         }
@@ -34,6 +32,9 @@ namespace Comic
                 m_rotateSequence.Kill();
 
             m_rotateSequence = DOTween.Sequence();
+
+            float randomInterval = UnityEngine.Random.Range(20f, 40f);
+            m_rotateSequence.AppendInterval(randomInterval);
 
             int flickerCount = UnityEngine.Random.Range(5, 10);
 
@@ -54,18 +55,22 @@ namespace Comic
                     .SetEase(Ease.InOutSine)
             );
 
-            float randomInterval = UnityEngine.Random.Range(20f, 40f);
-            m_rotateSequence.AppendInterval(randomInterval);
-
             m_rotateSequence.OnComplete(SetupRotate);
         }
 
+        public override void Init()
+        {
+            m_baseRotation = transform.rotation;
+
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
 
         public override void StopBehaviour()
         {
             if (m_rotateSequence != null)
             {
                 m_rotateSequence.Kill();
+                transform.rotation = Quaternion.Euler(0, 0, 0);
                 m_rotateSequence = null;
             }
         }

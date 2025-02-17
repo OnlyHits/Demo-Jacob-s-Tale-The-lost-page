@@ -24,6 +24,7 @@ namespace Comic
             PauseBehaviour(pause);
         }
 
+        public abstract void Init();
         public abstract void StartBehaviour();
         public abstract void StopBehaviour();
         public abstract void PauseBehaviour(bool pause);

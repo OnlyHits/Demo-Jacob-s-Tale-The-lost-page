@@ -25,8 +25,28 @@ namespace Comic
 
         private void Awake()
         {
+        }
+
+
+        public override void Init()
+        {
             m_spriteRenderer = GetComponent<SpriteRenderer>();
             m_baseIntensity = m_light.intensity;
+
+            if (m_behaviourType == BehaviourType.Unlit)
+            {
+                m_spriteRenderer.sprite = m_sprites[0];
+                m_light.intensity = 0f;
+            }
+            else if (m_behaviourType == BehaviourType.Lit)
+            {
+                m_spriteRenderer.sprite = m_sprites[1];
+            }
+            else if (m_behaviourType == BehaviourType.LitRandom)
+            {
+                m_spriteRenderer.sprite = m_sprites[0];
+                m_light.intensity = 0f;
+            }
         }
 
         public override void StartBehaviour()
@@ -125,13 +145,18 @@ namespace Comic
             m_litSequence.OnKill(() => m_light.intensity = m_baseIntensity);
         }
 
-
         public override void StopBehaviour()
         {
             if (m_litSequence != null)
             {
                 m_litSequence.Kill();
                 m_litSequence = null;
+
+                if (m_behaviourType == BehaviourType.LitRandom)
+                {
+                    m_spriteRenderer.sprite = m_sprites[0];
+                    m_light.intensity = 0f;
+                }
             }
         }
 

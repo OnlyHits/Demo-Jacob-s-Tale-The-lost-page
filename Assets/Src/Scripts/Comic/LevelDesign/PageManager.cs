@@ -34,6 +34,7 @@ namespace Comic
 
             foreach (var page in m_pageList)
             {
+                page.gameObject.SetActive(true);
                 page.Init();
                 page.gameObject.SetActive(false);
             }

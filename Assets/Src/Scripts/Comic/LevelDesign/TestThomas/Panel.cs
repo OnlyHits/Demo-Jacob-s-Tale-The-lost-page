@@ -43,7 +43,7 @@ namespace Comic
                 if (component != null)
                 {
                     m_props.Add(component);
-//                    component.Init(m_margin);
+                    component.Init();
                 }
             }
         }        

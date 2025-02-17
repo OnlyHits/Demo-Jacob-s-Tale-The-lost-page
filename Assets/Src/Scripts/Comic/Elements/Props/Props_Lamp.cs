@@ -19,16 +19,14 @@ namespace Comic
 
         private void Awake()
         {
-            m_baseIntensity = m_light.intensity;
         }
 
         public override void StartBehaviour()
         {
-            transform.rotation = Quaternion.Euler(0, 0, m_rotationAngle);
-
-
             if (m_move)
             {
+                transform.rotation = Quaternion.Euler(0, 0, m_rotationAngle);
+    
                 if (m_moveSequence != null)
                     m_moveSequence.Kill();
                 
@@ -60,6 +58,9 @@ namespace Comic
 
             m_flashSequence = DOTween.Sequence();
 
+            float randomInterval = UnityEngine.Random.Range(10f, 20f);
+            m_flashSequence.AppendInterval(randomInterval);
+
             m_light.intensity = m_baseIntensity;
 
             for (int i = 0; i < flickerCount; i++)
@@ -71,9 +72,6 @@ namespace Comic
             }
 
             m_flashSequence.Append(DOTween.To(() => m_light.intensity, x => m_light.intensity = x, m_baseIntensity, 0.1f));
-
-            float randomInterval = UnityEngine.Random.Range(10f, 20f);
-            m_flashSequence.AppendInterval(randomInterval);
 
             m_flashSequence.OnComplete(SetupFlashSequence);
         }
@@ -104,11 +102,22 @@ namespace Comic
             m_flashSequence.OnKill(() => m_light.intensity = m_baseIntensity);
         }
 
+        public override void Init()
+        {
+            m_baseIntensity = m_light.intensity;
+
+            if (m_move)
+                transform.rotation = Quaternion.Euler(0, 0, m_rotationAngle);
+            // if (m_flash)
+            m_light.intensity = m_baseIntensity;
+        }
 
         public override void StopBehaviour()
         {
             if (m_moveSequence != null)
             {
+                transform.rotation = Quaternion.Euler(0, 0, m_rotationAngle);
+
                 m_moveSequence.Kill();
                 m_moveSequence = null;
             }
@@ -117,6 +126,7 @@ namespace Comic
             {
                 m_flashSequence.Kill();
                 m_flashSequence = null;
+                m_light.intensity = m_baseIntensity;
             }
         }
 

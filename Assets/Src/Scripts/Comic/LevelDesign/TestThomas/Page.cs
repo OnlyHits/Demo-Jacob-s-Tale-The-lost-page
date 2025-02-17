@@ -12,7 +12,7 @@ namespace Comic
         [SerializeField] private Transform m_panelContainer;
         [SerializeField] private SpriteRenderer m_margin;
         [SerializeField] private GameObject m_panelPrefab;
-        [ReadOnly, SerializeField] private List<Panel> m_currentPanels;
+        [SerializeField] private List<Panel> m_currentPanels;
         [SerializeField] private Transform m_spawnPoint;
         private Dictionary<PropsType, List<AProps>> m_props;
 
