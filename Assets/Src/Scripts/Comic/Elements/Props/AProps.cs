@@ -8,7 +8,8 @@ namespace Comic
     public enum PropsType
     {
         Props_Lamp,
-        Props_Painting
+        Props_Painting,
+        Props_Candle,
     }
 
     public abstract class AProps : BaseBehaviour
