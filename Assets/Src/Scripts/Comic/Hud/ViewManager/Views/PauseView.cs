@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using CustomArchitecture;
 using TMPro;
+using UnityEngine.EventSystems;
 
 namespace Comic
 {
@@ -40,6 +41,11 @@ namespace Comic
             m_bBack.onClick.AddListener(ShowBasePanel);
         }
 
+        private void OnDestroy()
+        {
+            m_preventFistInput = 0;
+        }
+
         #endregion UNITY CALLBACKS
 
         #region INTERNAL
@@ -65,6 +71,7 @@ namespace Comic
         private void OnInputVertical(Vector2 value)
         {
             int destIndex = m_currentElementIdx;
+            int saveIndex = m_currentElementIdx;
 
             if (value.y < 0)
             {
@@ -80,6 +87,16 @@ namespace Comic
 
             if (TrySetElementByIndex(out m_currentElement, destIndex))
             {
+                ////////
+                // HERE
+                if (m_currentPanelIndex == 2)
+                {
+                    UIBehaviour elem = m_currentPanelData.selectableElements[saveIndex];
+                    KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
+                    keyBindUI.SetSelected(false);
+                }
+                // HERE
+                ////////
                 if (m_debug) Debug.Log("---- > Navigate on element = " + m_currentElement.name);
             }
         }
@@ -143,6 +160,8 @@ namespace Comic
                 OnInputHorizontal(value);
             }
         }
+
+        private static int m_preventFistInput = 0;
         private void OnValidateInput(InputType inputType, bool value)
         {
             if (value)
@@ -154,7 +173,16 @@ namespace Comic
                 }
                 if (m_currentPanelIndex == 2)
                 {
-                    Debug.Log("Listen for a key biding");
+                    if (m_preventFistInput == 0)
+                    {
+                        ++m_preventFistInput; return;
+                    }
+                    ////////
+                    // HERE
+                    KeyBindUI elem = m_currentElement.GetComponentInParent<KeyBindUI>();
+                    elem.SetSelected(true);
+                    // HERE
+                    ////////
                 }
             }
         }
@@ -162,6 +190,23 @@ namespace Comic
         {
             if (value)
             {
+                ////////
+                // HERE
+                if (m_currentPanelIndex == 2)
+                {
+                    m_preventFistInput = 0;
+
+                    foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
+                    {
+                        KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
+                        if (keyBindUI == null)
+                            continue;
+                        keyBindUI.SetSelected(false);
+                    }
+                }
+                // HERE
+                ////////
+
                 if (m_debug) Debug.Log("---> Cancel " + value.ToString());
                 ShowBasePanel();
             }
