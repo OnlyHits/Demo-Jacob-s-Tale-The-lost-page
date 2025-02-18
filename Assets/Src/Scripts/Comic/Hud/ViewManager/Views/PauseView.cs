@@ -194,6 +194,9 @@ namespace Comic
                 // HERE
                 if (m_currentPanelIndex == 2)
                 {
+                    //Prevent go back if a KeyBind is listening for key
+                    // or reset the old value
+                    // maybe on OnDisable of KeyBind
                     m_preventFistInput = 0;
 
                     foreach (UIBehaviour elem in m_currentPanelData.selectableElements)

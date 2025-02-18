@@ -46,6 +46,9 @@ namespace Comic
             if (RebindKeyUtils.TryGetKeyPressed(out KeyControl keyControl))
             {
                 m_inputAction.RebindKey(keyControl);
+                SetSelected(false);
+                SetKeyTextByAction(m_inputAction, keyControl);
+                Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
             }
         }
 
@@ -73,3 +76,4 @@ namespace Comic
         }
     }
 }
+
