@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Comic
 {
@@ -26,7 +25,7 @@ namespace Comic
                 m_tAction.enabled = false;
                 m_tKey.enabled = false;
                 this.enabled = false;
-                Debug.LogError($"Key binding {m_keyParam} does not exist");
+                //Debug.LogError($"Key binding {m_keyParam} does not exist");
                 return;
             }
 
@@ -34,7 +33,7 @@ namespace Comic
             KeyControl keyControl = m_inputAction.GetKeyBoardKeysFromAction().FirstOrDefault();
 
             m_tKey.text = m_inputAction.GetActionName(keyControl);
-            Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionName(keyControl)}]");
+            //Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionName(keyControl)}]");
         }
 
         protected override void OnUpdate(float delta)
@@ -48,7 +47,7 @@ namespace Comic
                 m_inputAction.RebindKey(keyControl);
                 SetSelected(false);
                 SetKeyTextByAction(m_inputAction, keyControl);
-                Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+                //Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
             }
         }
 

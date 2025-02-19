@@ -28,6 +28,7 @@ namespace Comic
         [Header("Panels Datas")]
         [SerializeField, ReadOnly] protected PanelData m_currentPanelData;
         [SerializeField, ReadOnly] protected int m_currentElementIdx = 0;
+        [SerializeField, ReadOnly] protected int m_lastPanelElementIdx = 0;
         [SerializeField, ReadOnly] protected UIBehaviour m_currentElement;
 
         [Space]
@@ -132,6 +133,17 @@ namespace Comic
                 element = startElement;
                 Debug.LogWarning("Starting element of Paneldata index : " + m_currentPanelData.panelIndex.ToString() + ", is null .");
                 return false;
+            }
+
+            if (m_currentPanelIndex == m_basePanelIndex)
+            {
+                // @note: set last base panel element index on swithing to it
+                startElement = m_currentPanelData.selectableElements[m_lastPanelElementIdx];
+            }
+            else
+            {
+                // @note: save base panel element index on swithing to another panel
+                m_lastPanelElementIdx = m_currentElementIdx;
             }
 
             if (TrySetElement(out element, startElement))
