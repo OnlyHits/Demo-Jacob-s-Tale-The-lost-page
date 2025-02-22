@@ -39,16 +39,16 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.GetHudManager().RegisterToEndTurning(() => m_hasFinishTurning = true);
         }
 
-        private void SnapPlayerPosition()
+        private Vector3 GetCorrectedPlayerPosition(Page evaluated_page)
         {
             Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
 
             Vector2 playerPosition = player.transform.position;
             Bounds colliderBounds = player.GetCollider().bounds;
-            List<SpriteRenderer> sprites = m_currentPage.GetPanelsSpriteRenderer();
+            List<SpriteRenderer> sprites = evaluated_page.GetPanelsSpriteRenderer();
 
             if (sprites == null || player == null)
-                return;
+                return Vector3.zero;
 
             SpriteRenderer closestSprite = sprites
                 .OrderBy(sprite => DistanceToBounds(sprite.bounds, colliderBounds))
@@ -60,8 +60,11 @@ namespace Comic
             newPosition.x = Mathf.Clamp(newPosition.x, spriteBounds.min.x + colliderBounds.extents.x, spriteBounds.max.x - colliderBounds.extents.x);
             newPosition.y = Mathf.Clamp(newPosition.y, spriteBounds.min.y + colliderBounds.extents.y, spriteBounds.max.y - colliderBounds.extents.y);
 
-            player.transform.position = newPosition;
+            return newPosition;
+
+            //player.transform.position = newPosition;
         }
+
 
         private float DistanceToBounds(Bounds spriteBounds, Bounds colliderBounds)
         {
@@ -71,32 +74,108 @@ namespace Comic
             return dx * dx + dy * dy;
         }
 
-        private void SwitchPage(bool is_next_page, int idxNewPage)
+        private void TryNextPageInternal(bool is_next_page, int idxNewPage)
         {
-            if (m_skipSwitchPageAnimation)
+            if (m_switchPageCoroutine != null)
+                return;
+
+            Vector3 corrected_position = GetCorrectedPlayerPosition(m_unlockedPageList[idxNewPage]);
+
+            if (m_unlockedPageList[idxNewPage].CanAccessPanel(corrected_position))
             {
-                m_onBeforeSwitchPageCallback?.Invoke(is_next_page);
-                SwitchPageByIndex(idxNewPage);
-                SnapPlayerPosition();
-                m_onAfterSwitchPageCallback?.Invoke(is_next_page);
+                m_switchPageCoroutine = StartCoroutine(SwitchPageCoroutine(is_next_page, idxNewPage, corrected_position));
             }
             else
             {
-                if (m_switchPageCoroutine != null)
-                    return;
-
-                m_switchPageCoroutine = StartCoroutine(SwitchPageCoroutine(is_next_page, idxNewPage));
+                m_switchPageCoroutine = StartCoroutine(SwitchPageErrorCoroutine(is_next_page, idxNewPage, corrected_position));
             }
         }
 
-        private IEnumerator SwitchPageCoroutine(bool is_next_page, int idxNewPage)
+        private IEnumerator SwitchPageErrorCoroutine(bool is_next_page, int idxNewPage, Vector3 corrected_position)
         {
+            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            Vector3 player_position = player.transform.position;
+
             m_onBeforeSwitchPageCallback?.Invoke(is_next_page);
 
             if (ComicGameCore.Instance.MainGameMode.GetCameraManager().IsCameraRegister(URP_OverlayCameraType.Camera_Hud))
             {
                 Page current_page = m_unlockedPageList[m_currentPageIndex];
                 Page new_page = m_unlockedPageList[idxNewPage];
+
+                if (is_next_page)
+                    player.transform.position = corrected_position;
+
+                current_page.Pause(true);
+                new_page.Pause(true);
+
+                if (is_next_page)
+                {
+                    new_page.Enable(true);
+                    current_page.Enable(false);
+                }
+                else
+                {
+                    current_page.Enable(true);
+                    new_page.Enable(false);
+                }
+
+                yield return StartCoroutine(ComicGameCore.Instance.MainGameMode.GetCameraManager().ScreenAndApplyTexture(is_next_page));
+
+                if (is_next_page)
+                    player.transform.position = player_position;
+                else
+                    player.transform.position = corrected_position;
+
+                current_page.Enable(!is_next_page);
+                new_page.Enable(is_next_page);
+
+                if (is_next_page)
+                {
+                    new_page.Enable(false);
+                    current_page.Enable(true);
+                }
+                else
+                {
+                    current_page.Enable(false);
+                    new_page.Enable(true);
+                }
+
+                ComicGameCore.Instance.MainGameMode.GetCameraManager().TurnPageError(is_next_page);
+
+                yield return new WaitUntil(() => m_hasFinishTurning == true);
+
+                current_page.Enable(true);
+                new_page.Enable(false);
+
+                m_hasFinishTurning = false;
+
+                current_page.Pause(false);
+                new_page.Pause(false);
+            }
+
+            m_switchPageCoroutine = null;
+
+            player.transform.position = player_position;
+            m_onAfterSwitchPageCallback?.Invoke(is_next_page);
+
+            yield return null;
+        }
+
+        private IEnumerator SwitchPageCoroutine(bool is_next_page, int idxNewPage, Vector3 corrected_position)
+        {
+            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            Vector3 player_position = player.transform.position;
+
+            m_onBeforeSwitchPageCallback?.Invoke(is_next_page);
+
+            if (ComicGameCore.Instance.MainGameMode.GetCameraManager().IsCameraRegister(URP_OverlayCameraType.Camera_Hud))
+            {
+                Page current_page = m_unlockedPageList[m_currentPageIndex];
+                Page new_page = m_unlockedPageList[idxNewPage];
+
+                if (is_next_page)
+                    player.transform.position = corrected_position;
 
                 current_page.Pause(true);
                 new_page.Pause(true);
@@ -105,6 +184,11 @@ namespace Comic
                 new_page.Enable(is_next_page);
 
                 yield return StartCoroutine(ComicGameCore.Instance.MainGameMode.GetCameraManager().ScreenAndApplyTexture(is_next_page));
+
+                if (is_next_page)
+                    player.transform.position = player_position;
+                else
+                    player.transform.position = corrected_position;
 
                 current_page.Enable(is_next_page);
                 new_page.Enable(!is_next_page);
@@ -121,7 +205,7 @@ namespace Comic
 
             m_switchPageCoroutine = null;
             SwitchPageByIndex(idxNewPage);
-            SnapPlayerPosition();
+            player.transform.position = corrected_position;
 
             m_onAfterSwitchPageCallback?.Invoke(is_next_page);
 

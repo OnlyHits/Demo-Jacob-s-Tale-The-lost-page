@@ -28,6 +28,7 @@ namespace Comic
         [SerializeField] private URP_OverlayCameraType m_screenType;
         [SerializeField] private SpriteRenderer m_leftScreenshot;
         [SerializeField] private SpriteRenderer m_rightScreenshot;
+        private int m_originalCullingMask;
 
         public Bounds GetScreenshotBounds() => m_leftScreenshot.bounds;
         public bool IsCameraRegister(URP_OverlayCameraType type) => m_overlayCameras != null && m_overlayCameras.ContainsKey(type);
@@ -53,6 +54,7 @@ namespace Comic
             m_overlayCameras = new();
             m_onScreenshotSprite += OnScreenshotSprite;
             m_baseCamera = GetComponent<Camera>();
+            m_originalCullingMask = m_baseCamera.cullingMask;
 
             InitScreenTexture(true);
             InitScreenTexture(false);
@@ -206,23 +208,6 @@ namespace Comic
             }
         }
 
-        // public IEnumerator ScreenGameAndSetupTurningPage(bool previous)
-        // {
-        //     if (!m_overlayCameras.ContainsKey(URP_OverlayCameraType.Camera_Hud)
-        //         || !m_overlayCameras.ContainsKey(URP_OverlayCameraType.Camera_Game))
-        //     {
-        //         Debug.LogWarning("Camera is not setup");
-        //         yield break;
-        //     }
-
-        //     yield return new WaitForEndOfFrame();
-
-        //     yield return StartCoroutine(CaptureURPScreenshot(URP_OverlayCameraType.Camera_Hud));
-        //     yield return StartCoroutine(CaptureURPScreenshot(URP_OverlayCameraType.Camera_Game));
-
-        //     ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).TurnPage(previous);
-        // }
-
         public IEnumerator ScreenAndApplyTexture(bool is_next_page)
         {
             if (!m_overlayCameras.ContainsKey(URP_OverlayCameraType.Camera_Hud))
@@ -248,6 +233,11 @@ namespace Comic
         public void TurnPage(bool is_next_page)
         {
             ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).TurnPage(is_next_page);
+        }
+
+        public void TurnPageError(bool is_next_page)
+        {
+            ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).TurnPageError(is_next_page);
         }
 
 
@@ -279,8 +269,8 @@ namespace Comic
         {
             Bounds spriteBounds = render_area.bounds;
 
-            Vector3 screenBottomLeft = Camera.main.WorldToScreenPoint(spriteBounds.min);
-            Vector3 screenTopRight = Camera.main.WorldToScreenPoint(spriteBounds.max);
+            Vector3 screenBottomLeft = m_baseCamera.WorldToScreenPoint(spriteBounds.min);
+            Vector3 screenTopRight = m_baseCamera.WorldToScreenPoint(spriteBounds.max);
 
             int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
             int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
@@ -293,8 +283,6 @@ namespace Comic
             texture.Apply();
 
             m_onScreenshotSprite?.Invoke(front, ConvertTextureToSprite(texture));
-
-//            SaveTextureAsPNG(texture, "Screenshot" + (front ? "_front" : "_back"));
         }
 
         #endregion

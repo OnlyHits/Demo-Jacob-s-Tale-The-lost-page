@@ -165,7 +165,7 @@ namespace Comic
             {
                 return false;
             }
-            SwitchPage(true, nextIdx);
+            TryNextPageInternal(true, nextIdx);
             return true;
         }
 
@@ -177,7 +177,7 @@ namespace Comic
                 return false;
             }
 
-            SwitchPage(false, prevIdx);
+            TryNextPageInternal(false, prevIdx);
             return true;
         }
 

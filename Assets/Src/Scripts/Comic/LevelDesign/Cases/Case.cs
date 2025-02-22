@@ -45,6 +45,11 @@ namespace Comic
             return isPlayerIn;
         }
 
+        public bool ContainPosition(Vector3 position)
+        {
+            return m_caseSprite.bounds.Contains(position);
+        }
+
         public bool IsRotating()
         {
             return m_isRotating;

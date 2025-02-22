@@ -3,21 +3,27 @@ using CustomArchitecture;
 using System;
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Comic
 {
+#if UNITY_EDITOR
     [ExecuteAlways]
+#endif
     public class Panel : BaseBehaviour
     {
         [SerializeField] private PanelVisual m_panelVisual;
         [SerializeField] private List<Transform> m_allElements;
         [SerializeField] private Transform m_propsContainer;
+        // this value must be save
+        [SerializeField] private bool m_isLock = false;
         private List<AProps> m_props = null;
         private SpriteRenderer m_margin;
         private List<Tween> m_rotCaseTweens = new List<Tween>();
         private bool m_isRotating = false;
         private Vector3 m_currentRotation = Vector3.zero;
 
+        public bool IsLock() => m_isLock;
         public PanelVisual GetPanelVisual() => m_panelVisual;
         public List<AProps> GetProps() => m_props;
 
@@ -27,6 +33,11 @@ namespace Comic
             m_panelVisual.Init();
 
             InitProps();
+        }
+
+        public bool ContainPosition(Vector3 position)
+        {
+            return m_panelVisual.PanelReference().bounds.Contains(position);
         }
 
         private void InitProps()
@@ -54,6 +65,8 @@ namespace Comic
             if (!Application.isPlaying)
                 ClampPosition();
 #endif
+
+            m_panelVisual.GetHideSprite().enabled = m_isLock;
         }
 
         // could be only in unity editor, will see later if needed

@@ -2,6 +2,7 @@ using UnityEngine;
 using CustomArchitecture;
 using System.Collections.Generic;
 using UnityEditor.Rendering.Universal;
+using Sirenix.OdinInspector.Editor.Validation;
 //using UnityEditor.Rendering.Universal;
 
 namespace Comic
@@ -15,7 +16,6 @@ namespace Comic
         [SerializeField] private List<Panel> m_currentPanels;
         [SerializeField] private Transform m_spawnPoint;
         private Dictionary<PropsType, List<AProps>> m_props;
-
 
         private void Awake()
         {
@@ -50,6 +50,20 @@ namespace Comic
                     }
                 }
             }
+        }
+
+        public bool CanAccessPanel(Vector3 position)
+        {
+            foreach (var panel in m_currentPanels)
+            {
+                if (panel.ContainPosition(position))
+                {
+                    if (panel.IsLock())
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         public override void Pause(bool pause = true)

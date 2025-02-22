@@ -277,6 +277,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3712086471677967884, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_isLock
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3845092132172816720, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.008619
@@ -1574,6 +1578,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel.3
       objectReference: {fileID: 0}
+    - target: {fileID: 3712086471677967884, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_isLock
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3845092132172816720, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.91
@@ -1681,6 +1689,10 @@ PrefabInstance:
     - target: {fileID: 5460432480693744599, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_Points.Array.data[4].y
       value: 1.5669001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281798248957260560, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7587110371147465617, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_backgroundSprite
@@ -2063,6 +2075,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 3712086471677967884, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_isLock
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3845092132172816720, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.4814253
@@ -2186,6 +2202,10 @@ PrefabInstance:
     - target: {fileID: 5460432480693744599, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_Points.Array.data[4].y
       value: 1.1091611
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281798248957260560, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7587110371147465617, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_backgroundSprite
@@ -5383,6 +5403,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3712086471677967884, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_isLock
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3845092132172816720, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.0456367
@@ -5490,6 +5514,10 @@ PrefabInstance:
     - target: {fileID: 5460432480693744599, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_Points.Array.data[4].y
       value: 1.1151612
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281798248957260560, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7587110371147465617, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_backgroundSprite
@@ -6118,6 +6146,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel.1
       objectReference: {fileID: 0}
+    - target: {fileID: 3712086471677967884, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_isLock
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3845092132172816720, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.5093074
@@ -6213,6 +6245,10 @@ PrefabInstance:
     - target: {fileID: 5460432480693744599, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_Points.Array.data[4].y
       value: 2.9021087
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281798248957260560, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7914373866325885970, guid: 5f19196307fe140c787ecadb0bc79f1f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8689,6 +8725,10 @@ PrefabInstance:
     - target: {fileID: 52946288444514457, guid: 52306b19101c91ae690b6f2c7fa2c4ea, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 52946288444514457, guid: 52306b19101c91ae690b6f2c7fa2c4ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2108855957422711135, guid: 52306b19101c91ae690b6f2c7fa2c4ea, type: 3}
       propertyPath: m_LocalPosition.x
