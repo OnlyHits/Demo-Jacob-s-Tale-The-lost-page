@@ -14,6 +14,7 @@ namespace Comic
         [SerializeField] private TextMeshProUGUI m_tKey;
         [SerializeField] private float m_durationKeyChange = 0f;
         public InputAction m_inputAction;
+        public KeyControl m_currentKeyControl;
         private bool m_selectetd = false;
         private float m_elapsedTime = 0f;
 
@@ -31,10 +32,8 @@ namespace Comic
                 return;
             }
 
-            //m_tAction.text = m_inputAction.name;
-            KeyControl keyControl = m_inputAction.GetKeyBoardKeysFromAction().FirstOrDefault();
-
-            m_tKey.text = m_inputAction.GetActionName(keyControl);
+            m_currentKeyControl = m_inputAction.GetKeyBoardKeysFromAction().FirstOrDefault();
+            m_tKey.text = m_inputAction.GetActionName(m_currentKeyControl);
             //Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionName(keyControl)}]");
         }
 
@@ -46,6 +45,7 @@ namespace Comic
 
             if (RebindKeyUtils.TryGetKeyPressed(out KeyControl keyControl))
             {
+                m_currentKeyControl = keyControl;
                 m_inputAction.RebindKey(keyControl);
                 SetSelected(false);
                 SetKeyTextByAction(m_inputAction, keyControl);
@@ -71,10 +71,21 @@ namespace Comic
             m_tKey.text = inputAction.GetActionName(keyControl);
         }
 
-        public void SetSelected(bool set)
+        public void SetSelected(bool selected)
         {
-            m_selectetd = set;
+            m_selectetd = selected;
         }
+
+        public void ResetKey()
+        {
+            SetKeyTextByAction(m_inputAction, m_currentKeyControl);
+        }
+
+        // Security, but not needed for now
+        //private void OnDisable()
+        //{
+        //    SetKeyTextByAction(m_inputAction, m_currentKeyControl);
+        //}
     }
 }
 

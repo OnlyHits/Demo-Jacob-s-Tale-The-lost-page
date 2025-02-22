@@ -24,6 +24,7 @@ namespace Comic
         [SerializeField] private Slider m_sVolumeEffect;
         [SerializeField] private Slider m_sVolumeMusic;
 
+        public bool IsControlsPanel => m_currentPanelIndex == 2;
         public bool IsBasePanelShown => m_currentPanelIndex == m_basePanelIndex;
 
 
@@ -84,16 +85,10 @@ namespace Comic
 
             if (TrySetElementByIndex(out m_currentElement, destIndex))
             {
-                ////////
-                // HERE
-                if (m_currentPanelIndex == 2)
+                if (IsControlsPanel)
                 {
-                    UIBehaviour elem = m_currentPanelData.selectableElements[saveIndex];
-                    KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
-                    keyBindUI.SetSelected(false);
+                    UnSelectControlElemByIndex(saveIndex);
                 }
-                // HERE
-                ////////
                 if (m_debug) Debug.Log("---- > Navigate on element = " + m_currentElement.name);
             }
         }
@@ -167,59 +162,34 @@ namespace Comic
                 {
                     button.onClick?.Invoke();
                 }
-                else if (m_currentPanelIndex == 2)
+                else if (IsControlsPanel)
                 {
-                    ////////
-                    // HERE
-                    KeyBindUI elem = m_currentElement.GetComponentInParent<KeyBindUI>();
-                    elem.SetSelected(true);
-                    // HERE
-                    ////////
+                    SelectCurrentControlElem();
                 }
             }
         }
-        public bool IsBidingKey()
-        {
-            if (m_currentPanelIndex != 2)
-            {
-                return false;
-            }
 
-            foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
-            {
-                if (elem.GetComponentInParent<KeyBindUI>() is KeyBindUI keyBind)
-                {
-                    if (keyBind.IsBindingKey)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
         private void OnCanceledInput(InputType inputType, bool value)
         {
             if (inputType == InputType.RELEASED)
             {
-                ////////
-                // HERE
-                if (m_currentPanelIndex == 2)
-                {
-                    foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
-                    {
-                        KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
-                        if (keyBindUI == null)
-                            continue;
-                        keyBindUI.SetSelected(false);
-                    }
-                }
-                // HERE
-                ////////
-
                 if (m_debug) Debug.Log("---> Cancel " + value.ToString());
-                if (!IsBidingKey())
+
+                if (!IsControlsPanel)
                 {
                     ShowBasePanel();
+                }
+                else
+                {
+                    if (!IsBidingKey())
+                    {
+                        ShowBasePanel();
+                    }
+                    else
+                    {
+                        UnSelectCurrentControlElem();
+                    }
+                    UnSelectAllBindingElemens();
                 }
             }
         }
@@ -237,6 +207,69 @@ namespace Comic
         }
 
         #endregion PANELS
+
+        #region CONTROL PANEL METHODS
+
+        public bool IsBidingKey()
+        {
+            if (!IsControlsPanel)
+                return false;
+
+            foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
+            {
+                if (elem.GetComponentInParent<KeyBindUI>() is KeyBindUI keyBind)
+                {
+                    if (keyBind.IsBindingKey)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void UnSelectAllBindingElemens()
+        {
+            if (!IsControlsPanel)
+                return;
+            foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
+            {
+                KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
+                if (keyBindUI == null)
+                    continue;
+                keyBindUI.SetSelected(false);
+            }
+        }
+
+        private void UnSelectControlElemByIndex(int index)
+        {
+            if (!IsControlsPanel)
+                return;
+            UIBehaviour elem = m_currentPanelData.selectableElements[index];
+            KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
+            keyBindUI.SetSelected(false);
+        }
+
+        private void UnSelectCurrentControlElem()
+        {
+            if (!IsControlsPanel)
+                return;
+            if (m_currentElement.GetComponentInParent<KeyBindUI>() is KeyBindUI keyBind)
+            {
+                keyBind.ResetKey();
+                keyBind.SetSelected(false);
+            }
+        }
+
+        private void SelectCurrentControlElem()
+        {
+            if (!IsControlsPanel)
+                return;
+            KeyBindUI elem = m_currentElement.GetComponentInParent<KeyBindUI>();
+            elem.SetSelected(true);
+        }
+
+        #endregion CONTROL PANEL METHODS
 
         private void Play()
         {

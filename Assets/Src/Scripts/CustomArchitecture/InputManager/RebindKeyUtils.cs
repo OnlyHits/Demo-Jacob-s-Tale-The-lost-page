@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -43,7 +44,8 @@ namespace CustomArchitecture
         {
             foreach (var keyControl in Keyboard.current.allKeys)
             {
-                if (keyControl.wasPressedThisFrame)
+                if (keyControl.wasPressedThisFrame &&
+                    keyControl.keyCode != Key.Escape && keyControl.keyCode != Key.Enter)
                 {
                     destKeyControl = keyControl;
                     return true;
@@ -57,6 +59,8 @@ namespace CustomArchitecture
         {
             if (keyControl.name == "space")
                 return "space";
+            if (keyControl.name == "tab")
+                return "tab";
 
             string res = inputAction.GetBindingDisplayString();
             string[] parts = res.Split("|");
