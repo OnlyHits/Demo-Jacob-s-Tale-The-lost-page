@@ -13,6 +13,9 @@ namespace Comic
         private InputAction m_validateAction;
         private InputAction m_cancelAction;
 
+        public InputAction GetValidateAction() => m_validateAction;
+        public InputAction GetCancelAction() => m_cancelAction;
+
         #endregion ACTIONS
 
         #region CALLBACKS

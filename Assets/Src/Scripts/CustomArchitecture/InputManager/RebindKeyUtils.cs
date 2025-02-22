@@ -52,20 +52,18 @@ namespace CustomArchitecture
             return false;
         }
 
-        // @todo : 
-        // - Discard [ESCAPE] & [ENTER] keys
-        // - Released & Pressed fuctions (arguments or diff functions)
-
-        //prevent the escape bindinng + going back to back panel
         public static bool TryGetKeyboardInputPressed(out KeyControl destKeyControl)
         {
+            if (Keyboard.current == null)
+            {
+                destKeyControl = default;
+                return false;
+            }
             foreach (var keyControl in Keyboard.current.allKeys)
             {
                 //excepted the CancelKey or ValidateKey
                 if (keyControl.wasPressedThisFrame)
                 {
-                    if (keyControl.keyCode == Key.Escape || keyControl.keyCode == Key.Enter)
-                        continue;
                     destKeyControl = keyControl;
                     return true;
                 }
@@ -76,13 +74,16 @@ namespace CustomArchitecture
 
         public static bool TryGetGamepadInputPressed(out ButtonControl destButtonControl)
         {
+            if (Gamepad.current == null)
+            {
+                destButtonControl = default;
+                return false;
+            }
             foreach (InputControl control in Gamepad.current.allControls)
             {
                 //excepted the CancelKey or ValidateKey
                 if (control.IsPressed() && control is ButtonControl buttonControl)
                 {
-                    if (buttonControl.displayName == "B")
-                        continue;
                     destButtonControl = buttonControl;
                     return true;
                 }
@@ -94,11 +95,11 @@ namespace CustomArchitecture
 
         public static string GetActionNameByInputControl(this InputAction inputAction, InputControl inputControl)
         {
-            if (inputControl.device is Keyboard && inputControl is KeyControl keyControl)
+            if (inputControl?.device is Keyboard && inputControl is KeyControl keyControl)
             {
                 return inputAction.GetActionNameByKeyControl(keyControl);
             }
-            if (inputControl.device is Gamepad && inputControl is ButtonControl buttonControl)
+            if (inputControl?.device is Gamepad && inputControl is ButtonControl buttonControl)
             {
                 return inputAction.GetActionNameByButtonControl(buttonControl);
             }
@@ -116,7 +117,8 @@ namespace CustomArchitecture
             {
                 return "error";
             }
-            res = parts[parts.Length - 1];
+            // Warnign of index out of range
+            res = parts[1];
             res = res.Trim();
             return res;
         }
@@ -136,6 +138,7 @@ namespace CustomArchitecture
             {
                 return "error";
             }
+            // Warnign of index out of range
             res = parts[0];
             res = res.Trim();
             //if (res == "Left Arrow") return "<-";
@@ -157,7 +160,7 @@ namespace CustomArchitecture
 
                 InputControl control = InputSystem.FindControl(binding.effectivePath);
 
-                if (control.device is Keyboard)
+                if (control?.device is Keyboard)
                 {
                     if (control is KeyControl keyControl)
                     {
@@ -180,7 +183,7 @@ namespace CustomArchitecture
 
                 InputControl control = InputSystem.FindControl(binding.effectivePath);
 
-                if (control.device is Gamepad)
+                if (control?.device is Gamepad)
                 {
                     //if (control is StickControl stickControl)
                     //if (control is DpadControl stickControl)

@@ -59,6 +59,12 @@ namespace Comic
             Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionNameByInputControl(m_currentInputControl)}]");
         }
 
+
+        // @todo : 
+        // - Discard [ESCAPE] & [ENTER] keys
+        // - Released & Pressed fuctions (arguments or diff functions)
+
+        //prevent the escape bindinng + going back to back panel
         protected override void OnUpdate(float delta)
         {
             if (!m_selectetd) return;
@@ -67,6 +73,10 @@ namespace Comic
 
             if (RebindKeyUtils.TryGetGamepadInputPressed(out ButtonControl buttonControl))
             {
+                if (buttonControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetCancelAction().GetGamepadKeysFromAction().FirstOrDefault())
+                    return;
+                if (buttonControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetValidateAction().GetGamepadKeysFromAction().FirstOrDefault())
+                    return;
                 m_currentInputControl = buttonControl;
                 m_inputAction.RebindKey(buttonControl);
                 SetSelected(false);
@@ -76,6 +86,10 @@ namespace Comic
 
             if (RebindKeyUtils.TryGetKeyboardInputPressed(out KeyControl keyControl))
             {
+                if (keyControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetCancelAction().GetKeyboardKeysFromAction().FirstOrDefault())
+                    return;
+                if (keyControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetValidateAction().GetKeyboardKeysFromAction().FirstOrDefault())
+                    return;
                 m_currentInputControl = keyControl;
                 m_inputAction.RebindKey(keyControl);
                 SetSelected(false);
