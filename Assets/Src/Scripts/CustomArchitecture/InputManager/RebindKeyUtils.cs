@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Comic;
+using Unity.VisualScripting;
+using UnityEditor.ShortcutManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace CustomArchitecture
 {
@@ -13,9 +17,22 @@ namespace CustomArchitecture
             inputAction.ApplyBindingOverride("<Keyboard>/" + newKey.ToString().ToLower());
         }
 
+        // @note : useless
         public static void RebindKey(this InputAction inputAction, KeyControl newKey)
         {
             inputAction.ApplyBindingOverride(newKey.path);
+        }
+
+        // @note : useless
+        public static void RebindKey(this InputAction inputAction, ButtonControl newButton)
+        {
+            inputAction.ApplyBindingOverride(newButton.path);
+        }
+
+        // @note : the one we are using for both keyboard & gamepad
+        public static void RebindKey(this InputAction inputAction, InputControl newInput)
+        {
+            inputAction.ApplyBindingOverride(newInput.path);
         }
 
         public static bool TryGetKeyPressed(out Key destKey)
@@ -40,13 +57,15 @@ namespace CustomArchitecture
         // - Released & Pressed fuctions (arguments or diff functions)
 
         //prevent the escape bindinng + going back to back panel
-        public static bool TryGetKeyPressed(out KeyControl destKeyControl)
+        public static bool TryGetKeyboardInputPressed(out KeyControl destKeyControl)
         {
             foreach (var keyControl in Keyboard.current.allKeys)
             {
-                if (keyControl.wasPressedThisFrame &&
-                    keyControl.keyCode != Key.Escape && keyControl.keyCode != Key.Enter)
+                //excepted the CancelKey or ValidateKey
+                if (keyControl.wasPressedThisFrame)
                 {
+                    if (keyControl.keyCode == Key.Escape || keyControl.keyCode == Key.Enter)
+                        continue;
                     destKeyControl = keyControl;
                     return true;
                 }
@@ -55,8 +74,56 @@ namespace CustomArchitecture
             return false;
         }
 
-        public static string GetActionName(this InputAction inputAction, KeyControl keyControl)
+        public static bool TryGetGamepadInputPressed(out ButtonControl destButtonControl)
         {
+            foreach (InputControl control in Gamepad.current.allControls)
+            {
+                //excepted the CancelKey or ValidateKey
+                if (control.IsPressed() && control is ButtonControl buttonControl)
+                {
+                    if (buttonControl.displayName == "B")
+                        continue;
+                    destButtonControl = buttonControl;
+                    return true;
+                }
+            }
+
+            destButtonControl = default;
+            return false;
+        }
+
+        public static string GetActionNameByInputControl(this InputAction inputAction, InputControl inputControl)
+        {
+            if (inputControl.device is Keyboard && inputControl is KeyControl keyControl)
+            {
+                return inputAction.GetActionNameByKeyControl(keyControl);
+            }
+            if (inputControl.device is Gamepad && inputControl is ButtonControl buttonControl)
+            {
+                return inputAction.GetActionNameByButtonControl(buttonControl);
+            }
+
+            return null;
+        }
+
+        public static string GetActionNameByButtonControl(this InputAction inputAction, ButtonControl buttonControl)
+        {
+            //return buttonControl.name;
+            string res = inputAction.GetBindingDisplayString();
+            string[] parts = res.Split("|");
+
+            if (parts.Length <= 0)
+            {
+                return "error";
+            }
+            res = parts[parts.Length - 1];
+            res = res.Trim();
+            return res;
+        }
+
+        public static string GetActionNameByKeyControl(this InputAction inputAction, KeyControl keyControl)
+        {
+            //return keyControl.name;
             if (keyControl.name == "space")
                 return "space";
             if (keyControl.name == "tab")
@@ -71,7 +138,6 @@ namespace CustomArchitecture
             }
             res = parts[0];
             res = res.Trim();
-
             //if (res == "Left Arrow") return "<-";
             //if (res == "Right Arrow") return "->";
             //if (res == "Down Arrow") return "v";
@@ -79,7 +145,7 @@ namespace CustomArchitecture
             return res;
         }
 
-        public static List<KeyControl> GetKeyBoardKeysFromAction(this InputAction inputAction)
+        public static List<KeyControl> GetKeyboardKeysFromAction(this InputAction inputAction)
         {
             List<KeyControl> keys = new List<KeyControl>();
 
@@ -91,9 +157,38 @@ namespace CustomArchitecture
 
                 InputControl control = InputSystem.FindControl(binding.effectivePath);
 
-                if (control is KeyControl keyControl)
+                if (control.device is Keyboard)
                 {
-                    keys.Add(keyControl);
+                    if (control is KeyControl keyControl)
+                    {
+                        keys.Add(keyControl);
+                    }
+                }
+            }
+            return keys;
+        }
+
+        public static List<ButtonControl> GetGamepadKeysFromAction(this InputAction inputAction)
+        {
+            List<ButtonControl> keys = new List<ButtonControl>();
+
+            foreach (InputBinding binding in inputAction.bindings)
+            {
+                // Skip for compoiste bindings (exemple : WASD, etc)
+                if (binding.isPartOfComposite)
+                    continue;
+
+                InputControl control = InputSystem.FindControl(binding.effectivePath);
+
+                if (control.device is Gamepad)
+                {
+                    //if (control is StickControl stickControl)
+                    //if (control is DpadControl stickControl)
+                    //if (control is AxisControl stickControl)
+                    if (control is ButtonControl buttonControl)
+                    {
+                        keys.Add(buttonControl);
+                    }
                 }
             }
             return keys;
@@ -102,14 +197,22 @@ namespace CustomArchitecture
         ///////////// 
         // Example : 
 
-        // private InputAction m_inputAction;
-        // private void Update()
-        // {
-        //     if (RebindKeyUtils.TryGetKeyPressed(out KeyControl keyControl))
-        //     {
-        //         m_inputAction.RebindKey(keyControl);
-        //     }
-        // }
+        //private InputAction m_inputAction;
+        //
+        //private void Update()
+        //{
+        //    // For gamepad
+        //    if (RebindKeyUtils.TryGetGamepadInputPressed(out ButtonControl buttonControl))
+        //    {
+        //        m_inputAction.RebindKey(buttonControl);
+        //    }
+        //
+        //    // For keyboard
+        //    if (RebindKeyUtils.TryGetKeyboardInputPressed(out KeyControl keyControl))
+        //    {
+        //        m_inputAction.RebindKey(keyControl);
+        //    }
+        //}
 
         ///////////// 
 

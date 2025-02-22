@@ -75,6 +75,7 @@ namespace Comic
 
         public GameProgression GetGameProgression() => m_gameProgression;
         public InputActionAsset GetInputAsset() => m_gameCore.GetInputAsset();
+        public GlobalInput GetGlobalInput() => m_globalInput;
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
 
@@ -160,7 +161,7 @@ namespace Comic
                 Debug.LogWarning("Can't find GameManager. Try to load the scene before initialize");
                 return;
             }
-            Debug.Log("Late Init Game");
+            //Debug.Log("Late Init Game");
             m_gameManager.LateInit();
         }
 
@@ -171,7 +172,7 @@ namespace Comic
                 Debug.LogWarning("Can't find HudManager. Try to load the scene before initialize");
                 return;
             }
-            Debug.Log("Late Init Hud");
+            //Debug.Log("Late Init Hud");
             m_hudManager.LateInit();
         }
 

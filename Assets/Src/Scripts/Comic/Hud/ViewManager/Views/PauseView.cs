@@ -24,6 +24,7 @@ namespace Comic
         [SerializeField] private Slider m_sVolumeEffect;
         [SerializeField] private Slider m_sVolumeMusic;
 
+        public bool IsSettingsPanel => m_currentPanelIndex == 1;
         public bool IsControlsPanel => m_currentPanelIndex == 2;
         public bool IsBasePanelShown => m_currentPanelIndex == m_basePanelIndex;
 
@@ -94,8 +95,9 @@ namespace Comic
         }
         private void OnInputHorizontal(Vector2 value)
         {
-            //if (m_currentPanelIndex == 1)
-            //{
+            if (!IsSettingsPanel)
+                return;
+
             if (m_currentElement is Slider slider)
             {
                 float volume = slider.value + (value.x / 10);
@@ -134,7 +136,6 @@ namespace Comic
                 ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = destLang;
                 text.text = destLang.ToString();
             }
-            //}
         }
 
         private void OnNavigateInputChanged(InputType inputType, Vector2 value)

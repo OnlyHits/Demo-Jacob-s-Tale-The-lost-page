@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using System.Linq;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -14,7 +15,7 @@ namespace Comic
         [SerializeField] private TextMeshProUGUI m_tKey;
         [SerializeField] private float m_durationKeyChange = 0f;
         public InputAction m_inputAction;
-        public KeyControl m_currentKeyControl;
+        public InputControl m_currentInputControl;
         private bool m_selectetd = false;
         private float m_elapsedTime = 0f;
 
@@ -32,9 +33,30 @@ namespace Comic
                 return;
             }
 
-            m_currentKeyControl = m_inputAction.GetKeyBoardKeysFromAction().FirstOrDefault();
-            m_tKey.text = m_inputAction.GetActionName(m_currentKeyControl);
-            //Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionName(keyControl)}]");
+            //InitCurrentKey();
+        }
+
+        private void OnEnable()
+        {
+            InitCurrentKey();
+        }
+
+        private void InitCurrentKey()
+        {
+            ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetUsedController();
+
+            switch (usedController)
+            {
+                case ControllerType.KEYBOARD:
+                    m_currentInputControl = m_inputAction.GetKeyboardKeysFromAction().FirstOrDefault();
+                    break;
+                case ControllerType.GAMEPAD:
+                    m_currentInputControl = m_inputAction.GetGamepadKeysFromAction().FirstOrDefault();
+                    break;
+            }
+
+            SetKeyTextByAction(m_inputAction, m_currentInputControl);
+            Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionNameByInputControl(m_currentInputControl)}]");
         }
 
         protected override void OnUpdate(float delta)
@@ -43,9 +65,18 @@ namespace Comic
 
             UpdateWaitingKeyText(true, delta);
 
-            if (RebindKeyUtils.TryGetKeyPressed(out KeyControl keyControl))
+            if (RebindKeyUtils.TryGetGamepadInputPressed(out ButtonControl buttonControl))
             {
-                m_currentKeyControl = keyControl;
+                m_currentInputControl = buttonControl;
+                m_inputAction.RebindKey(buttonControl);
+                SetSelected(false);
+                SetKeyTextByAction(m_inputAction, buttonControl);
+                //Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+            }
+
+            if (RebindKeyUtils.TryGetKeyboardInputPressed(out KeyControl keyControl))
+            {
+                m_currentInputControl = keyControl;
                 m_inputAction.RebindKey(keyControl);
                 SetSelected(false);
                 SetKeyTextByAction(m_inputAction, keyControl);
@@ -66,9 +97,9 @@ namespace Comic
             }
         }
 
-        private void SetKeyTextByAction(InputAction inputAction, KeyControl keyControl)
+        private void SetKeyTextByAction(InputAction inputAction, InputControl inputControl)
         {
-            m_tKey.text = inputAction.GetActionName(keyControl);
+            m_tKey.text = inputAction.GetActionNameByInputControl(inputControl);
         }
 
         public void SetSelected(bool selected)
@@ -78,7 +109,7 @@ namespace Comic
 
         public void ResetKey()
         {
-            SetKeyTextByAction(m_inputAction, m_currentKeyControl);
+            SetKeyTextByAction(m_inputAction, m_currentInputControl);
         }
 
         // Security, but not needed for now
