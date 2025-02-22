@@ -24,6 +24,8 @@ namespace Comic
         [SerializeField] private Slider m_sVolumeEffect;
         [SerializeField] private Slider m_sVolumeMusic;
 
+        public bool IsBasePanelShown => m_currentPanelIndex == m_basePanelIndex;
+
 
         #region UNITY CALLBACKS
 
@@ -39,11 +41,6 @@ namespace Comic
             m_bCredits.onClick.AddListener(() => ComicGameCore.Instance.MainGameMode.GetViewManager().Show<CreditView>());
             m_bExit.onClick.AddListener(Exit);
             m_bBack.onClick.AddListener(ShowBasePanel);
-        }
-
-        private void OnDestroy()
-        {
-            m_preventFistInput = 0;
         }
 
         #endregion UNITY CALLBACKS
@@ -161,22 +158,17 @@ namespace Comic
             }
         }
 
-        private static int m_preventFistInput = 0;
         private void OnValidateInput(InputType inputType, bool value)
         {
-            if (value)
+            if (inputType == InputType.RELEASED)
             {
                 if (m_debug) Debug.Log("---> Validate " + value.ToString());
                 if (m_currentElement is Button button)
                 {
                     button.onClick?.Invoke();
                 }
-                if (m_currentPanelIndex == 2)
+                else if (m_currentPanelIndex == 2)
                 {
-                    if (m_preventFistInput == 0)
-                    {
-                        ++m_preventFistInput; return;
-                    }
                     ////////
                     // HERE
                     KeyBindUI elem = m_currentElement.GetComponentInParent<KeyBindUI>();
@@ -186,19 +178,33 @@ namespace Comic
                 }
             }
         }
+        public bool IsBidingKey()
+        {
+            if (m_currentPanelIndex != 2)
+            {
+                return false;
+            }
+
+            foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
+            {
+                if (elem.GetComponentInParent<KeyBindUI>() is KeyBindUI keyBind)
+                {
+                    if (keyBind.IsBindingKey)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         private void OnCanceledInput(InputType inputType, bool value)
         {
-            if (value)
+            if (inputType == InputType.RELEASED)
             {
                 ////////
                 // HERE
                 if (m_currentPanelIndex == 2)
                 {
-                    //Prevent go back if a KeyBind is listening for key
-                    // or reset the old value
-                    // maybe on OnDisable of KeyBind
-                    m_preventFistInput = 0;
-
                     foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
                     {
                         KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
@@ -211,7 +217,10 @@ namespace Comic
                 ////////
 
                 if (m_debug) Debug.Log("---> Cancel " + value.ToString());
-                ShowBasePanel();
+                if (!IsBidingKey())
+                {
+                    ShowBasePanel();
+                }
             }
         }
 

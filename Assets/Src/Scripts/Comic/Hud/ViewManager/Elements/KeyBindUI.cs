@@ -17,6 +17,8 @@ namespace Comic
         private bool m_selectetd = false;
         private float m_elapsedTime = 0f;
 
+        public bool IsBindingKey => m_selectetd;
+
         protected void Awake()
         {
             m_inputAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction(m_keyParam);

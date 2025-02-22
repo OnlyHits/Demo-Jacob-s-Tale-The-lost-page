@@ -81,7 +81,7 @@ MonoBehaviour:
   m_keyParam: 
   m_tAction: {fileID: 1658614271753017233}
   m_tKey: {fileID: 7934102975285705326}
-  m_durationKeyChange: 0.4
+  m_durationKeyChange: 0.5
   m_inputAction:
     m_Name: Input
     m_Type: 0

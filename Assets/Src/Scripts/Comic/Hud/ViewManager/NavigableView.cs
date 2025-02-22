@@ -75,6 +75,10 @@ namespace Comic
 
         public override void ActiveGraphic(bool active)
         {
+            var startElement = m_panelsData[m_basePanelIndex].startElement;
+            var selectableElements = m_panelsData[m_basePanelIndex].selectableElements;
+
+            m_lastPanelElementIdx = selectableElements.IndexOf(startElement);
             ShowPanelByIndex(m_basePanelIndex);
         }
 

@@ -34,6 +34,11 @@ namespace CustomArchitecture
             return false;
         }
 
+        // @todo : 
+        // - Discard [ESCAPE] & [ENTER] keys
+        // - Released & Pressed fuctions (arguments or diff functions)
+
+        //prevent the escape bindinng + going back to back panel
         public static bool TryGetKeyPressed(out KeyControl destKeyControl)
         {
             foreach (var keyControl in Keyboard.current.allKeys)

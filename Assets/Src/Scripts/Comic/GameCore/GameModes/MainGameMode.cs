@@ -98,6 +98,9 @@ namespace Comic
             Compute = true;
         }
 
+
+        #region INIT
+
         // This function is called first
         public override void Init(ComicGameCore game_core, params object[] parameters)
         {
@@ -118,25 +121,6 @@ namespace Comic
             m_globalInput.Init();
             m_cameraManager.Init();
             m_sceneLoader.SubscribeToEndLoading(OnLoadingEnded);
-        }
-
-        // Make all dynamic instantiation here
-        public override void OnLoadingEnded()
-        {
-            if (GetUnlockChaptersData().Count == 0)
-            {
-                UnlockChapter(Chapters.The_Prequel, false, false);
-            }
-
-            InitGame();
-            InitHud();
-
-            LateInitHud();
-            LateInitGame();
-
-            ActivateGame();
-
-            ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
 
         public void InitHud()
@@ -189,6 +173,28 @@ namespace Comic
             }
             Debug.Log("Late Init Hud");
             m_hudManager.LateInit();
+        }
+
+        #endregion INIT
+
+
+        // Make all dynamic instantiation here
+        public override void OnLoadingEnded()
+        {
+            if (GetUnlockChaptersData().Count == 0)
+            {
+                UnlockChapter(Chapters.The_Prequel, false, false);
+            }
+
+            InitGame();
+            InitHud();
+
+            LateInitHud();
+            LateInitGame();
+
+            ActivateGame();
+
+            ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
 
         public void OnEndMainDialogue(DialogueName type)
@@ -459,11 +465,32 @@ namespace Comic
             GetViewManager().Show<PauseView>();
         }
 
+
+        #region PAUSE & GLOBAL INPUT
+
+        private void TryResumeGame()
+        {
+            if (GetViewManager().GetCurrentView() is PauseView pauseView)
+            {
+                if (pauseView.IsBasePanelShown)
+                {
+                    Pause(false);
+                }
+            }
+        }
+
         private void OnPause(InputType input, bool b)
         {
             if (input == InputType.RELEASED)
             {
-                Pause(!m_pause);
+                if (m_pause)
+                {
+                    TryResumeGame();
+                }
+                else
+                {
+                    Pause(true);
+                }
             }
         }
 
@@ -481,6 +508,9 @@ namespace Comic
                 ActivateGame();
             }
         }
+
+        #endregion PAUSE & GLOBAL INPUT
+
 
         protected override void OnUpdate(float elapsed_time)
         {

@@ -423,24 +423,6 @@
             "id": "272f6d14-89ba-496f-b7ff-215263d3219f",
             "actions": [
                 {
-                    "name": "NextPage",
-                    "type": "Button",
-                    "id": "d478a991-1dc8-4042-8638-b301f2daae55",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "PrevPage",
-                    "type": "Button",
-                    "id": "8620b93e-cdfc-4fee-9e23-d739a0fef775",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Navigation",
                     "type": "Value",
                     "id": "515e103f-24b9-4b4e-93fb-44361f4fdd98",
@@ -478,28 +460,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "fc4e218e-1051-4a9d-acea-37db723a5efe",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "NextPage",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3ba3c38e-8926-46c3-a741-afb15ff41f3e",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PrevPage",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "52642316-63d3-49f0-848a-f6c1dd3a5958",
@@ -657,7 +617,7 @@
                 {
                     "name": "",
                     "id": "ffaeb013-4b54-4a29-afdb-a4f1a29d131c",
-                    "path": "<Keyboard>/p",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
