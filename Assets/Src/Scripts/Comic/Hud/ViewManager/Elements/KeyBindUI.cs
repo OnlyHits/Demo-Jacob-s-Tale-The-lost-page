@@ -33,15 +33,20 @@ namespace Comic
                 return;
             }
 
-            //InitCurrentKey();
+            ComicGameCore.Instance.MainGameMode.GetGlobalInput().SubscribeToDeviceChanged(OnDeviceChanged);
         }
 
         private void OnEnable()
         {
-            InitCurrentKey();
+            UpdareCurrentKey();
         }
 
-        private void InitCurrentKey()
+        private void OnDeviceChanged(ControllerType newControllerType)
+        {
+            UpdareCurrentKey();
+        }
+
+        private void UpdareCurrentKey()
         {
             ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetUsedController();
 

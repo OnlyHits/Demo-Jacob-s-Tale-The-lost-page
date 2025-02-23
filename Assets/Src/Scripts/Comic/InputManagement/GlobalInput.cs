@@ -16,10 +16,16 @@ namespace Comic
 
         #endregion ACTIONS
 
+
         #region CALLBACKS
+        // @note: input callbacks
         public Action<InputType, bool> onPause;
 
+        // @note: others callbacks
+        public Action<ControllerType> onDeviceChanged;
+
         #endregion CALLBACKS
+
 
         #region CONTROLLERS
         private ControllerType m_controllerUsed = ControllerType.NONE;
@@ -29,6 +35,21 @@ namespace Comic
         public ControllerType GetUsedController() => m_controllerUsed;
 
         #endregion CONTROLLERS
+
+
+        #region SUB CALLBACKS
+        public void SubscribeToDeviceChanged(Action<ControllerType> function)
+        {
+            onDeviceChanged -= function;
+            onDeviceChanged += function;
+        }
+
+        #endregion SUB CALLBACKS
+
+        private void Awake()
+        {
+            InputSystem.onDeviceChange += OnDeviceChange;
+        }
 
         public override void Init()
         {
@@ -50,24 +71,55 @@ namespace Comic
 
         // ADD A VIBRATION FONCTION FOR GAMEPAD CONTROLLER !! (called in cancelSwitchPage)
 
-        // ADD AN EVENT ON SWITCH CONTROLLER (keyboard or gamepad)
-
         protected override void OnUpdate(float elapsed_time)
         {
             base.OnUpdate(elapsed_time);
 
             if (Keyboard.current.wasUpdatedThisFrame && m_controllerUsed != ControllerType.KEYBOARD)
             {
-                m_controllerUsed = ControllerType.KEYBOARD;
-                m_keyboard = Keyboard.current;
-                Debug.Log("------> Using Keyboard");
+                SelectKeyboard();
             }
             else if (Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame && m_controllerUsed != ControllerType.GAMEPAD)
             {
-                m_controllerUsed = ControllerType.GAMEPAD;
-                m_gamepad = Gamepad.current;
-                Debug.Log("------> Using Gamepad: " + m_gamepad.name);
+                SelectGamepad();
             }
+        }
+
+        private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+        {
+            switch (change)
+            {
+                case InputDeviceChange.Added:
+                    Debug.Log($"Device connected: {device.name}");
+                    if (device is Gamepad)
+                    {
+                        SelectGamepad();
+                    }
+                    break;
+                case InputDeviceChange.Removed:
+                    Debug.Log($"Device disconnected: {device.name}");
+                    if (device is Gamepad)
+                    {
+                        SelectKeyboard();
+                    }
+                    break;
+            }
+
+            onDeviceChanged?.Invoke(m_controllerUsed);
+        }
+
+        private void SelectKeyboard()
+        {
+            m_controllerUsed = ControllerType.KEYBOARD;
+            m_keyboard = Keyboard.current;
+            //Debug.Log("Using Keyboard");
+        }
+
+        private void SelectGamepad()
+        {
+            m_controllerUsed = ControllerType.GAMEPAD;
+            m_gamepad = Gamepad.current;
+            //Debug.Log("Using Gamepad: " + m_gamepad.name);
         }
     }
 }

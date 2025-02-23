@@ -500,12 +500,12 @@ namespace Comic
             base.Pause(pause);
             if (pause)
             {
-                Debug.Log("Pause game");
+                //Debug.Log("Pause game");
                 ActivateHud();
             }
             else
             {
-                Debug.Log("Reset game");
+                //Debug.Log("Reset game");
                 ActivateGame();
             }
         }
