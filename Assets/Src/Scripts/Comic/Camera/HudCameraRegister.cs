@@ -31,6 +31,14 @@ namespace Comic
                 m_turningPage.NextPage();
         }
 
+        public void TurnPageError(bool next_page)
+        {
+            if (!next_page)
+                m_turningPage.SwitchPageError(next_page);
+            else
+                m_turningPage.SwitchPageError(next_page);
+        }
+
         public override Camera GetCameraForScreenshot()
         {
             if (m_cameras.Count > 0 && m_cameras[0] != null)

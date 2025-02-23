@@ -167,47 +167,13 @@ namespace Comic
 
             m_bBack.gameObject.SetActive(panelIndex != m_basePanelIndex);
         }
-        /*
-                private void ShowPanel(PanelType panelType)
-                {
-                    m_lastPanelType = m_currentPanelType;
-                    m_currentPanelType = panelType;
-
-                    foreach (PanelData data in m_panelsData)
-                    {
-                        if (data.type == panelType)
-                        {
-                            m_currentPanelData = data;
-                            data.panelObj.SetActive(true);
-                        }
-                        else
-                        {
-                            data.panelObj.SetActive(false);
-                        }
-                    }
-                    m_bBack.gameObject.SetActive(panelType != PanelType.BASE);
-                    TrySetStartingElement(out m_currentElement);
-                }
-
-                private void ShowBasePanel()
-                {
-                    ShowPanel(m_basePanelType);
-                }
-
-                private void ShowPrevPanel()
-                {
-                    if (m_lastPanelType == PanelType.NONE)
-                    {
-                        return;
-                    }
-                    ShowPanel(m_lastPanelType);
-                }
-        */
+        
         #endregion PANELS
 
         private void Play()
         {
-            ComicGameCore.Instance.MainGameMode.GetViewManager().ShowLast();
+            //OnPlay?.Invoke();
+            //ComicGameCore.Instance.MainGameMode.;
         }
 
         private void Exit()

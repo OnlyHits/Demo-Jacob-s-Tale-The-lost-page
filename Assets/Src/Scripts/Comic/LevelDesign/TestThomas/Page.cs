@@ -1,6 +1,9 @@
 using UnityEngine;
 using CustomArchitecture;
 using System.Collections.Generic;
+using UnityEditor.Rendering.Universal;
+using Sirenix.OdinInspector.Editor.Validation;
+//using UnityEditor.Rendering.Universal;
 
 namespace Comic
 {
@@ -10,8 +13,9 @@ namespace Comic
         [SerializeField] private Transform m_panelContainer;
         [SerializeField] private SpriteRenderer m_margin;
         [SerializeField] private GameObject m_panelPrefab;
-        [ReadOnly, SerializeField] private List<Panel> m_currentPanels;
+        [SerializeField] private List<Panel> m_currentPanels;
         [SerializeField] private Transform m_spawnPoint;
+        private Dictionary<PropsType, List<AProps>> m_props;
 
         private void Awake()
         {
@@ -22,6 +26,97 @@ namespace Comic
                     panel.Init(m_margin);
                 }
             }
+        }
+
+        public void Init()
+        {
+            foreach (var panel in m_currentPanels)
+                panel.Init(m_margin);
+
+            m_props = new()
+            {
+                { PropsType.Props_Lamp, new List<AProps>() },
+                { PropsType.Props_Painting, new List<AProps>() },
+                { PropsType.Props_Candle, new List<AProps>() },
+            };
+
+            foreach (var panel in m_currentPanels)
+            {
+                foreach (var props in panel.GetProps())
+                {
+                    if (m_props.ContainsKey(props.GetPropsType()))
+                    {
+                        m_props[props.GetPropsType()].Add(props);
+                    }
+                }
+            }
+        }
+
+        public bool CanAccessPanel(Vector3 position)
+        {
+            foreach (var panel in m_currentPanels)
+            {
+                if (panel.ContainPosition(position))
+                {
+                    if (panel.IsLock())
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override void Pause(bool pause = true)
+        {
+            base.Pause(pause);
+
+            foreach (var p in m_props)
+            {
+                foreach (var props in p.Value)
+                    props.Pause(pause);
+            }
+        }
+
+        public void EnablePage()
+        {
+            gameObject.SetActive(true);
+
+            foreach (var p in m_props)
+            {
+                foreach (var props in p.Value)
+                {
+                    props.StartBehaviour();
+                }
+            }
+        }
+
+        public void DisablePage()
+        {
+            foreach (var p in m_props)
+            {
+                foreach (var props in p.Value)
+                    props.StopBehaviour();
+            }
+
+            gameObject.SetActive(false);
+        }
+
+        public void Enable(bool enable)
+        {
+            gameObject.SetActive(enable);
+        }
+
+        public List<SpriteRenderer> GetPanelsSpriteRenderer()
+        {
+            if (m_currentPanels == null || m_currentPanels.Count == 0)
+                return null;
+
+            List<SpriteRenderer> sprites = new();
+
+            foreach (var panel in m_currentPanels)
+                sprites.Add(panel.GetPanelVisual().PanelReference());
+
+            return sprites;            
         }
 
         #region SPAWN POINT
@@ -47,11 +142,6 @@ namespace Comic
             return null;
         }
 
-        public void Enable(bool enable)
-        {
-            gameObject.SetActive(enable);
-        }
-
         #region PageEdition
 
 #if UNITY_EDITOR
@@ -61,7 +151,7 @@ namespace Comic
         {
             m_currentPanels.Clear();
 
-            foreach (Transform child in m_panelContainer.transform)
+            foreach (Transform child in m_panelContainer)
             {
                 Panel component = child.GetComponent<Panel>();
                 if (component != null)
@@ -81,18 +171,6 @@ namespace Comic
             m_currentPanels.Add(panel);
         }
 #endif
-
-        protected override void OnUpdate(float elapsed_time)
-        {
-#if UNITY_EDITOR
-            // will spawn a panel on every active page
-            // doesnt work for some reason
-            // if (Input.GetKeyDown(KeyCode.P))
-            // {
-            //     InstantiatePanel();
-            // }
-#endif
-        }
 
         #endregion
     }

@@ -32,16 +32,16 @@ namespace Comic
                 UnlockPages(pagesByChapter);
             }
 
-            SwitchPageByIndex(m_currentPageIndex);
-
-            // int i = 1;
-            // foreach (var page in m_pageList)
-            // {
-            //     page.GetText().text = i.ToString() + "/" + m_pageList.Count.ToString(); 
-            //     ++i;
-            // }
+            foreach (var page in m_pageList)
+            {
+                page.gameObject.SetActive(true);
+                page.Init();
+                page.gameObject.SetActive(false);
+            }
 
             m_pageVisual.Init();
+
+            SwitchPageByIndex(m_currentPageIndex);
 
             // #if UNITY_EDITOR
             // #else
@@ -160,28 +160,24 @@ namespace Comic
         #region TRY NEXT & PREV PAGE
         public bool TryNextPage()
         {
-            Debug.Log("Next page");
-
             int nextIdx = m_currentPageIndex + 1;
             if (nextIdx >= m_unlockedPageList.Count)
             {
                 return false;
             }
-            SwitchPage(true, nextIdx);
+            TryNextPageInternal(true, nextIdx);
             return true;
         }
 
         public bool TryPrevPage()
         {
-            Debug.Log("Previous page");
-
             int prevIdx = m_currentPageIndex - 1;
             if (prevIdx < 0)
             {
                 return false;
             }
 
-            SwitchPage(false, prevIdx);
+            TryNextPageInternal(false, prevIdx);
             return true;
         }
 

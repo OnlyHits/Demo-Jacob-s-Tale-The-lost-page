@@ -8,9 +8,11 @@ namespace Comic
     {
         [SerializeField] private SpriteRenderer m_referenceSprite;
         [SerializeField] private SpriteRenderer m_outlineSprite;
+        [SerializeField] private SpriteRenderer m_hideSprite;
         [SerializeField] private float m_outlineThickness = 0.1f;
 
         public SpriteRenderer PanelReference() => m_referenceSprite;
+        public SpriteRenderer GetHideSprite() => m_hideSprite;
         public void LockPosition() => transform.localPosition = Vector3.zero;
 
         public void Init()

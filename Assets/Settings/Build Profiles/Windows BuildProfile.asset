@@ -19,7 +19,15 @@ MonoBehaviour:
   m_PlatformBuildProfile:
     rid: 1222385953217445961
   m_OverrideGlobalSceneList: 1
-  m_Scenes: []
+  m_Scenes:
+  - m_enabled: 1
+    m_path: Assets/Src/Scenes/StartingScene.unity
+  - m_enabled: 1
+    m_path: Assets/Src/Scenes/HudScene.unity
+  - m_enabled: 1
+    m_path: Assets/Src/Scenes/GameScene.unity
+  - m_enabled: 1
+    m_path: Assets/Src/Scenes/LoadingScene.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:
@@ -747,8 +755,8 @@ MonoBehaviour:
     - rid: 1222385953217445961
       type: {class: WindowsPlatformSettings, ns: UnityEditor.WindowsStandalone, asm: UnityEditor.WindowsStandalone.Extensions}
       data:
-        m_Development: 0
-        m_ConnectProfiler: 0
+        m_Development: 1
+        m_ConnectProfiler: 1
         m_BuildWithDeepProfilingSupport: 0
         m_AllowDebugging: 0
         m_WaitForManagedDebugger: 0

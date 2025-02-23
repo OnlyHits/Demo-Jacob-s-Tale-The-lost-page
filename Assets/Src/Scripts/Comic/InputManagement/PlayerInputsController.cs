@@ -5,12 +5,8 @@ using System;
 
 namespace Comic
 {
-    //public partial class Player : Character
-    //{
     public class PlayerInputsController : AInputManager
     {
-        //public InputActionAsset m_inputActionAsset;
-
         #region ACTIONS
         private InputAction m_moveAction;
         private InputAction m_lookAction;
@@ -88,6 +84,10 @@ namespace Comic
         {
             base.OnLateUpdate(elapsed_time);
         }
+
+        public override void Pause(bool pause)
+        {
+            base.Pause(pause);
+        }
     }
-    //}
 }
