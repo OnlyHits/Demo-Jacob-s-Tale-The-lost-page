@@ -171,7 +171,6 @@ namespace Comic
                 {
                     if (!IsBidingKey())
                     {
-                        ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetGamepad()?.RumbleMicro();
                         SelectCurrentControlElem();
                     }
                 }
