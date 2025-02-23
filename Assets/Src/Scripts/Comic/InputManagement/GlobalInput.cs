@@ -1,6 +1,8 @@
 using CustomArchitecture;
 using UnityEngine.InputSystem;
+using UnityEngine;
 using System;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -10,22 +12,26 @@ namespace Comic
         #region ACTIONS
         private InputAction m_pauseAction;
 
+        public InputAction GetPauseAction() => m_pauseAction;
+
         #endregion ACTIONS
+
 
         #region CALLBACKS
         public Action<InputType, bool> onPause;
 
         #endregion CALLBACKS
 
+        private void FindAction()
+        {
+            m_pauseAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Pause");
+        }
+
+        #region INIT
         public override void Init()
         {
             FindAction();
             InitInputActions();
-        }
-
-        private void FindAction()
-        {
-            m_pauseAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Pause");
         }
 
         private void InitInputActions()
@@ -35,9 +41,6 @@ namespace Comic
             m_inputActionStructsBool.Add(iPause);
         }
 
-        protected override void OnUpdate(float elapsed_time)
-        {
-            base.OnUpdate(elapsed_time);
-        }
+        #endregion INIT
     }
 }

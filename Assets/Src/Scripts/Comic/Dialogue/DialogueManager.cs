@@ -104,7 +104,7 @@ namespace Comic
         public void LockVoice(VoiceType type)
         {
             if (m_dialogueView != null)
-                m_dialogueView.RemoveVoice(type);
+                m_dialogueView.LockVoice(type);
         }
 
         public void UnlockVoice(VoiceType type)
@@ -116,7 +116,7 @@ namespace Comic
             }
 
             if (m_dialogueView != null)
-                m_dialogueView.AddVoice(type);
+                m_dialogueView.UnlockVoice(type);
         }
 
         #endregion

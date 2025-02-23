@@ -9,14 +9,15 @@ namespace Comic
 {
     public class NpcIcon : BaseBehaviour
     {
-        private VoiceType                       m_type;
-        [SerializeField] private RectTransform  m_bubbleAnchor;
-        [SerializeField] private Image          m_iconImage;
-        [SerializeField] private Image          m_bgImage;
-        private Tween                           m_scaleTween;
-        private bool                            m_isHighlight;
-        [SerializeField] private Sprite[]       m_iconspr;
-        [SerializeField] private Image          m_background;
+        private VoiceType m_type;
+        [SerializeField] private RectTransform m_bubbleAnchor;
+        [SerializeField] private Image m_iconImage;
+        [SerializeField] private Image m_bgImage;
+        [SerializeField] private Image m_selector;
+        private Tween m_scaleTween;
+        private bool m_isHighlight;
+        [SerializeField] private Sprite[] m_iconspr;
+        [SerializeField] private Image m_background;
 
         public bool IsHighlight() => m_isHighlight;
         public RectTransform GetBubbleAnchor() => m_bubbleAnchor;
@@ -26,10 +27,20 @@ namespace Comic
         public void Highlight(bool highlight)
         {
             m_isHighlight = highlight;
-            if (m_isHighlight)
-                m_background.sprite = m_iconspr[0];
-            else
-                m_background.sprite = m_iconspr[1];
+            m_selector.enabled = highlight;
+            //if (m_isHighlight)
+            //    m_background.sprite = m_iconspr[0];
+            //else
+            //    m_background.sprite = m_iconspr[1];
+        }
+
+        public void SetUnlock(bool unlock)
+        {
+            Color unlockColor = new Color(Color.white.r, Color.white.g, Color.white.b, 1f);
+            Color lockedColor = new Color(Color.black.r, Color.black.g, Color.black.b, 0.64f);
+
+            m_iconImage.enabled = unlock;
+            m_bgImage.color = unlock ? unlockColor : lockedColor;
         }
 
         public void Init(VoiceType type, Sprite sprite)
@@ -46,7 +57,7 @@ namespace Comic
         public override void Pause(bool pause)
         {
             base.Pause(pause);
-            
+
             if (pause && m_scaleTween != null)
                 m_scaleTween.Pause();
             else if (!pause && m_scaleTween != null)

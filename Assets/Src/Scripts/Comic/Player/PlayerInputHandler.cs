@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {

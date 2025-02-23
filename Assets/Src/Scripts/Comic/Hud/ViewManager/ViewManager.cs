@@ -46,6 +46,8 @@ namespace Comic
                     m_currentView = m_views[i];
                 }
             }
+
+            HideAndShowPartialViews();
         }
 
         public void Show(AView view, bool remember = false)
@@ -62,6 +64,34 @@ namespace Comic
             // added
             view.ActiveGraphic(true);
             m_currentView = view;
+
+            HideAndShowPartialViews();
+        }
+
+        public void HideAndShowPartialViews()
+        {
+            // Quand on show une view, il faut showpartial une autre view
+            // showPartial : Show(instant: true), Hide(partial: true, istant: true)
+
+            foreach (AView ite_view in m_views)
+            {
+                if (ite_view == m_currentView) continue;
+                if (m_currentView is PauseView)
+                {
+                    ite_view.Hide(false, true);
+                }
+                if (m_currentView is ProgressionView)
+                {
+                    if (ite_view is DialogueView)
+                    {
+                        ite_view.ShowPartial();
+                    }
+                }
+                if (m_currentView is not PauseView && m_currentView is not ProgressionView)
+                {
+                    ite_view.Hide(true, false);
+                }
+            }
         }
 
         public void ShowLast()

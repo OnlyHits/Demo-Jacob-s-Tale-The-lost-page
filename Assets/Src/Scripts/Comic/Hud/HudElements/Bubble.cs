@@ -1,11 +1,10 @@
 using CustomArchitecture;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -44,7 +43,7 @@ namespace Comic
         {
             if (!IsBubbleChoice())
                 ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValid);
-            
+
             m_containerRect = container_rect;
             gameObject.SetActive(false);
             gameObject.GetComponent<RectTransform>().position = m_containerRect.position;

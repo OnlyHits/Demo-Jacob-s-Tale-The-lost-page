@@ -4,6 +4,7 @@ using CustomArchitecture;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -50,8 +51,7 @@ namespace Comic
         private SceneLoader m_sceneLoader;
         private URP_CameraManager m_cameraManager;
         private GlobalInput m_globalInput;
-
-        //private NavigationInput m_navigationInput;
+        private DeviceManager m_deviceManager;
 
         // local datas
         private HudManager m_hudManager;
@@ -75,6 +75,8 @@ namespace Comic
 
         public GameProgression GetGameProgression() => m_gameProgression;
         public InputActionAsset GetInputAsset() => m_gameCore.GetInputAsset();
+        public GlobalInput GetGlobalInput() => m_globalInput;
+        public DeviceManager GetDeviceManager() => m_deviceManager;
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
 
@@ -98,6 +100,9 @@ namespace Comic
             Compute = true;
         }
 
+
+        #region INIT
+
         // This function is called first
         public override void Init(ComicGameCore game_core, params object[] parameters)
         {
@@ -111,32 +116,15 @@ namespace Comic
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
             m_globalInput = GetComponent<GlobalInput>();
+            m_deviceManager = GetComponent<DeviceManager>();
             m_cameraManager = GetComponentInChildren<URP_CameraManager>();
 
             m_globalInput.onPause += OnPause;
 
             m_globalInput.Init();
+            m_deviceManager.Init();
             m_cameraManager.Init();
             m_sceneLoader.SubscribeToEndLoading(OnLoadingEnded);
-        }
-
-        // Make all dynamic instantiation here
-        public override void OnLoadingEnded()
-        {
-            if (GetUnlockChaptersData().Count == 0)
-            {
-                UnlockChapter(Chapters.The_Prequel, false, false);
-            }
-
-            InitGame();
-            InitHud();
-
-            LateInitHud();
-            LateInitGame();
-
-            ActivateGame();
-
-            ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
 
         public void InitHud()
@@ -176,7 +164,7 @@ namespace Comic
                 Debug.LogWarning("Can't find GameManager. Try to load the scene before initialize");
                 return;
             }
-            Debug.Log("Late Init Game");
+            //Debug.Log("Late Init Game");
             m_gameManager.LateInit();
         }
 
@@ -187,8 +175,30 @@ namespace Comic
                 Debug.LogWarning("Can't find HudManager. Try to load the scene before initialize");
                 return;
             }
-            Debug.Log("Late Init Hud");
+            //Debug.Log("Late Init Hud");
             m_hudManager.LateInit();
+        }
+
+        #endregion INIT
+
+
+        // Make all dynamic instantiation here
+        public override void OnLoadingEnded()
+        {
+            if (GetUnlockChaptersData().Count == 0)
+            {
+                UnlockChapter(Chapters.The_Prequel, false, false);
+            }
+
+            InitGame();
+            InitHud();
+
+            LateInitHud();
+            LateInitGame();
+
+            ActivateGame();
+
+            ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
         }
 
         public void OnEndMainDialogue(DialogueName type)
@@ -444,12 +454,12 @@ namespace Comic
         }
 
         #endregion
-        
+
         private void ActivateGame()
         {
             GetNavigationInput().Pause(true);
             GetCharacterManager().PauseAllCharacters(false);
-            GetViewManager().Show<DialogueView>();
+            GetViewManager().Show<ProgressionView>();
         }
 
         private void ActivateHud()
@@ -459,29 +469,52 @@ namespace Comic
             GetViewManager().Show<PauseView>();
         }
 
-        private bool m_extPause = false;
+
+        #region PAUSE & GLOBAL INPUT
+
+        private void TryResumeGame()
+        {
+            if (GetViewManager().GetCurrentView() is PauseView pauseView)
+            {
+                if (pauseView.IsBasePanelShown)
+                {
+                    Pause(false);
+                }
+            }
+        }
+
         private void OnPause(InputType input, bool b)
         {
             if (input == InputType.RELEASED)
             {
-                m_extPause = !m_extPause;
-                Pause(m_extPause);
+                if (m_pause)
+                {
+                    TryResumeGame();
+                }
+                else
+                {
+                    Pause(true);
+                }
             }
         }
 
         public override void Pause(bool pause)
         {
+            base.Pause(pause);
             if (pause)
             {
-                Debug.Log("Pause game");
+                //Debug.Log("Pause game");
                 ActivateHud();
             }
             else
             {
-                Debug.Log("Reset game");
+                //Debug.Log("Reset game");
                 ActivateGame();
             }
         }
+
+        #endregion PAUSE & GLOBAL INPUT
+
 
         protected override void OnUpdate(float elapsed_time)
         {

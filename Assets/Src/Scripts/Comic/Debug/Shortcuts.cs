@@ -19,10 +19,10 @@ public class Shortcuts : MonoBehaviour
 
     public Dictionary<KeyCode, System.Type> keyByViews = new Dictionary<KeyCode, System.Type>()
     {
-        { KeyCode.Alpha6, typeof(DialogueView) },
-        { KeyCode.Alpha7, typeof(CreditView) },
-        { KeyCode.Alpha8, typeof(ProgressionView) },
-        { KeyCode.Alpha9, typeof(PauseView) },
+        { KeyCode.Alpha0, typeof(DialogueView) },
+        { KeyCode.Alpha9, typeof(ProgressionView) },
+        { KeyCode.Alpha8, typeof(PauseView) },
+        //{ KeyCode.Alpha7, typeof(CreditView) },
     };
 
     private void Update()
@@ -30,10 +30,10 @@ public class Shortcuts : MonoBehaviour
         CheckInputSave();
         CheckInputViews();
 
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            ComicGameCore.Instance.MainGameMode.PlayEndGame();
-        }
+        //if (Input.GetKeyDown(KeyCode.Alpha0))
+        //{
+        //    ComicGameCore.Instance.MainGameMode.PlayEndGame();
+        //}
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -94,6 +94,7 @@ public class Shortcuts : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             unlock = !unlock;
+            Debug.Log("UNLOCK = " + unlock.ToString() + ".");
         }
 
         foreach (KeyCode key in keyByChapters.Keys)

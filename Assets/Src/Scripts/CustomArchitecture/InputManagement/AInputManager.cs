@@ -2,17 +2,10 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace CustomArchitecture
 {
-    public enum InputType
-    {
-        NONE = 0,
-        PRESSED = 1,
-        COMPUTED = 2,
-        RELEASED = 3,
-    }
-
     public abstract class AInputManager : BaseBehaviour
     {
         [HideInInspector] public List<InputActionStruct<Vector2>> m_inputActionStructsV2 = new List<InputActionStruct<Vector2>>();

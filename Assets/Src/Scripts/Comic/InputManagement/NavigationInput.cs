@@ -2,18 +2,22 @@ using CustomArchitecture;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
+using static CustomArchitecture.CustomArchitecture;
+
 
 namespace Comic
 {
     public class NavigationInput : AInputManager
     {
         #region ACTIONS
-
         private InputAction m_navigationAction;
         private InputAction m_validateAction;
         private InputAction m_cancelAction;
 
+        public InputAction GetValidateAction() => m_validateAction;
+        public InputAction GetCancelAction() => m_cancelAction;
         #endregion ACTIONS
+
 
         #region CALLBACKS
         public Action<InputType, Vector2> onNavigationAction;
@@ -22,6 +26,8 @@ namespace Comic
 
         #endregion CALLBACKS
 
+
+        #region SUB CALLBACKS
         public void SubscribeToNavigate(Action<InputType, Vector2> function)
         {
             onNavigationAction -= function;
@@ -39,6 +45,8 @@ namespace Comic
             onCancelAction -= function;
             onCancelAction += function;
         }
+        #endregion SUB CALLBACKS
+
 
         public override void Init()
         {

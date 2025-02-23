@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using CustomArchitecture;
 using TMPro;
+using UnityEngine.EventSystems;
+using static CustomArchitecture.CustomArchitecture;
+using UnityEngine.InputSystem;
 
 namespace Comic
 {
@@ -11,6 +14,8 @@ namespace Comic
         [Header("Buttons")]
         [SerializeField] private Button m_bPlay;
         [SerializeField] private Button m_bOptions;
+        [SerializeField] private Button m_bControls;
+        [SerializeField] private Button m_bCredits;
         [SerializeField] private Button m_bExit;
         [SerializeField] private Button m_bBack;
 
@@ -20,6 +25,10 @@ namespace Comic
         [Header("Slider")]
         [SerializeField] private Slider m_sVolumeEffect;
         [SerializeField] private Slider m_sVolumeMusic;
+
+        public bool IsSettingsPanel => m_currentPanelIndex == 1;
+        public bool IsControlsPanel => m_currentPanelIndex == 2;
+        public bool IsBasePanelShown => m_currentPanelIndex == m_basePanelIndex;
 
 
         #region UNITY CALLBACKS
@@ -32,11 +41,14 @@ namespace Comic
 
             m_bPlay.onClick.AddListener(Play);
             m_bOptions.onClick.AddListener(() => ShowPanelByIndex(1));
+            m_bControls.onClick.AddListener(() => ShowPanelByIndex(2));
+            m_bCredits.onClick.AddListener(() => ComicGameCore.Instance.MainGameMode.GetViewManager().Show<CreditView>());
             m_bExit.onClick.AddListener(Exit);
             m_bBack.onClick.AddListener(ShowBasePanel);
         }
 
         #endregion UNITY CALLBACKS
+
 
         #region INTERNAL
 
@@ -56,11 +68,13 @@ namespace Comic
 
         #endregion INTERNAL
 
+
         #region CALLBACKS
 
         private void OnInputVertical(Vector2 value)
         {
             int destIndex = m_currentElementIdx;
+            int saveIndex = m_currentElementIdx;
 
             if (value.y < 0)
             {
@@ -76,11 +90,18 @@ namespace Comic
 
             if (TrySetElementByIndex(out m_currentElement, destIndex))
             {
+                if (IsControlsPanel)
+                {
+                    UnSelectControlElemByIndex(saveIndex);
+                }
                 if (m_debug) Debug.Log("---- > Navigate on element = " + m_currentElement.name);
             }
         }
         private void OnInputHorizontal(Vector2 value)
         {
+            if (!IsSettingsPanel)
+                return;
+
             if (m_currentElement is Slider slider)
             {
                 float volume = slider.value + (value.x / 10);
@@ -136,23 +157,62 @@ namespace Comic
                 OnInputHorizontal(value);
             }
         }
+
         private void OnValidateInput(InputType inputType, bool value)
         {
-            if (value)
+            if (inputType == InputType.RELEASED)
             {
                 if (m_debug) Debug.Log("---> Validate " + value.ToString());
                 if (m_currentElement is Button button)
                 {
                     button.onClick?.Invoke();
                 }
+                else if (IsControlsPanel)
+                {
+                    if (!IsBidingKey())
+                    {
+                        ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetGamepad()?.RumbleMicro();
+                        SelectCurrentControlElem();
+                    }
+                }
             }
         }
+
         private void OnCanceledInput(InputType inputType, bool value)
         {
-            if (value)
+            if (inputType == InputType.RELEASED)
             {
+                ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetUsedController();
+
                 if (m_debug) Debug.Log("---> Cancel " + value.ToString());
-                ShowBasePanel();
+
+                if (IsBasePanelShown)
+                {
+                    if (usedController == ControllerType.GAMEPAD)
+                    {
+                        Play();
+                    }
+                }
+
+                if (!IsControlsPanel)
+                {
+                    ShowBasePanel();
+                }
+                else
+                {
+                    if (!IsBidingKey())
+                    {
+                        ShowBasePanel();
+                    }
+                    else
+                    {
+                        if (usedController == ControllerType.KEYBOARD)
+                        {
+                            UnSelectCurrentControlElem();
+                        }
+                    }
+                    //UnSelectAllBindingElemens();
+                }
             }
         }
 
@@ -167,13 +227,76 @@ namespace Comic
 
             m_bBack.gameObject.SetActive(panelIndex != m_basePanelIndex);
         }
-        
+
         #endregion PANELS
+
+
+        #region CONTROL PANEL METHODS
+
+        public bool IsBidingKey()
+        {
+            if (!IsControlsPanel)
+                return false;
+
+            foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
+            {
+                if (elem.GetComponentInParent<KeyBindUI>() is KeyBindUI keyBind)
+                {
+                    if (keyBind.IsBindingKey)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void UnSelectAllBindingElemens()
+        {
+            if (!IsControlsPanel)
+                return;
+            foreach (UIBehaviour elem in m_currentPanelData.selectableElements)
+            {
+                KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
+                if (keyBindUI == null)
+                    continue;
+                keyBindUI.SetSelected(false);
+            }
+        }
+
+        private void UnSelectControlElemByIndex(int index)
+        {
+            if (!IsControlsPanel)
+                return;
+            UIBehaviour elem = m_currentPanelData.selectableElements[index];
+            KeyBindUI keyBindUI = elem.GetComponentInParent<KeyBindUI>();
+            keyBindUI.SetSelected(false);
+        }
+
+        private void UnSelectCurrentControlElem()
+        {
+            if (!IsControlsPanel)
+                return;
+            if (m_currentElement.GetComponentInParent<KeyBindUI>() is KeyBindUI keyBind)
+            {
+                keyBind.ResetKey();
+                keyBind.SetSelected(false);
+            }
+        }
+
+        private void SelectCurrentControlElem()
+        {
+            if (!IsControlsPanel)
+                return;
+            KeyBindUI elem = m_currentElement.GetComponentInParent<KeyBindUI>();
+            elem.SetSelected(true);
+        }
+
+        #endregion CONTROL PANEL METHODS
 
         private void Play()
         {
-            //OnPlay?.Invoke();
-            //ComicGameCore.Instance.MainGameMode.;
+            ComicGameCore.Instance.MainGameMode.Pause(false);
         }
 
         private void Exit()
