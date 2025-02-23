@@ -56,14 +56,10 @@ namespace Comic
             }
 
             SetKeyTextByAction(m_inputAction, m_currentInputControl);
-            Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionNameByInputControl(m_currentInputControl)}]");
+            //Debug.Log($"> {m_inputAction.name} : [{m_inputAction.GetActionNameByInputControl(m_currentInputControl)}]");
         }
 
 
-        // @note :
-        // - Discard [ESCAPE] & [ENTER] keys
-        // - Released & Pressed fuctions (arguments or diff functions)
-        // to prevent the escape bindinng + going back to back panel
         protected override void OnUpdate(float delta)
         {
             if (!m_selectetd) return;
@@ -78,13 +74,14 @@ namespace Comic
                 {
                     StartCoroutine(CoroutineUtils.InvokeNextFrame(() =>
                     {
+                        // @note : Discard pause input to rebind to a control key
                         if (keyControl == ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetPauseAction().GetKeyboardKeysFromAction().FirstOrDefault())
                             return;
                         m_currentInputControl = keyControl;
                         m_inputAction.RebindKey(keyControl);
                         SetSelected(false);
                         SetKeyTextByAction(m_inputAction, keyControl);
-                        Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+                        //Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
                     }));
                 }
             }
@@ -95,13 +92,14 @@ namespace Comic
                 {
                     StartCoroutine(CoroutineUtils.InvokeNextFrame(() =>
                     {
+                        // @note : Discard pause input to rebind to a control key
                         if (buttonControl == ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetPauseAction().GetGamepadKeysFromAction().FirstOrDefault())
                             return;
                         m_currentInputControl = buttonControl;
                         m_inputAction.RebindKey(buttonControl);
                         SetSelected(false);
                         SetKeyTextByAction(m_inputAction, buttonControl);
-                        Debug.Log($"Action rebinded [{m_inputAction.name}] with [{buttonControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+                        //Debug.Log($"Action rebinded [{m_inputAction.name}] with [{buttonControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
                     }));
                 }
             }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using CustomArchitecture;
 using TMPro;
 using UnityEngine.EventSystems;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -179,7 +180,17 @@ namespace Comic
         {
             if (inputType == InputType.RELEASED)
             {
+                ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetUsedController();
+
                 if (m_debug) Debug.Log("---> Cancel " + value.ToString());
+
+                if (IsBasePanelShown)
+                {
+                    if (usedController == ControllerType.GAMEPAD)
+                    {
+                        Play();
+                    }
+                }
 
                 if (!IsControlsPanel)
                 {
@@ -191,10 +202,13 @@ namespace Comic
                     {
                         ShowBasePanel();
                     }
-                    //else
-                    //{
-                    //    UnSelectCurrentControlElem();
-                    //}
+                    else
+                    {
+                        if (usedController == ControllerType.KEYBOARD)
+                        {
+                            UnSelectCurrentControlElem();
+                        }
+                    }
                     //UnSelectAllBindingElemens();
                 }
             }

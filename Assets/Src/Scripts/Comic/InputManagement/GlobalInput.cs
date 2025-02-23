@@ -50,6 +50,8 @@ namespace Comic
 
         // ADD A VIBRATION FONCTION FOR GAMEPAD CONTROLLER !! (called in cancelSwitchPage)
 
+        // ADD AN EVENT ON SWITCH CONTROLLER (keyboard or gamepad)
+
         protected override void OnUpdate(float elapsed_time)
         {
             base.OnUpdate(elapsed_time);
