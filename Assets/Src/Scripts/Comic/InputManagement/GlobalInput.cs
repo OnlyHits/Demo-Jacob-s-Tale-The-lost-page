@@ -27,14 +27,14 @@ namespace Comic
         #endregion CALLBACKS
 
 
-        #region CONTROLLERS
+        #region DEVICES / CONTROLLERS
         private ControllerType m_controllerUsed = ControllerType.NONE;
         private UnityEngine.InputSystem.Keyboard m_keyboard;
         private UnityEngine.InputSystem.Gamepad m_gamepad;
 
         public ControllerType GetUsedController() => m_controllerUsed;
 
-        #endregion CONTROLLERS
+        #endregion DEVICES / CONTROLLERS
 
 
         #region SUB CALLBACKS
@@ -46,20 +46,46 @@ namespace Comic
 
         #endregion SUB CALLBACKS
 
+        #region UNITY CALLBACKS
         private void Awake()
         {
             InputSystem.onDeviceChange += OnDeviceChange;
         }
 
-        public override void Init()
-        {
-            FindAction();
-            InitInputActions();
-        }
+        #endregion UNITY CALLBACKS
 
         private void FindAction()
         {
             m_pauseAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Pause");
+        }
+
+        #region INIT
+        public override void Init()
+        {
+            FindAction();
+            InitInputActions();
+            InitStartingDevice();
+        }
+
+        private void InitStartingDevice()
+        {
+            bool gamepadConnected = false;
+
+            foreach (var device in InputSystem.devices)
+            {
+                Debug.Log("Connected Device: " + device.name);
+
+                if (device is Gamepad)
+                {
+                    gamepadConnected = true;
+                    SelectGamepad();
+                }
+            }
+
+            if (!gamepadConnected)
+            {
+                SelectKeyboard();
+            }
         }
 
         private void InitInputActions()
@@ -69,7 +95,7 @@ namespace Comic
             m_inputActionStructsBool.Add(iPause);
         }
 
-        // ADD A VIBRATION FONCTION FOR GAMEPAD CONTROLLER !! (called in cancelSwitchPage)
+        #endregion INIT
 
         protected override void OnUpdate(float elapsed_time)
         {
@@ -85,19 +111,20 @@ namespace Comic
             }
         }
 
+        #region DEVICES SELECTION
         private void OnDeviceChange(InputDevice device, InputDeviceChange change)
         {
             switch (change)
             {
                 case InputDeviceChange.Added:
-                    Debug.Log($"Device connected: {device.name}");
+                    //Debug.Log($"Device connected: {device.name}");
                     if (device is Gamepad)
                     {
                         SelectGamepad();
                     }
                     break;
                 case InputDeviceChange.Removed:
-                    Debug.Log($"Device disconnected: {device.name}");
+                    //Debug.Log($"Device disconnected: {device.name}");
                     if (device is Gamepad)
                     {
                         SelectKeyboard();
@@ -112,14 +139,27 @@ namespace Comic
         {
             m_controllerUsed = ControllerType.KEYBOARD;
             m_keyboard = Keyboard.current;
-            //Debug.Log("Using Keyboard");
+            Debug.Log("-> Using Keyboard");
         }
 
         private void SelectGamepad()
         {
             m_controllerUsed = ControllerType.GAMEPAD;
             m_gamepad = Gamepad.current;
-            //Debug.Log("Using Gamepad: " + m_gamepad.name);
+            Debug.Log("-> Using Gamepad: " + m_gamepad.name);
+        }
+
+        #endregion DEVICES SELECTION
+
+        public void RumbleGamepad()
+        {
+            if (m_controllerUsed != ControllerType.GAMEPAD)
+                return;
+            if (m_gamepad == null)
+                return;
+
+            //UnityEngine.InputSystem.Gamepad
+            // ADD A VIBRATION FONCTION FOR GAMEPAD CONTROLLER !! (called in cancelSwitchPage)
         }
     }
 }
