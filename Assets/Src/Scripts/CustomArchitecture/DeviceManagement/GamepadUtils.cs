@@ -13,8 +13,9 @@ public class CoroutineRunner : MonoBehaviour
             if (instance == null)
             {
                 GameObject obj = new GameObject("CoroutineRunner");
+
                 instance = obj.AddComponent<CoroutineRunner>();
-                DontDestroyOnLoad(obj); // Keeps it alive across scenes
+                DontDestroyOnLoad(obj);
             }
             return instance;
         }
