@@ -2413,6 +2413,8 @@ MonoBehaviour:
   m_rightShadow: {fileID: 496223441}
   m_turnDuration: 1
   m_errorAngle: 45
+  m_vibrateOnError: 0
+  m_vibrationDuration: 0.1
   m_canvas: {fileID: 1907668672}
 --- !u!1001 &2045178320
 PrefabInstance:
