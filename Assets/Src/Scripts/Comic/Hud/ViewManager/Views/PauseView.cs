@@ -47,6 +47,7 @@ namespace Comic
 
         #endregion UNITY CALLBACKS
 
+
         #region INTERNAL
 
         public override void ActiveGraphic(bool active)
@@ -64,6 +65,7 @@ namespace Comic
         }
 
         #endregion INTERNAL
+
 
         #region CALLBACKS
 
@@ -165,7 +167,10 @@ namespace Comic
                 }
                 else if (IsControlsPanel)
                 {
-                    SelectCurrentControlElem();
+                    if (!IsBidingKey())
+                    {
+                        SelectCurrentControlElem();
+                    }
                 }
             }
         }
@@ -186,11 +191,11 @@ namespace Comic
                     {
                         ShowBasePanel();
                     }
-                    else
-                    {
-                        UnSelectCurrentControlElem();
-                    }
-                    UnSelectAllBindingElemens();
+                    //else
+                    //{
+                    //    UnSelectCurrentControlElem();
+                    //}
+                    //UnSelectAllBindingElemens();
                 }
             }
         }
@@ -208,6 +213,7 @@ namespace Comic
         }
 
         #endregion PANELS
+
 
         #region CONTROL PANEL METHODS
 

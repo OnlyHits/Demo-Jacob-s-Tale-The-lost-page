@@ -12,6 +12,8 @@ namespace Comic
         #region ACTIONS
         private InputAction m_pauseAction;
 
+        public InputAction GetPauseAction() => m_pauseAction;
+
         #endregion ACTIONS
 
         #region CALLBACKS

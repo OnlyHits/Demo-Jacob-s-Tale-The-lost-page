@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Comic;
@@ -12,28 +13,71 @@ namespace CustomArchitecture
 {
     public static class RebindKeyUtils
     {
+
+        #region REBIND_KEYS
+
         public static void RebindKey(this InputAction inputAction, Key newKey)
         {
             inputAction.ApplyBindingOverride("<Keyboard>/" + newKey.ToString().ToLower());
         }
 
-        // @note : useless
-        public static void RebindKey(this InputAction inputAction, KeyControl newKey)
-        {
-            inputAction.ApplyBindingOverride(newKey.path);
-        }
-
-        // @note : useless
-        public static void RebindKey(this InputAction inputAction, ButtonControl newButton)
-        {
-            inputAction.ApplyBindingOverride(newButton.path);
-        }
-
-        // @note : the one we are using for both keyboard & gamepad
         public static void RebindKey(this InputAction inputAction, InputControl newInput)
         {
-            inputAction.ApplyBindingOverride(newInput.path);
+            if (newInput == null)
+                return;
+
+            // @note: this call erease all bindings to write this one 
+            // if there was 2 bindings like gamepad & controller, it will erease both
+            //inputAction.ApplyBindingOverride(newInput.path);
+
+            if (newInput.device is Keyboard)
+                inputAction.RebindKeyFromKeyboard(newInput);
+            if (newInput.device is Gamepad)
+                inputAction.RebindKeyFromGamepad(newInput);
         }
+
+        public static void RebindKeyFromKeyboard(this InputAction inputAction, InputControl newInput)
+        {
+            if (newInput == null)
+                return;
+
+            int bindedIndex = GetBindingIndex(inputAction, "<Keyboard>");
+
+            if (bindedIndex >= 0)
+            {
+                inputAction.ApplyBindingOverride(bindedIndex, newInput.path);
+            }
+        }
+
+        public static void RebindKeyFromGamepad(this InputAction inputAction, InputControl newInput)
+        {
+            if (newInput == null)
+                return;
+
+            int bindedIndex = GetBindingIndex(inputAction, "<Gamepad>");
+
+            if (bindedIndex >= 0)
+            {
+                inputAction.ApplyBindingOverride(bindedIndex, newInput.path);
+            }
+        }
+
+        private static int GetBindingIndex(InputAction inputAction, string deviceLayout)
+        {
+            for (int i = 0; i < inputAction.bindings.Count; i++)
+            {
+                if (inputAction.bindings[i].path.Contains(deviceLayout))
+                {
+                    return i; // Returns the first match index
+                }
+            }
+            return inputAction.bindings.Count; // Not found so returns the last index + 1
+        }
+
+        #endregion REBIND_KEYS
+
+
+        #region TRYGET_KEY_PRESSED
 
         public static bool TryGetKeyPressed(out Key destKey)
         {
@@ -93,23 +137,27 @@ namespace CustomArchitecture
             return false;
         }
 
+        #endregion TRYGET_KEY_PRESSED
+
+
+        #region GETTERS & SETTERS
+
         public static string GetActionNameByInputControl(this InputAction inputAction, InputControl inputControl)
         {
-            if (inputControl?.device is Keyboard && inputControl is KeyControl keyControl)
-            {
-                return inputAction.GetActionNameByKeyControl(keyControl);
-            }
-            if (inputControl?.device is Gamepad && inputControl is ButtonControl buttonControl)
-            {
-                return inputAction.GetActionNameByButtonControl(buttonControl);
-            }
+            if (inputControl == null)
+                return null;
+
+            if (inputControl.device is Keyboard)
+                return inputAction.GetActionNameForKeyboard(inputControl);
+            if (inputControl.device is Gamepad)
+                return inputAction.GetActionNameForGamepad(inputControl);
 
             return null;
         }
 
-        public static string GetActionNameByButtonControl(this InputAction inputAction, ButtonControl buttonControl)
+        public static string GetActionNameForGamepad(this InputAction inputAction, InputControl inputControl)
         {
-            //return buttonControl.name;
+            //return inputControl.name;
             string res = inputAction.GetBindingDisplayString();
             string[] parts = res.Split("|");
 
@@ -123,13 +171,17 @@ namespace CustomArchitecture
             return res;
         }
 
-        public static string GetActionNameByKeyControl(this InputAction inputAction, KeyControl keyControl)
+        public static string GetActionNameForKeyboard(this InputAction inputAction, InputControl inputControl)
         {
-            //return keyControl.name;
-            if (keyControl.name == "space")
+            //return inputControl.name;
+            if (inputControl.name == "space")
                 return "space";
-            if (keyControl.name == "tab")
+            if (inputControl.name == "tab")
                 return "tab";
+            if (inputControl.name == "enter")
+                return "enter";
+            if (inputControl.name == "escape")
+                return "escape";
 
             string res = inputAction.GetBindingDisplayString();
             string[] parts = res.Split("|");
@@ -197,6 +249,11 @@ namespace CustomArchitecture
             return keys;
         }
 
+        #endregion GETTERS & SETTERS
+
+
+        #region EXAMPLES
+
         ///////////// 
         // Example : 
 
@@ -218,6 +275,8 @@ namespace CustomArchitecture
         //}
 
         ///////////// 
+
+        #endregion EXAMPLES
 
     }
 }

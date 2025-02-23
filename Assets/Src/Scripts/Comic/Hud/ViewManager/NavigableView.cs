@@ -52,6 +52,7 @@ namespace Comic
             }
         }
 
+
         #region UNITY CALLBACKS
 
         protected override void OnUpdate(float elapsed_time)
@@ -71,6 +72,7 @@ namespace Comic
 
         #endregion UNITY CALLBACKS
 
+
         #region INTERNAL
 
         public override void ActiveGraphic(bool active)
@@ -87,6 +89,7 @@ namespace Comic
         }
 
         #endregion INTERNAL 
+
 
         #region PANELS
 
@@ -125,6 +128,7 @@ namespace Comic
         }
 
         #endregion PANELS
+
 
         #region UI ELEMENTS
 

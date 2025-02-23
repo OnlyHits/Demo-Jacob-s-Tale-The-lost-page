@@ -60,41 +60,50 @@ namespace Comic
         }
 
 
-        // @todo : 
+        // @note :
         // - Discard [ESCAPE] & [ENTER] keys
         // - Released & Pressed fuctions (arguments or diff functions)
-
-        //prevent the escape bindinng + going back to back panel
+        // to prevent the escape bindinng + going back to back panel
         protected override void OnUpdate(float delta)
         {
             if (!m_selectetd) return;
 
             UpdateWaitingKeyText(true, delta);
 
-            if (RebindKeyUtils.TryGetGamepadInputPressed(out ButtonControl buttonControl))
+            ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetUsedController();
+
+            if (usedController == ControllerType.KEYBOARD)
             {
-                if (buttonControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetCancelAction().GetGamepadKeysFromAction().FirstOrDefault())
-                    return;
-                if (buttonControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetValidateAction().GetGamepadKeysFromAction().FirstOrDefault())
-                    return;
-                m_currentInputControl = buttonControl;
-                m_inputAction.RebindKey(buttonControl);
-                SetSelected(false);
-                SetKeyTextByAction(m_inputAction, buttonControl);
-                //Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+                if (RebindKeyUtils.TryGetKeyboardInputPressed(out KeyControl keyControl))
+                {
+                    StartCoroutine(CoroutineUtils.InvokeNextFrame(() =>
+                    {
+                        if (keyControl == ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetPauseAction().GetKeyboardKeysFromAction().FirstOrDefault())
+                            return;
+                        m_currentInputControl = keyControl;
+                        m_inputAction.RebindKey(keyControl);
+                        SetSelected(false);
+                        SetKeyTextByAction(m_inputAction, keyControl);
+                        Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+                    }));
+                }
             }
 
-            if (RebindKeyUtils.TryGetKeyboardInputPressed(out KeyControl keyControl))
+            if (usedController == ControllerType.GAMEPAD)
             {
-                if (keyControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetCancelAction().GetKeyboardKeysFromAction().FirstOrDefault())
-                    return;
-                if (keyControl == ComicGameCore.Instance.MainGameMode.GetNavigationInput().GetValidateAction().GetKeyboardKeysFromAction().FirstOrDefault())
-                    return;
-                m_currentInputControl = keyControl;
-                m_inputAction.RebindKey(keyControl);
-                SetSelected(false);
-                SetKeyTextByAction(m_inputAction, keyControl);
-                //Debug.Log($"Action rebinded [{m_inputAction.name}] with [{keyControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+                if (RebindKeyUtils.TryGetGamepadInputPressed(out ButtonControl buttonControl))
+                {
+                    StartCoroutine(CoroutineUtils.InvokeNextFrame(() =>
+                    {
+                        if (buttonControl == ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetPauseAction().GetGamepadKeysFromAction().FirstOrDefault())
+                            return;
+                        m_currentInputControl = buttonControl;
+                        m_inputAction.RebindKey(buttonControl);
+                        SetSelected(false);
+                        SetKeyTextByAction(m_inputAction, buttonControl);
+                        Debug.Log($"Action rebinded [{m_inputAction.name}] with [{buttonControl.name}] or [{m_inputAction.GetBindingDisplayString()}]");
+                    }));
+                }
             }
         }
 
