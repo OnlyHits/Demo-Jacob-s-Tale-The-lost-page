@@ -2,6 +2,7 @@ using CustomArchitecture;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {

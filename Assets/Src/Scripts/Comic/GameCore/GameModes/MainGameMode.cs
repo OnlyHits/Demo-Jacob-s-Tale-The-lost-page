@@ -4,6 +4,7 @@ using CustomArchitecture;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -50,8 +51,7 @@ namespace Comic
         private SceneLoader m_sceneLoader;
         private URP_CameraManager m_cameraManager;
         private GlobalInput m_globalInput;
-
-        //private NavigationInput m_navigationInput;
+        private DeviceManager m_deviceManager;
 
         // local datas
         private HudManager m_hudManager;
@@ -76,6 +76,7 @@ namespace Comic
         public GameProgression GetGameProgression() => m_gameProgression;
         public InputActionAsset GetInputAsset() => m_gameCore.GetInputAsset();
         public GlobalInput GetGlobalInput() => m_globalInput;
+        public DeviceManager GetDeviceManager() => m_deviceManager;
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
 
@@ -115,11 +116,13 @@ namespace Comic
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
             m_globalInput = GetComponent<GlobalInput>();
+            m_deviceManager = GetComponent<DeviceManager>();
             m_cameraManager = GetComponentInChildren<URP_CameraManager>();
 
             m_globalInput.onPause += OnPause;
 
             m_globalInput.Init();
+            m_deviceManager.Init();
             m_cameraManager.Init();
             m_sceneLoader.SubscribeToEndLoading(OnLoadingEnded);
         }

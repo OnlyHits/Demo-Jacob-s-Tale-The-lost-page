@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Sirenix.Utilities;
 using System.Linq;
 using DG.Tweening;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {

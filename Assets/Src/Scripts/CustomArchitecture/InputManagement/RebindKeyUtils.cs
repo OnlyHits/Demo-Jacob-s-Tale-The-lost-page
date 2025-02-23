@@ -1,13 +1,6 @@
-using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Comic;
-using Unity.VisualScripting;
-using UnityEditor.ShortcutManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem.LowLevel;
 
 namespace CustomArchitecture
 {

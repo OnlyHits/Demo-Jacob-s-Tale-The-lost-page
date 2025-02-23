@@ -1,11 +1,7 @@
 using CustomArchitecture;
-using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using System;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -17,8 +13,8 @@ namespace Comic
         [SerializeField] private GameObject m_cursorTwo;
         protected override bool IsBubbleChoice() => true;
 
-        private bool                        m_accept = true;
-        private bool                        m_validate = false;
+        private bool m_accept = true;
+        private bool m_validate = false;
 
         public override void Init(RectTransform container_rect)
         {
@@ -38,7 +34,7 @@ namespace Comic
             DynamicDialogueData datas = TMP_AnimatedTextController.Instance.GetDialogueDatas<ComicGameCore>(type);
 
             m_choiceOneDialogue.StartDialogue(config, datas);
-            
+
             m_cursorOne.SetActive(true);
             m_cursorTwo.SetActive(false);
 

@@ -4,6 +4,7 @@ using CustomArchitecture;
 using TMPro;
 using UnityEngine.EventSystems;
 using static CustomArchitecture.CustomArchitecture;
+using UnityEngine.InputSystem;
 
 namespace Comic
 {
@@ -170,6 +171,7 @@ namespace Comic
                 {
                     if (!IsBidingKey())
                     {
+                        ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetGamepad()?.RumbleMicro();
                         SelectCurrentControlElem();
                     }
                 }
@@ -180,7 +182,7 @@ namespace Comic
         {
             if (inputType == InputType.RELEASED)
             {
-                ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetUsedController();
+                ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetUsedController();
 
                 if (m_debug) Debug.Log("---> Cancel " + value.ToString());
 
