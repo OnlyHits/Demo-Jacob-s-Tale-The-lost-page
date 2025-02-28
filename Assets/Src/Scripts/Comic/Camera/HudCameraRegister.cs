@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using static PageHole;
 
 namespace Comic
 {
@@ -12,8 +13,25 @@ namespace Comic
         public void SetBackSprite(Sprite sprite) => m_turningPage.SetBackSprite(sprite);
         public void RegisterToEndTurning(Action function) => m_turningPage.RegisterToEndTurning(function);
 
-        public void Init(Camera world_camera, Bounds sprite_bounds)
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
+            if (parameters.Length != 2
+                || parameters[0] is not Camera
+                || parameters[1] is not Bounds)
+                return;
+
+            Camera world_camera = (Camera)parameters[0];
+            Bounds sprite_bounds = (Bounds)parameters[1];
+
             Vector3 minWorld = sprite_bounds.min;
             Vector3 maxWorld = sprite_bounds.max;
 
@@ -22,6 +40,7 @@ namespace Comic
                     world_camera.WorldToScreenPoint(minWorld),
                     world_camera.WorldToScreenPoint(maxWorld));
         }
+        #endregion
 
         public void TurnPage(bool next_page)
         {

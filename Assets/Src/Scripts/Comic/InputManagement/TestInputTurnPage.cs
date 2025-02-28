@@ -23,17 +23,21 @@ namespace Comic
 
         #endregion CALLBACKS
 
-        public override void Init() { }
-
-        public void Awake()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
         {
-            /*
-            onNextPageAction += NextPage;
-            onPrevPageAction += PrevPage;
-            FindAction();
-            InitInputActions();
-            */
+            base.OnLateUpdate();
         }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+        }
+        #endregion
 
         private void FindAction()
         {
@@ -48,11 +52,6 @@ namespace Comic
 
             m_inputActionStructsBool.Add(iNextPage);
             m_inputActionStructsBool.Add(iPrevPage);
-        }
-
-        protected override void OnLateUpdate(float elapsed_time)
-        {
-            base.OnLateUpdate(elapsed_time);
         }
 
         private void NextPage(InputType input, bool b)

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
+using static PageHole;
 
 namespace Comic
 {
@@ -8,8 +9,18 @@ namespace Comic
     {
         [SerializeField] private List<Power> m_allPowers;
 
-        public void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
+            // should be done in late init
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockPower(OnUnlockPower);
             ComicGameCore.Instance.MainGameMode.SubscribeToLockPower(OnLockPower);
 
@@ -22,7 +33,7 @@ namespace Comic
                 }
             }
         }
-
+        #endregion
 
         private void OnUnlockPower(PowerType powerType)
         {

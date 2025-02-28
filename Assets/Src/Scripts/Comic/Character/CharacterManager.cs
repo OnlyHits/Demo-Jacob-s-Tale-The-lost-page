@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
+using static Comic.Props_Candle;
 
 namespace Comic
 {
@@ -10,7 +11,17 @@ namespace Comic
         private Dictionary<VoiceType, Character> m_npcs;
         public Player GetPlayer() => m_player;
 
-        public void Init()
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
             LoadCharacters();
             InitCharacters();
@@ -24,9 +35,7 @@ namespace Comic
             SpawnCharacters();
         }
 
-        private void Start()
-        {
-        }
+        #endregion
 
         private void SpawnCharacters()
         {

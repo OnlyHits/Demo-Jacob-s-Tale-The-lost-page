@@ -23,12 +23,17 @@ namespace Comic
         private float m_baseIntensity;
         private SpriteRenderer m_spriteRenderer;
 
-        private void Awake()
-        {
-        }
 
-
-        public override void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
             m_spriteRenderer = GetComponent<SpriteRenderer>();
             m_baseIntensity = m_light.intensity;
@@ -48,6 +53,8 @@ namespace Comic
                 m_light.intensity = 0f;
             }
         }
+
+        #endregion
 
         public override void StartBehaviour()
         {

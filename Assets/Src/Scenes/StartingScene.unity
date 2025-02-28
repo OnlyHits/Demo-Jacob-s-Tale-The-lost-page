@@ -222,6 +222,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameCore
       objectReference: {fileID: 0}
+    - target: {fileID: 3897897761463895517, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4558377320441313647, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -262,6 +266,62 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_Depth
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_ClearFlags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: orthographic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: far clip plane
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: d566f9f0930b1b341be7fa652a1a7445, type: 2}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: near clip plane
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: orthographic size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_OcclusionCulling
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_BackGroundColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371398091343685659, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7311562309446095401, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 7519351537499769330, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_leftScreenshot
       value: 
@@ -270,6 +330,18 @@ PrefabInstance:
       propertyPath: m_rightScreenshot
       value: 
       objectReference: {fileID: 67224761}
+    - target: {fileID: 7519351537499769330, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_screenshotCamera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7519351537499769330, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_cachedRenderTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: 3aaad5bca80fca54b80f4fda4f30c18d, type: 2}
+    - target: {fileID: 7519351537499769330, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_screenshotRenderTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: d566f9f0930b1b341be7fa652a1a7445, type: 2}
     - target: {fileID: 8303299829472940196, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_VolumeFrameworkUpdateModeOption
       value: 2
@@ -279,7 +351,8 @@ PrefabInstance:
       value: -10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8847850430135086439, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 9158024469771789629, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       insertIndex: -1

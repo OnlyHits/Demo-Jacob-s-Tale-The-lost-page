@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using Sirenix.OdinInspector;
+using Unity.Cinemachine;
 
 namespace CustomArchitecture
 {
@@ -23,6 +24,28 @@ namespace CustomArchitecture
         public Vector2 m_woodleAmplitude;
         public float m_popDuration;
         public float m_simultaneousApparitionDuration;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            m_dialogues = new()
+            {
+                { Language.French, SerializedScriptableObject.CreateInstance<TMP_AnimatedText_ScriptableObject>() },
+                { Language.English, SerializedScriptableObject.CreateInstance<TMP_AnimatedText_ScriptableObject>() },
+            };
+
+            m_dialogues[Language.French].Init("French_Dialogue");
+            m_dialogues[Language.English].Init("English_Dialogue");
+        }
+        #endregion
 
         // Prevent direct instantiation
         protected TMP_AnimatedTextController() { }
@@ -65,24 +88,13 @@ namespace CustomArchitecture
             Instance = this;
             DontDestroyOnLoad(gameObject);
             
-            OnAwake();
+            Init();
+            LateInit();
         }
 
         #endregion
 
         private Dictionary<Language, TMP_AnimatedText_ScriptableObject> m_dialogues;
-
-        private void OnAwake()
-        {
-            m_dialogues = new()
-            {
-                { Language.French, SerializedScriptableObject.CreateInstance<TMP_AnimatedText_ScriptableObject>() },
-                { Language.English, SerializedScriptableObject.CreateInstance<TMP_AnimatedText_ScriptableObject>() },
-            };
-
-            m_dialogues[Language.French].Init("French_Dialogue");
-            m_dialogues[Language.English].Init("English_Dialogue");
-        }
 
         public DynamicDialogueData GetDialogueDatas<T>(DialogueType type) where T : AGameCore<T>
         {

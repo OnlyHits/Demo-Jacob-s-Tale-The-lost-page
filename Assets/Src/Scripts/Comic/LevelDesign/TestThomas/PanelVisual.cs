@@ -1,5 +1,6 @@
 using UnityEngine;
 using CustomArchitecture;
+using static PageHole;
 
 namespace Comic
 {
@@ -15,12 +16,27 @@ namespace Comic
         public SpriteRenderer GetHideSprite() => m_hideSprite;
         public void LockPosition() => transform.localPosition = Vector3.zero;
 
-        public void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                ResizeSprite();
+#endif
+        }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
             // Not sure about that here until it's made in Awake method
             // Not sure that we need it att all anyway until it is always resolved in editor
             ResizeSprite();
         }
+        #endregion
 
         private void Awake()
         {
@@ -39,14 +55,6 @@ namespace Comic
             }
 
             ResizeSprite();
-        }
-
-        protected override void OnUpdate(float elapsed_time)
-        {
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-                ResizeSprite();
-#endif
         }
 
         private void ResizeSprite()

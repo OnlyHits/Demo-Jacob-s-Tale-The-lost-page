@@ -16,9 +16,31 @@ namespace Comic
         private bool m_accept = true;
         private bool m_validate = false;
 
-        public override void Init(RectTransform container_rect)
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
         {
-            base.Init(container_rect);
+            base.OnFixedUpdate();
+        }
+        protected override void OnLateUpdate()
+        {
+            base.OnLateUpdate();
+        }
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+
+        public override void LateInit(params object[] parameters)
+        {
+            base.LateInit(parameters);
+        }
+        public override void Init(params object[] parameters)
+        {
+            if (parameters.Length != 1
+                || parameters[0] is not RectTransform)
+                return;
+
+            base.Init(parameters[0]);
 
             ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCancel);
             ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidation);
@@ -41,6 +63,7 @@ namespace Comic
             m_validate = false;
             m_accept = true;
         }
+        #endregion
 
         public void SetupChoiceTwo(DialogueType type)
         {

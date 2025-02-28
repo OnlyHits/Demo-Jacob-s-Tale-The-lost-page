@@ -28,7 +28,16 @@ namespace Comic
             }
         }
 
-        public void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
             foreach (var panel in m_currentPanels)
                 panel.Init(m_margin);
@@ -51,7 +60,7 @@ namespace Comic
                 }
             }
         }
-
+        #endregion
         public bool CanAccessPanel(Vector3 position)
         {
             foreach (var panel in m_currentPanels)

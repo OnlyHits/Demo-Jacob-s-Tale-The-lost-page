@@ -10,15 +10,13 @@ namespace CustomArchitecture
         protected string m_gameSceneName = null;
         protected string m_uiSceneName = null;
 
+        public string GetGameSceneName() => m_gameSceneName;
+        public string GetUISceneName() => m_uiSceneName;
+
         /// <summary>
         /// This function is called first
         /// </summary>
         public abstract void StartGameMode();
-
-        /// <summary>
-        /// Make all dynamic instanciation here
-        /// </summary>
-        public abstract void OnLoadingEnded();
 
         /// <summary>
         /// Destroy all managed objects
@@ -36,9 +34,12 @@ namespace CustomArchitecture
             protected set { m_isCompute = value; }
         }
 
-        public virtual void Init(T game_core, params object[] parameters)
+        public override void Init(params object[] parameters)
         {
-            m_gameCore = game_core;
+            if (parameters.Length > 0 && parameters[0] is T game_core)
+                m_gameCore = game_core;
+            else
+                Debug.LogError("AGameMode no game core found");
         }
 
         public string GetName

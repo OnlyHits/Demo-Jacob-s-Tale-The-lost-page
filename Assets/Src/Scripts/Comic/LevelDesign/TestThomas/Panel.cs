@@ -4,6 +4,8 @@ using System;
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using UnityEngine.Jobs;
+using Unity.VisualScripting;
 
 namespace Comic
 {
@@ -19,7 +21,8 @@ namespace Comic
         [SerializeField] private bool m_isLock = false;
         private List<AProps> m_props = null;
         private SpriteRenderer m_margin;
-        private List<Tween> m_rotCaseTweens = new List<Tween>();
+        private Tween m_rotateTween;
+        //private List<Tween> m_rotCaseTweens = new List<Tween>();
         private bool m_isRotating = false;
         private Vector3 m_currentRotation = Vector3.zero;
 
@@ -27,13 +30,35 @@ namespace Comic
         public PanelVisual GetPanelVisual() => m_panelVisual;
         public List<AProps> GetProps() => m_props;
 
-        public void Init(SpriteRenderer margin)
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
         {
-            m_margin = margin;
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                ClampPosition();
+#endif
+
+            m_panelVisual.GetHideSprite().enabled = m_isLock;
+        }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            if (parameters.Length != 1
+                || parameters[0] is not SpriteRenderer)
+                return;
+
+            m_margin = (SpriteRenderer)parameters[0];
             m_panelVisual.Init();
 
             InitProps();
         }
+        #endregion
 
         public bool ContainPosition(Vector3 position)
         {
@@ -59,16 +84,6 @@ namespace Comic
             }
         }        
 
-        protected override void OnUpdate(float elapsed_time)
-        {
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-                ClampPosition();
-#endif
-
-            m_panelVisual.GetHideSprite().enabled = m_isLock;
-        }
-
         // could be only in unity editor, will see later if needed
         private void ClampPosition()
         {
@@ -93,34 +108,23 @@ namespace Comic
 
         public bool IsRotating()
         {
-            return false;
+            return m_isRotating;
         }
 
         public void Rotate180(float speed, Action endRotateCallback)
         {
-            if (m_rotCaseTweens.Count > 0)
-                return;
-
             m_isRotating = true;
 
-            Vector3 destRot = m_currentRotation + new Vector3(0, 0, 180);
-            m_currentRotation += new Vector3(0, 0, 180);
+            Vector3 to = new Vector3(0, transform.eulerAngles.y + 180f, 0f);
 
-            foreach (Transform t in m_allElements)
-            {
-                Tween tween = t.DOLocalRotate(destRot, 0.5f);
-                tween.OnComplete(() =>
-                    {
-                        if (m_rotCaseTweens.Contains(tween))
-                        {
-                            m_rotCaseTweens.Remove(tween);
-                            m_isRotating = false;
-                            endRotateCallback?.Invoke();
-                        }
-                        tween = null;
-                    });
-                m_rotCaseTweens.Add(tween);
-            }
+            m_rotateTween = transform.DORotate(to, speed, RotateMode.FastBeyond360)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    m_isRotating = false;
+                    endRotateCallback?.Invoke();
+                    m_rotateTween = null;
+                });
         }
 
         public bool IsPlayerInCase()

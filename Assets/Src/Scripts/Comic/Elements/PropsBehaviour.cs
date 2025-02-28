@@ -1,6 +1,7 @@
 using UnityEngine;
 using CustomArchitecture;
 using DG.Tweening;
+using static PageHole;
 
 namespace Comic
 {
@@ -11,6 +12,19 @@ namespace Comic
         [SerializeField] private Ease m_easeType;
         private Vector2 m_baseScale;
         private Tween m_scaleTween = null;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        { }
+        #endregion
 
         private void Awake()
         {

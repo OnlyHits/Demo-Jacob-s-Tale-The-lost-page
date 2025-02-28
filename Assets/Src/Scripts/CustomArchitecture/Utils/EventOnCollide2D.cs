@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static PageHole;
 
 namespace CustomArchitecture
 {
@@ -12,6 +13,19 @@ namespace CustomArchitecture
         public Action<Collider2D> onTriggerEnter;
         public Action<Collider2D> onTriggerStay;
         public Action<Collider2D> onTriggerExit;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        { }
+        #endregion
 
         private void OnCollisionEnter2D(Collision2D collision)
         {

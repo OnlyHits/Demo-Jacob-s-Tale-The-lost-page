@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using TMPro;
+using static PageHole;
 
 namespace Comic
 {
@@ -52,16 +53,16 @@ namespace Comic
             }
         }
 
-
-        #region UNITY CALLBACKS
-
-        protected override void OnUpdate(float elapsed_time)
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
         {
-            base.OnUpdate(elapsed_time);
-
             if (isCd)
             {
-                timer += elapsed_time;
+                timer += Time.deltaTime;
                 if (timer >= cd)
                 {
                     isCd = false;
@@ -69,9 +70,11 @@ namespace Comic
                 }
             }
         }
-
-        #endregion UNITY CALLBACKS
-
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        { }
+        #endregion
 
         #region INTERNAL
 
@@ -82,10 +85,6 @@ namespace Comic
 
             m_lastPanelElementIdx = selectableElements.IndexOf(startElement);
             ShowPanelByIndex(m_basePanelIndex);
-        }
-
-        public override void Init()
-        {
         }
 
         #endregion INTERNAL 

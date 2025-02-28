@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using Sirenix.Utilities;
 using UnityEngine;
+using static PageHole;
 
 namespace Comic
 {
@@ -11,14 +12,30 @@ namespace Comic
         [SerializeField, ReadOnly] private Page m_currentPage;
         [SerializeField, ReadOnly] private int m_currentPageIndex;
         [SerializeField, ReadOnly] private List<Page> m_unlockedPageList = new List<Page>();
-        [SerializeField] private PageVisualManager m_pageVisual;
+//        [SerializeField] private PageVisualManager m_pageVisual;
         [SerializeField] private float m_durationStartGame = 5f;
-        [SerializeField] private float m_durationEndGame = 10f;
+//        [SerializeField] private float m_durationEndGame = 10f;
 
         public Page GetCurrentPage() => m_currentPage;
         public Panel GetCurrentPanel() => m_currentPage.GetCurrentPanel();
 
-        public void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        {
+            foreach (var page in m_pageList)
+            {
+                page.LateInit();
+            }
+
+            ComicGameCore.Instance.MainGameMode.GetHudManager().RegisterToEndTurning(() => m_hasFinishTurning = true);
+        }
+        public override void Init(params object[] parameters)
         {
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnUnlockChapter);
             ComicGameCore.Instance.MainGameMode.SubscribeToLockChapter(OnLockChapter);
@@ -39,7 +56,7 @@ namespace Comic
                 page.gameObject.SetActive(false);
             }
 
-            m_pageVisual.Init();
+//            m_pageVisual.Init();
 
             SwitchPageByIndex(m_currentPageIndex);
 
@@ -48,6 +65,7 @@ namespace Comic
             //             OnStartGame();
             // #endif
         }
+        #endregion
 
         #region START & END GAME
 

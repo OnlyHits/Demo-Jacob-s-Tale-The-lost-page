@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using System.Linq;
 using static CustomArchitecture.CustomArchitecture;
+using static PageHole;
 
 namespace Comic
 {
@@ -21,9 +22,34 @@ namespace Comic
 
         public bool IsBindingKey => m_selectetd;
 
-        protected void Awake()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
         {
-            m_inputAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction(m_keyParam);
+            if (!m_selectetd) return;
+
+            UpdateWaitingKeyText(true, Time.deltaTime);
+
+            ControllerType usedController = ComicGameCore.Instance.GetDeviceManager().GetUsedController();
+
+            if (usedController == ControllerType.KEYBOARD)
+                TryRebindKeyboard();
+            if (usedController == ControllerType.GAMEPAD)
+                TryRebindGamepad();
+        }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+        }
+        #endregion
+
+        protected void Awake() // should be done in init
+        {
+            m_inputAction = ComicGameCore.Instance.GetInputAsset().FindAction(m_keyParam);
             if (m_inputAction == null)
             {
                 m_tAction.enabled = false;
@@ -33,7 +59,7 @@ namespace Comic
                 return;
             }
 
-            ComicGameCore.Instance.MainGameMode.GetDeviceManager().SubscribeToDeviceChanged(OnDeviceChanged);
+            ComicGameCore.Instance.GetDeviceManager().SubscribeToDeviceChanged(OnDeviceChanged);
         }
 
         private void OnEnable()
@@ -46,21 +72,6 @@ namespace Comic
             UpdareCurrentKey();
         }
 
-        protected override void OnUpdate(float delta)
-        {
-            if (!m_selectetd) return;
-
-            UpdateWaitingKeyText(true, delta);
-
-            ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetUsedController();
-
-            if (usedController == ControllerType.KEYBOARD)
-                TryRebindKeyboard();
-            if (usedController == ControllerType.GAMEPAD)
-                TryRebindGamepad();
-        }
-
-
         #region REBIND KEYS
         private void TryRebindKeyboard()
         {
@@ -69,7 +80,7 @@ namespace Comic
                 StartCoroutine(CoroutineUtils.InvokeNextFrame(() =>
                 {
                     // @note : Discard pause input to rebind to a control key
-                    if (keyControl == ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetPauseAction().GetKeyboardKeysFromAction().FirstOrDefault())
+                    if (keyControl == ComicGameCore.Instance.GetGlobalInput().GetPauseAction().GetKeyboardKeysFromAction().FirstOrDefault())
                         return;
                     m_currentInputControl = keyControl;
                     m_inputAction.RebindKey(keyControl);
@@ -87,7 +98,7 @@ namespace Comic
                 StartCoroutine(CoroutineUtils.InvokeNextFrame(() =>
                 {
                     // @note : Discard pause input to rebind to a control key
-                    if (buttonControl == ComicGameCore.Instance.MainGameMode.GetGlobalInput().GetPauseAction().GetGamepadKeysFromAction().FirstOrDefault())
+                    if (buttonControl == ComicGameCore.Instance.GetGlobalInput().GetPauseAction().GetGamepadKeysFromAction().FirstOrDefault())
                         return;
                     m_currentInputControl = buttonControl;
                     m_inputAction.RebindKey(buttonControl);
@@ -103,7 +114,7 @@ namespace Comic
         #region UPDATE UI
         private void UpdareCurrentKey()
         {
-            ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetUsedController();
+            ControllerType usedController = ComicGameCore.Instance.GetDeviceManager().GetUsedController();
 
             switch (usedController)
             {

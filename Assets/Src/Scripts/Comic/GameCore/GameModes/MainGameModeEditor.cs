@@ -14,13 +14,13 @@ namespace Comic
             // Create a button in the Inspector
             if (GUILayout.Button("Init game"))
             {
-                game_mode.InitGame();
+//                game_mode.InitGame();
             }
 
             // Create a button in the Inspector
             if (GUILayout.Button("Init hud"))
             {
-                game_mode.InitHud();
+//                game_mode.InitHud();
             }
 
             DrawDefaultInspector();

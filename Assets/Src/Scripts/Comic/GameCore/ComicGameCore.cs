@@ -1,6 +1,7 @@
 using UnityEngine;
 using CustomArchitecture;
 using UnityEngine.InputSystem;
+using static PageHole;
 
 namespace Comic
 {
@@ -13,11 +14,6 @@ namespace Comic
         [SerializeField] private bool m_debugStandaloneScene = false;
 #endif
 
-        [SerializeField] private InputActionAsset m_inputActionAsset;
-        private SceneLoader m_sceneLoader;
-
-        public InputActionAsset GetInputAsset() => m_inputActionAsset;
-
         public MainGameMode MainGameMode
         {
             get { return GetGameMode<MainGameMode>(); }
@@ -26,14 +22,7 @@ namespace Comic
 
         protected override void InstantiateGameModes()
         {
-            m_sceneLoader = gameObject.GetComponent<SceneLoader>();
-
-            if (m_sceneLoader == null)
-            {
-                m_sceneLoader = gameObject.AddComponent<SceneLoader>();
-            }
-
-            CreateGameMode<MainGameMode>(m_sceneLoader);
+            CreateGameMode<MainGameMode>();
 
 #if UNITY_EDITOR
             if (m_debugStandaloneScene == false)

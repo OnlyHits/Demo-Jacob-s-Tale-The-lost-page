@@ -32,6 +32,25 @@ namespace Comic
         private Tween m_switchPageOverlayTween = null;
 
 
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            m_composer = m_camController.GetComponent<CinemachinePositionComposer>();
+            m_camController.Follow = m_target;
+            m_camController.LookAt = m_target;
+            m_baseMainOrthoSize = m_camController.Lens.OrthographicSize;
+            m_baseOverlayOrthoSize = m_camOverlay.orthographicSize;
+        }
+        #endregion
+
         #region Shake
         public void StopCamShake() => ShakeCam.Inst?.StopShake();
         public void CamShakeMacro(float duration = 0.375f) => ShakeCam.Inst?.Shake(0.375f, duration);
@@ -44,27 +63,6 @@ namespace Comic
         public void CamShakeLightLoop(bool state) => ShakeCam.Inst?.LoopShake(1f, state);
         public void CamShakeHeavyLoop(bool state) => ShakeCam.Inst?.LoopShake(1.5f, state);
         #endregion
-
-        private void Awake()
-        {
-            m_composer = m_camController.GetComponent<CinemachinePositionComposer>();
-            m_camController.Follow = m_target;
-            m_camController.LookAt = m_target;
-            m_baseMainOrthoSize = m_camController.Lens.OrthographicSize;
-            m_baseOverlayOrthoSize = m_camOverlay.orthographicSize;
-        }
-
-        private void Start()
-        {
-            Init();
-        }
-
-        public void Init()
-        {
-            ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
-            //ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
-            //            m_durationSwitchPage = ComicGameCore.Instance.MainGameMode.GetPageManager().GetSwitchPageDuration();
-        }
 
         private void OnBeforeSwitchPage(bool nextPage)
         {

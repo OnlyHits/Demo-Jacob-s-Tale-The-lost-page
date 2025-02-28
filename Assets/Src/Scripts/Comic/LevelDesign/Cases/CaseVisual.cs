@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
 using static Comic.Comic;
+using static PageHole;
 
 namespace Comic
 {
@@ -17,6 +18,20 @@ namespace Comic
             m_sprites.AddRange(sprites);
             m_caseMask = GetComponentInChildren<SpriteMask>(true);
         }
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        { }
+        #endregion
+
 
         public void PushFront()
         {

@@ -4,14 +4,13 @@ using UnityEngine;
 using System;
 using static CustomArchitecture.CustomArchitecture;
 
-namespace Comic
+namespace CustomArchitecture
 {
     public class GlobalInput : AInputManager
     {
 
         #region ACTIONS
         private InputAction m_pauseAction;
-
         public InputAction GetPauseAction() => m_pauseAction;
 
         #endregion ACTIONS
@@ -22,25 +21,46 @@ namespace Comic
 
         #endregion CALLBACKS
 
-        private void FindAction()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
         {
-            m_pauseAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Pause");
+            base.OnLateUpdate();
+        }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        {
+            InitInputActions();
         }
 
-        #region INIT
-        public override void Init()
+        public override void Init(params object[] parameters)
         {
-            FindAction();
-            InitInputActions();
+            if (parameters.Length != 1
+                || parameters[0] is not InputActionAsset)
+            {
+                Debug.LogWarning("GlobalInput : Unable to find InputActionAsset");
+                return;
+            }
+
+            FindAction((InputActionAsset)parameters[0]);
+        }
+        #endregion
+
+        private void FindAction(InputActionAsset inputActionAsset)
+        {
+            m_pauseAction = inputActionAsset.FindAction("Pause");
         }
 
         private void InitInputActions()
         {
-            InputActionStruct<bool> iPause = new InputActionStruct<bool>(m_pauseAction, onPause, false);
+            InputActionStruct<bool> iPause = new(m_pauseAction, onPause, false);
+
+            // in case of reloading the game
+            m_inputActionStructsBool.Clear();
 
             m_inputActionStructsBool.Add(iPause);
         }
-
-        #endregion INIT
     }
 }

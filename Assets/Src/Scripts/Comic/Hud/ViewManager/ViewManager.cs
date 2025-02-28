@@ -1,16 +1,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CustomArchitecture;
+using static PageHole;
 
 namespace Comic
 {
     public class ViewManager : BaseBehaviour
     {
-        private static ViewManager m_instance;
         [SerializeField] private AView m_startingView;
         [SerializeField] private AView[] m_views;
         private AView m_currentView;
         private readonly Stack<AView> m_history = new Stack<AView>();
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        {
+            for (int i = 0; i < m_views.Length; ++i)
+            {
+                m_views[i].LateInit();
+            }
+
+            // remove this and replace by ShowStartingView function
+            if (m_startingView != null)
+                Show(m_startingView, true);
+        }
+        public override void Init(params object[] parameters)
+        {
+            for (int i = 0; i < m_views.Length; ++i)
+            {
+                // set manager first, view could need this reference
+                m_views[i].Manager = this;
+                m_views[i].Init();
+                m_views[i].Hide();
+            }
+        }
+        #endregion
 
         public AView GetCurrentView() => m_currentView;
 
@@ -108,18 +138,6 @@ namespace Comic
 
             if (m_currentView != null)
                 m_currentView.Pause(pause);
-        }
-
-        public void Init()
-        {
-            for (int i = 0; i < m_views.Length; i++)
-            {
-                m_views[i].Init();
-                m_views[i].Hide();
-            }
-
-            if (m_startingView != null)
-                Show(m_startingView, true);
         }
     }
 }

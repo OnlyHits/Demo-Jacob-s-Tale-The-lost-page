@@ -8,6 +8,19 @@ public class RandomSpritePicker : BaseBehaviour
     [SerializeField, ReadOnly] private SpriteRenderer m_spriteRd;
     [SerializeField] private List<Sprite> m_spriteList;
 
+    #region BaseBehaviour
+    protected override void OnFixedUpdate()
+    { }
+    protected override void OnLateUpdate()
+    { }
+    protected override void OnUpdate()
+    { }
+    public override void LateInit(params object[] parameters)
+    { }
+    public override void Init(params object[] parameters)
+    { }
+    #endregion
+
     private void Awake()
     {
         m_spriteRd = GetComponent<SpriteRenderer>();

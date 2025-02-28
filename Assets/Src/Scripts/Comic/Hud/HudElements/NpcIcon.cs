@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using static PageHole;
 
 namespace Comic
 {
@@ -24,6 +25,27 @@ namespace Comic
         public void SetBubbleAnchor(RectTransform tr) => m_bubbleAnchor = tr;
         public VoiceType GetVoiceType() => m_type;
 
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            if (parameters.Length != 2
+                || parameters[0] is not VoiceType
+                || parameters[1] is not Sprite)
+                return;
+
+            m_type = (VoiceType)parameters[0];
+            m_iconImage.sprite = (Sprite)parameters[1];
+        }
+        #endregion
+
         public void Highlight(bool highlight)
         {
             m_isHighlight = highlight;
@@ -41,12 +63,6 @@ namespace Comic
 
             m_iconImage.enabled = unlock;
             m_bgImage.color = unlock ? unlockColor : lockedColor;
-        }
-
-        public void Init(VoiceType type, Sprite sprite)
-        {
-            m_iconImage.sprite = sprite;
-            m_type = type;
         }
 
         public void SetIconSprite(Sprite sprite)

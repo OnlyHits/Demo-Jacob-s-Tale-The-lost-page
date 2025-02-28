@@ -20,7 +20,16 @@ public class PageHole : BaseBehaviour
     public float GetDuration() => m_duration;
     public int GetNbFrames() => m_animHoleElements[0].m_spriteFrames.Count;
 
-    public void Init()
+    #region BaseBehaviour
+    protected override void OnFixedUpdate()
+    { }
+    protected override void OnLateUpdate()
+    { }
+    protected override void OnUpdate()
+    { }
+    public override void LateInit(params object[] parameters)
+    { }
+    public override void Init(params object[] parameters)
     {
         m_spriteRd = GetComponentInChildren<SpriteRenderer>();
 
@@ -32,6 +41,7 @@ public class PageHole : BaseBehaviour
 
         m_animHole = m_animHoleElements[UnityEngine.Random.Range(0, m_animHoleElements.Count - 1)];
     }
+    #endregion
 
     public void Setup(Vector3 spawnPos, int sortingLayerID, float totalDurationAnim)
     {

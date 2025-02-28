@@ -2,6 +2,7 @@ using CustomArchitecture;
 using Unity.Cinemachine;
 using UnityEngine;
 using Comic;
+using static PageHole;
 
 public class ShakeCam : BaseBehaviour
 {
@@ -9,6 +10,30 @@ public class ShakeCam : BaseBehaviour
     [SerializeField, ReadOnly] private CinemachineCamera m_cam;
     [SerializeField, ReadOnly] private CinemachineBasicMultiChannelPerlin m_multChanPerlin;
     private float m_shakeTimer;
+
+    #region BaseBehaviour
+    protected override void OnFixedUpdate()
+    { }
+    protected override void OnLateUpdate()
+    { }
+    protected override void OnUpdate()
+    {
+        if (m_shakeTimer > 0)
+        {
+            m_shakeTimer -= Time.deltaTime;
+
+            if (m_shakeTimer <= 0f)
+            {
+                m_multChanPerlin.AmplitudeGain = 0f;
+            }
+        }
+    }
+    public override void LateInit(params object[] parameters)
+    { }
+    public override void Init(params object[] parameters)
+    {
+    }
+    #endregion
 
     private void Awake()
     {
@@ -32,18 +57,5 @@ public class ShakeCam : BaseBehaviour
     {
         m_multChanPerlin.AmplitudeGain = intensity;
         m_shakeTimer = time;
-    }
-
-    protected override void OnUpdate(float delta)
-    {
-        if (m_shakeTimer > 0)
-        {
-            m_shakeTimer -= delta;
-
-            if (m_shakeTimer <= 0f)
-            {
-                m_multChanPerlin.AmplitudeGain = 0f;
-            }
-        }
     }
 }

@@ -14,7 +14,6 @@ namespace Comic
         private Action<bool> m_onAfterSwitchPageCallback;
 
         private Coroutine m_switchPageCoroutine;
-        [SerializeField] private bool m_skipSwitchPageAnimation = false;
         private bool m_hasFinishTurning = false;
 
         #region CALLBACKS
@@ -32,12 +31,6 @@ namespace Comic
         }
 
         #endregion CALLBACKS
-
-
-        public void RegisterSwitchPageManagerCallbacks()
-        {
-            ComicGameCore.Instance.MainGameMode.GetHudManager().RegisterToEndTurning(() => m_hasFinishTurning = true);
-        }
 
         private Vector3 GetCorrectedPlayerPosition(Page evaluated_page)
         {
@@ -100,6 +93,8 @@ namespace Comic
 
             if (ComicGameCore.Instance.MainGameMode.GetCameraManager().IsCameraRegister(URP_OverlayCameraType.Camera_Hud))
             {
+                ComicGameCore.Instance.MainGameMode.GetCameraManager().RenderOnScreenshot();
+
                 Page current_page = m_unlockedPageList[m_currentPageIndex];
                 Page new_page = m_unlockedPageList[idxNewPage];
 
@@ -140,6 +135,8 @@ namespace Comic
                     current_page.Enable(false);
                     new_page.Enable(true);
                 }
+
+                ComicGameCore.Instance.MainGameMode.GetCameraManager().RestoreDefaultRender();
 
                 ComicGameCore.Instance.MainGameMode.GetCameraManager().TurnPageError(is_next_page);
 
@@ -171,6 +168,8 @@ namespace Comic
 
             if (ComicGameCore.Instance.MainGameMode.GetCameraManager().IsCameraRegister(URP_OverlayCameraType.Camera_Hud))
             {
+                ComicGameCore.Instance.MainGameMode.GetCameraManager().RenderOnScreenshot();
+
                 Page current_page = m_unlockedPageList[m_currentPageIndex];
                 Page new_page = m_unlockedPageList[idxNewPage];
 
@@ -192,6 +191,8 @@ namespace Comic
 
                 current_page.Enable(is_next_page);
                 new_page.Enable(!is_next_page);
+
+                ComicGameCore.Instance.MainGameMode.GetCameraManager().RestoreDefaultRender();
 
                 ComicGameCore.Instance.MainGameMode.GetCameraManager().TurnPage(is_next_page);
 

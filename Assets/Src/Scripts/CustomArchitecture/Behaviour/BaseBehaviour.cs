@@ -2,16 +2,22 @@ using UnityEngine;
 
 namespace CustomArchitecture
 {
-    public class BaseBehaviour : MonoBehaviour
+    public abstract class BaseBehaviour : MonoBehaviour
     {
         [Header("BaseBehaviour")]
         [ReadOnly, SerializeField] protected bool m_pause;
 
-        protected virtual void OnUpdate(float elapsed_time) { }
-        protected virtual void OnFixedUpdate(float elapsed_time) { }
-        protected virtual void OnLateUpdate(float elapsed_time) { }
+        protected abstract void OnUpdate();
+        protected abstract void OnFixedUpdate();
+        protected abstract void OnLateUpdate();
+
+        // is call after GameMode awake
+        public abstract void Init(params object[] parameters);
+        // is call after all init are done
+        public abstract void LateInit(params object[] parameters);
 
         public bool IsPaused() => m_pause;
+
         public virtual void Pause(bool pause = true)
         {
             m_pause = pause;
@@ -22,7 +28,7 @@ namespace CustomArchitecture
             if (m_pause)
                 return;
 
-            OnUpdate(Time.deltaTime);
+            OnUpdate();
         }
 
         protected void FixedUpdate()
@@ -30,7 +36,7 @@ namespace CustomArchitecture
             if (m_pause)
                 return;
 
-            OnFixedUpdate(Time.fixedDeltaTime);
+            OnFixedUpdate();
         }
 
         protected void LateUpdate()
@@ -38,7 +44,7 @@ namespace CustomArchitecture
             if (m_pause)
                 return;
 
-            OnLateUpdate(Time.deltaTime);
+            OnLateUpdate();
         }
     }
 }

@@ -22,17 +22,13 @@ namespace CustomArchitecture
 
         #endregion DEVICES / CONTROLLERS
 
-        protected virtual void Awake()
+        public override void Init(params object[] parameters)
         {
             InputSystem.onDeviceChange += OnDeviceChange;
         }
 
-        public abstract void Init();
-
-        protected override void OnUpdate(float elapsed_time)
+        protected override void OnUpdate()
         {
-            base.OnUpdate(elapsed_time);
-
             if (Keyboard.current.wasUpdatedThisFrame && m_controllerUsed != ControllerType.KEYBOARD)
             {
                 SelectKeyboard();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using DG.Tweening;
 using UnityEngine;
+using static PageHole;
 
 namespace Comic
 {
@@ -16,6 +17,19 @@ namespace Comic
         private List<Tween> m_rotCaseTweens = new List<Tween>();
         private bool m_isRotating = false;
         private Vector3 m_currentRotation = Vector3.zero;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        { }
+        #endregion
 
 
         public bool IsPlayerInCase()

@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using static CustomArchitecture.CustomArchitecture;
+using System.Security.Cryptography;
 
 namespace Comic
 {
@@ -48,10 +49,7 @@ namespace Comic
         // globals datas
         private GameConfig m_gameConfig;
         private GameProgression m_gameProgression;
-        private SceneLoader m_sceneLoader;
         private URP_CameraManager m_cameraManager;
-        private GlobalInput m_globalInput;
-        private DeviceManager m_deviceManager;
 
         // local datas
         private HudManager m_hudManager;
@@ -74,9 +72,6 @@ namespace Comic
         // ---- MainGameCore dependencies ----
 
         public GameProgression GetGameProgression() => m_gameProgression;
-        public InputActionAsset GetInputAsset() => m_gameCore.GetInputAsset();
-        public GlobalInput GetGlobalInput() => m_globalInput;
-        public DeviceManager GetDeviceManager() => m_deviceManager;
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
 
@@ -90,115 +85,71 @@ namespace Comic
         public NavigationInput GetNavigationInput() => m_hudManager?.GetNavigationInput();
         public HudManager GetHudManager() => m_hudManager;
 
-        // This function is called right after Init()
-        public override void StartGameMode()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+
+        public override void Init(params object[] parameters)
         {
-            // // should be done in stop game mode but w/e
-            // m_cameraManager.ClearCameraStack();
+            base.Init(parameters);
 
-            m_sceneLoader.LoadGameModeScenes("HudScene", "GameScene");
-            Compute = true;
-        }
-
-
-        #region INIT
-
-        // This function is called first
-        public override void Init(ComicGameCore game_core, params object[] parameters)
-        {
-            base.Init(game_core, parameters);
-
-            if (parameters.Length > 0 && parameters[0] is SceneLoader)
-            {
-                m_sceneLoader = (SceneLoader)parameters[0];
-            }
+            m_gameSceneName = "GameScene";
+            m_uiSceneName = "HudScene";
 
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
-            m_globalInput = GetComponent<GlobalInput>();
-            m_deviceManager = GetComponent<DeviceManager>();
-            m_cameraManager = GetComponentInChildren<URP_CameraManager>();
 
-            m_globalInput.onPause += OnPause;
-
-            m_globalInput.Init();
-            m_deviceManager.Init();
-            m_cameraManager.Init();
-            m_sceneLoader.SubscribeToEndLoading(OnLoadingEnded);
+            m_cameraManager = GetComponentInChildren<URP_CameraManager>(); // should be in AGameCore
+            m_cameraManager.Init(); // AGameCore
         }
 
-        public void InitHud()
+        #endregion
+
+        // This function is called after scenes loading are done
+        public override void StartGameMode()
         {
             m_hudManager = SceneUtils.FindObjectAcrossScenes<HudManager>();
-
-            if (m_hudManager == null)
-            {
-                Debug.LogWarning("Can't find HudManager. Try to load the scene before initialize");
-                return;
-            }
-
-            Debug.Log("Init HUD");
-            m_hudManager.Init();
-            m_cameraManager.RegisterCameras(m_hudManager.GetRegisteredCameras());
-        }
-
-        public void InitGame()
-        {
             m_gameManager = SceneUtils.FindObjectAcrossScenes<GameManager>();
 
-            if (m_gameManager == null)
-            {
-                Debug.LogWarning("Can't find GameManager. Try to load the scene before initialize");
-                return;
-            }
-
-            Debug.Log("Init Game");
-            m_gameManager.Init();
-            m_cameraManager.RegisterCameras(m_gameManager.GetRegisteredCameras());
-        }
-
-        public void LateInitGame()
-        {
-            if (m_gameManager == null)
-            {
-                Debug.LogWarning("Can't find GameManager. Try to load the scene before initialize");
-                return;
-            }
-            //Debug.Log("Late Init Game");
-            m_gameManager.LateInit();
-        }
-
-        public void LateInitHud()
-        {
-            if (m_hudManager == null)
-            {
-                Debug.LogWarning("Can't find HudManager. Try to load the scene before initialize");
-                return;
-            }
-            //Debug.Log("Late Init Hud");
-            m_hudManager.LateInit();
-        }
-
-        #endregion INIT
-
-
-        // Make all dynamic instantiation here
-        public override void OnLoadingEnded()
-        {
             if (GetUnlockChaptersData().Count == 0)
             {
                 UnlockChapter(Chapters.The_Prequel, false, false);
             }
 
-            InitGame();
-            InitHud();
-
-            LateInitHud();
-            LateInitGame();
+            if (m_gameManager != null)
+            {
+                m_gameManager.Init();
+                m_cameraManager.RegisterCameras(m_gameManager.GetRegisteredCameras());
+            }
+            if (m_hudManager != null)
+            {
+                m_hudManager.Init();
+                m_cameraManager.RegisterCameras(m_hudManager.GetRegisteredCameras());
+            }
+            if (m_gameManager != null)
+            {
+                m_gameManager.LateInit();
+            }
+            if (m_hudManager != null)
+            {
+                m_hudManager.LateInit();
+            }
 
             ActivateGame();
 
-            ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = Language.French;
+            GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
+
+            // not really in the logic flow, but there is no better option for the moment
+            m_gameCore.GetGlobalInput().onPause += OnPause;
+            m_gameCore.GetGlobalInput().LateInit();
+
+            Compute = true;
         }
 
         public void OnEndMainDialogue(DialogueName type)
@@ -489,10 +440,12 @@ namespace Comic
             {
                 if (m_pause)
                 {
+                    Debug.Log("resume");
                     TryResumeGame();
                 }
                 else
                 {
+                    Debug.Log("Pause");
                     Pause(true);
                 }
             }
@@ -514,12 +467,6 @@ namespace Comic
         }
 
         #endregion PAUSE & GLOBAL INPUT
-
-
-        protected override void OnUpdate(float elapsed_time)
-        {
-            base.OnUpdate(elapsed_time);
-        }
 
         // destroy all managed objects
         public override void StopGameMode()

@@ -7,6 +7,7 @@ using TMPro;
 using DG.Tweening;
 using System.Linq;
 using CustomArchitecture;
+using static PageHole;
 
 namespace Comic
 {
@@ -48,6 +49,63 @@ namespace Comic
             ActiveGraphic(m_activeGraphic);
         }
 #endif
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            m_datas = new();
+            m_iconSprites = new()
+            {
+                { NpcIconType.Icon_Beloved, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Beloved-1") },
+                { NpcIconType.Icon_BestFriend, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-BestFriend-1") },
+                { NpcIconType.Icon_Boss_1, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Boss-1") },
+                { NpcIconType.Icon_Boss_2, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Boss-2") },
+                { NpcIconType.Icon_Bully, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Bully-1") },
+                { NpcIconType.Icon_Jacob_0, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-0") },
+                { NpcIconType.Icon_Jacob_1, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-1") },
+                { NpcIconType.Icon_Jacob_2, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-2") },
+                { NpcIconType.Icon_Jacob_3, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-3") },
+                { NpcIconType.Icon_Jacob_4, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-4") },
+                { NpcIconType.Icon_Mom, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Mom") },
+                { NpcIconType.Icon_The_Lost_Page, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-LostPage") },
+            };
+
+            m_bubbles = new()
+            {
+                { DialogueBubbleType.BubbleType_Speech, new BubbleGraphicData() },
+                { DialogueBubbleType.BubbleType_Exclamation, new BubbleGraphicData() },
+                { DialogueBubbleType.BubbleType_Thinking, new BubbleGraphicData() },
+            };
+
+            m_bubbles[DialogueBubbleType.BubbleType_Speech].m_regularBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Speech_Regular"), m_bubbleContainer);
+            m_bubbles[DialogueBubbleType.BubbleType_Speech].m_choiceBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Speech_Choice"), m_bubbleContainer);
+
+            m_bubbles[DialogueBubbleType.BubbleType_Exclamation].m_regularBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Exclamation_Regular"), m_bubbleContainer);
+            m_bubbles[DialogueBubbleType.BubbleType_Exclamation].m_choiceBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Exclamation_Choice"), m_bubbleContainer);
+
+            m_bubbles[DialogueBubbleType.BubbleType_Thinking].m_regularBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Thinking_Regular"), m_bubbleContainer);
+            m_bubbles[DialogueBubbleType.BubbleType_Thinking].m_choiceBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Thinking_Choice"), m_bubbleContainer);
+
+            foreach (var d in m_bubbles)
+            {
+                d.Value.m_regularBubble.SetActive(false);
+                d.Value.m_regularBubble.GetComponent<Bubble>().Init(m_bubbleContainer.GetComponent<RectTransform>());
+                d.Value.m_choiceBubble.SetActive(false);
+                d.Value.m_choiceBubble.GetComponent<Bubble>().Init(m_bubbleContainer.GetComponent<RectTransform>());
+            }
+
+            InitMainIcon();
+            InitNpcIcons();
+        }
+        #endregion
 
         public override void ActiveGraphic(bool active)
         {
@@ -99,52 +157,6 @@ namespace Comic
             m_iconContainer.GetComponent<RectTransform>().DORectTransform(m_centerRect, 0.25f, Ease.OutQuart);
         }
 
-        public override void Init()
-        {
-            m_datas = new();
-            m_iconSprites = new()
-            {
-                { NpcIconType.Icon_Beloved, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Beloved-1") },
-                { NpcIconType.Icon_BestFriend, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-BestFriend-1") },
-                { NpcIconType.Icon_Boss_1, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Boss-1") },
-                { NpcIconType.Icon_Boss_2, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Boss-2") },
-                { NpcIconType.Icon_Bully, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Bully-1") },
-                { NpcIconType.Icon_Jacob_0, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-0") },
-                { NpcIconType.Icon_Jacob_1, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-1") },
-                { NpcIconType.Icon_Jacob_2, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-2") },
-                { NpcIconType.Icon_Jacob_3, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-3") },
-                { NpcIconType.Icon_Jacob_4, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Jacob-4") },
-                { NpcIconType.Icon_Mom, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-Mom") },
-                { NpcIconType.Icon_The_Lost_Page, Resources.Load<Sprite>("GUI/Icon/Sprites/Face-LostPage") },
-            };
-
-            m_bubbles = new()
-            {
-                { DialogueBubbleType.BubbleType_Speech, new BubbleGraphicData() },
-                { DialogueBubbleType.BubbleType_Exclamation, new BubbleGraphicData() },
-                { DialogueBubbleType.BubbleType_Thinking, new BubbleGraphicData() },
-            };
-
-            m_bubbles[DialogueBubbleType.BubbleType_Speech].m_regularBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Speech_Regular"), m_bubbleContainer);
-            m_bubbles[DialogueBubbleType.BubbleType_Speech].m_choiceBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Speech_Choice"), m_bubbleContainer);
-
-            m_bubbles[DialogueBubbleType.BubbleType_Exclamation].m_regularBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Exclamation_Regular"), m_bubbleContainer);
-            m_bubbles[DialogueBubbleType.BubbleType_Exclamation].m_choiceBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Exclamation_Choice"), m_bubbleContainer);
-
-            m_bubbles[DialogueBubbleType.BubbleType_Thinking].m_regularBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Thinking_Regular"), m_bubbleContainer);
-            m_bubbles[DialogueBubbleType.BubbleType_Thinking].m_choiceBubble = Instantiate(Resources.Load<GameObject>("GUI/Bubble/Bubble_Thinking_Choice"), m_bubbleContainer);
-
-            foreach (var d in m_bubbles)
-            {
-                d.Value.m_regularBubble.SetActive(false);
-                d.Value.m_regularBubble.GetComponent<Bubble>().Init(m_bubbleContainer.GetComponent<RectTransform>());
-                d.Value.m_choiceBubble.SetActive(false);
-                d.Value.m_choiceBubble.GetComponent<Bubble>().Init(m_bubbleContainer.GetComponent<RectTransform>());
-            }
-
-            InitMainIcon();
-            InitNpcIcons();
-        }
         private void InitMainIcon()
         {
             GameObject main_icon = Instantiate(Resources.Load<GameObject>("GUI/Icon/IconFrame_Speaker"), m_mainIconContainer);

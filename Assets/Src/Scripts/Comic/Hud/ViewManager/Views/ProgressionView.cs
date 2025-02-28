@@ -21,6 +21,39 @@ namespace Comic
         [SerializeField] private float m_durationAppearPage = 0.25f;
 
 
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        {
+            base.OnFixedUpdate();
+        }
+        protected override void OnLateUpdate()
+        {
+            base.OnLateUpdate();
+        }
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        public override void LateInit(params object[] parameters)
+        {
+            base.LateInit(parameters);
+        }
+        public override void Init(params object[] parameters)
+        {
+            base.Init(parameters);
+
+            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
+            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidateInput);
+            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCanceledInput);
+
+            ComicGameCore.Instance.MainGameMode.SubscribeToLockChapter(OnChapterLocked);
+            ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnChapterUnlocked);
+
+            SpawnPagesUI();
+        }
+        #endregion
+
+
         #region INTERNAL
 
         public override void ActiveGraphic(bool active)
@@ -91,20 +124,6 @@ namespace Comic
 
             m_lastPage.transform.DOKill();
             lastTween = m_lastPage.transform.DOScale(to, m_durationAppearPage).From(from).SetEase(Ease.OutBack).SetDelay(count * m_delayAppearPages);
-        }
-
-        public override void Init()
-        {
-            base.Init();
-
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidateInput);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCanceledInput);
-
-            ComicGameCore.Instance.MainGameMode.SubscribeToLockChapter(OnChapterLocked);
-            ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnChapterUnlocked);
-
-            SpawnPagesUI();
         }
 
         #endregion INTERNAL

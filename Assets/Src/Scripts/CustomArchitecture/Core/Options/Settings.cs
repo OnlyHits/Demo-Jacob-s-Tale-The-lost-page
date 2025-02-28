@@ -26,8 +26,6 @@ namespace CustomArchitecture
             m_saveUtilitary = new SaveUtilitary<SettingDatas>("SettingDatas", FileType.SaveFile);
 
             m_settingDatas = new();
-            m_saveUtilitary.Save(m_settingDatas);
-
             m_settingDatas = m_saveUtilitary.Load();
         }
     }

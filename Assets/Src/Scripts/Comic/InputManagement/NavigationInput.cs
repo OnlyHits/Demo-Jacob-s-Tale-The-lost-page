@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
 using static CustomArchitecture.CustomArchitecture;
+using static PageHole;
 
 
 namespace Comic
@@ -47,18 +48,30 @@ namespace Comic
         }
         #endregion SUB CALLBACKS
 
-
-        public override void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
         {
-            FindAction();
+            base.OnLateUpdate();
+        }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        {
             InitInputActions();
         }
+        public override void Init(params object[] parameters)
+        {
+            FindAction();
+        }
+        #endregion
 
         private void FindAction()
         {
-            m_navigationAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Navigation");
-            m_cancelAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Cancel");
-            m_validateAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Validate");
+            m_navigationAction = ComicGameCore.Instance.GetInputAsset().FindAction("Navigation");
+            m_cancelAction = ComicGameCore.Instance.GetInputAsset().FindAction("Cancel");
+            m_validateAction = ComicGameCore.Instance.GetInputAsset().FindAction("Validate");
         }
 
         private void InitInputActions()
@@ -70,11 +83,6 @@ namespace Comic
             m_inputActionStructsV2.Add(iNavigate);
             m_inputActionStructsBool.Add(iValidate);
             m_inputActionStructsBool.Add(iCancel);
-        }
-
-        protected override void OnUpdate(float elapsed_time)
-        {
-            base.OnUpdate(elapsed_time);
         }
 
         public override void Pause(bool pause)

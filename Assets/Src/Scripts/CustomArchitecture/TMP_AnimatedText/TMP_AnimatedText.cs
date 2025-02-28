@@ -5,6 +5,7 @@ using TMPro;
 using System;
 using ExtensionMethods;
 using UnityEngine.InputSystem;
+using Unity.Cinemachine;
 
 namespace CustomArchitecture
 {
@@ -35,6 +36,55 @@ namespace CustomArchitecture
         public TMP_AnimatedText_State GetState() => m_state;
         public TMP_Text GetTextMeshPro() => m_textMeshPro;
         public void Validate(bool validate) => m_isInputPressed = validate;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        {
+            if (m_state == TMP_AnimatedText_State.State_Uncompute || m_updateInCoroutine)
+                return;
+
+            m_textMeshPro.ForceMeshUpdate();
+            m_mesh = m_textMeshPro.mesh;
+            m_vertices = m_mesh.vertices;
+            m_colors = m_mesh.colors32;
+
+            int index = 0;
+
+            foreach (var d in m_dynamicDatas.m_sentenceData[m_sentenceIndex].m_animatedTextDatas)
+            {
+                for (int i = d.m_firstIndex, j = 0; i < d.m_lastIndex; ++i)
+                {
+                    TMP_CharacterInfo info = m_textMeshPro.textInfo.characterInfo[i];
+
+                    if (info.character == ' ' || info.character == '\n')
+                        continue;
+
+                    int vertexIndex = info.vertexIndex;
+
+                    UpdateTextModifier(vertexIndex,
+                        m_dialogueConfig.m_dialogueSentences[m_sentenceIndex].m_animatedText[index], i);
+                    UpdateColor(vertexIndex,
+                        m_dialogueConfig.m_dialogueSentences[m_sentenceIndex].m_animatedText[index],
+                        d.m_colorRandomSpeed, j);
+
+                    ++j;
+                }
+
+                ++index;
+            }
+
+            m_mesh.vertices = m_vertices;
+            m_mesh.colors32 = m_colors;
+        }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        { }
+        #endregion
 
         public void CopyText(TMP_Text text)
         {
@@ -256,47 +306,6 @@ namespace CustomArchitecture
                 
             m_mesh.colors32 = m_colors;
             m_mesh.vertices = m_vertices;
-        }
-
-        protected override void OnUpdate(float elapsed_time)
-        {
-            base.OnUpdate(elapsed_time);
-
-            if (m_state == TMP_AnimatedText_State.State_Uncompute || m_updateInCoroutine)
-                return;
-
-            m_textMeshPro.ForceMeshUpdate();
-            m_mesh = m_textMeshPro.mesh;
-            m_vertices = m_mesh.vertices;
-            m_colors = m_mesh.colors32;
-
-            int index = 0;
-
-            foreach (var d in m_dynamicDatas.m_sentenceData[m_sentenceIndex].m_animatedTextDatas)
-            {
-                for (int i = d.m_firstIndex, j = 0; i < d.m_lastIndex; ++i)
-                {
-                    TMP_CharacterInfo info = m_textMeshPro.textInfo.characterInfo[i];
-
-                    if (info.character == ' ' || info.character == '\n')
-                        continue;
-
-                    int vertexIndex = info.vertexIndex;
-
-                    UpdateTextModifier(vertexIndex,
-                        m_dialogueConfig.m_dialogueSentences[m_sentenceIndex].m_animatedText[index], i);
-                    UpdateColor(vertexIndex, 
-                        m_dialogueConfig.m_dialogueSentences[m_sentenceIndex].m_animatedText[index],
-                        d.m_colorRandomSpeed, j);
-
-                    ++j;
-                }
-
-                ++index;
-            }
-
-            m_mesh.vertices = m_vertices;
-            m_mesh.colors32 = m_colors;
         }
 
         #region Apparition Coroutines

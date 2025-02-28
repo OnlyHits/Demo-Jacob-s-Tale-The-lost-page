@@ -10,7 +10,6 @@ namespace Comic
 {
     public class PauseView : NavigableView
     {
-
         [Header("Buttons")]
         [SerializeField] private Button m_bPlay;
         [SerializeField] private Button m_bOptions;
@@ -30,11 +29,31 @@ namespace Comic
         public bool IsControlsPanel => m_currentPanelIndex == 2;
         public bool IsBasePanelShown => m_currentPanelIndex == m_basePanelIndex;
 
-
-        #region UNITY CALLBACKS
-
-        private void Awake()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
         {
+            base.OnFixedUpdate();
+        }
+        protected override void OnLateUpdate()
+        {
+            base.OnLateUpdate();
+        }
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        public override void LateInit(params object[] parameters)
+        {
+            base.LateInit(parameters);
+        }
+        public override void Init(params object[] parameters)
+        {
+            base.Init(parameters);
+
+            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
+            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidateInput);
+            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCanceledInput);
+
             m_tLanguage.text = ComicGameCore.Instance.GetSettings().m_settingDatas.m_language.ToString();
             m_sVolumeEffect.value = ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume;
             m_sVolumeMusic.value = ComicGameCore.Instance.GetSettings().m_settingDatas.m_effectVolume;
@@ -45,25 +64,16 @@ namespace Comic
             m_bCredits.onClick.AddListener(() => ComicGameCore.Instance.MainGameMode.GetViewManager().Show<CreditView>());
             m_bExit.onClick.AddListener(Exit);
             m_bBack.onClick.AddListener(ShowBasePanel);
+
+            //ShowPanelByIndex(m_basePanelIndex);
         }
-
-        #endregion UNITY CALLBACKS
-
+        #endregion
 
         #region INTERNAL
 
         public override void ActiveGraphic(bool active)
         {
             base.ActiveGraphic(active);
-        }
-
-        public override void Init()
-        {
-            base.Init();
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidateInput);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCanceledInput);
-            //ShowPanelByIndex(m_basePanelIndex);
         }
 
         #endregion INTERNAL
@@ -181,7 +191,7 @@ namespace Comic
         {
             if (inputType == InputType.RELEASED)
             {
-                ControllerType usedController = ComicGameCore.Instance.MainGameMode.GetDeviceManager().GetUsedController();
+                ControllerType usedController = ComicGameCore.Instance.GetDeviceManager().GetUsedController();
 
                 if (m_debug) Debug.Log("---> Cancel " + value.ToString());
 

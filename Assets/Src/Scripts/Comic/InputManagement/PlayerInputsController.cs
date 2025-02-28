@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
 using static CustomArchitecture.CustomArchitecture;
+using static PageHole;
 
 namespace Comic
 {
@@ -36,24 +37,36 @@ namespace Comic
 
         #endregion CALLBACKS
 
-        public override void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        {
+            base.OnLateUpdate();
+        }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
             FindAction();
             InitInputActions();
         }
+        #endregion
 
         private void FindAction()
         {
-            m_moveAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Move");
-            m_lookAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Look");
-            m_jumpAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Jump");
-            m_sprintAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Sprint");
-            m_interactAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Interact");
-            m_nextPageAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("NextPage");
-            m_prevPageAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("PrevPage");
-            m_powerAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("Power");
-            m_nextPowerAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("NextPower");
-            m_prevPowerAction = ComicGameCore.Instance.MainGameMode.GetInputAsset().FindAction("PrevPower");
+            m_moveAction = ComicGameCore.Instance.GetInputAsset().FindAction("Move");
+            m_lookAction = ComicGameCore.Instance.GetInputAsset().FindAction("Look");
+            m_jumpAction = ComicGameCore.Instance.GetInputAsset().FindAction("Jump");
+            m_sprintAction = ComicGameCore.Instance.GetInputAsset().FindAction("Sprint");
+            m_interactAction = ComicGameCore.Instance.GetInputAsset().FindAction("Interact");
+            m_nextPageAction = ComicGameCore.Instance.GetInputAsset().FindAction("NextPage");
+            m_prevPageAction = ComicGameCore.Instance.GetInputAsset().FindAction("PrevPage");
+            m_powerAction = ComicGameCore.Instance.GetInputAsset().FindAction("Power");
+            m_nextPowerAction = ComicGameCore.Instance.GetInputAsset().FindAction("NextPower");
+            m_prevPowerAction = ComicGameCore.Instance.GetInputAsset().FindAction("PrevPower");
         }
 
         private void InitInputActions()
@@ -79,11 +92,6 @@ namespace Comic
             m_inputActionStructsBool.Add(iPower);
             m_inputActionStructsBool.Add(iNextPower);
             m_inputActionStructsBool.Add(iPrevPower);
-        }
-
-        protected override void OnLateUpdate(float elapsed_time)
-        {
-            base.OnLateUpdate(elapsed_time);
         }
 
         public override void Pause(bool pause)

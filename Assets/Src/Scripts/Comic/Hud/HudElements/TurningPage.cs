@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
+using static PageHole;
 
 namespace Comic
 {
@@ -25,9 +26,22 @@ namespace Comic
         private Sprite m_backSprite;
 
         private Sequence m_turnSequence;
-        // private Sequence m_shadowSequence;
 
         private Tween m_rotationTween;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+        }
+        #endregion
 
         public void SetFrontSprite(Sprite sprite) => m_frontSprite = sprite;
         public void SetBackSprite(Sprite sprite) => m_backSprite = sprite;

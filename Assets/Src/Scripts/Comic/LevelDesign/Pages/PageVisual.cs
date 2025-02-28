@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
 using static Comic.Comic;
+using static PageHole;
 
 namespace Comic
 {
@@ -12,6 +13,20 @@ namespace Comic
         [SerializeField, ReadOnly] private List<CaseVisual> m_caseVisuals = new List<CaseVisual>();
         [SerializeField] private SpriteRenderer m_pageBackgroundSprite;
         [SerializeField] private SpriteRenderer m_pageBackgroundSpriteCenter;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+        }
+        #endregion
 
         private void Awake()
         {

@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using CustomArchitecture;
 using System.Collections;
+using static PageHole;
 
 namespace Comic
 {
@@ -19,13 +20,24 @@ namespace Comic
         private Dictionary<DialogueName, bool> m_mainStory;
         private int m_powerIndex = 0;
 
-        public void SubscribeToEndDialogue(Action<DialogueName> function)
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
         {
-            m_onEndDialogueCallback -= function;
-            m_onEndDialogueCallback += function;
-        }
+            if (parameters.Length != 2
+                || parameters[0] is not DialogueView
+                || parameters[1] is not CreditView)
+                return;
 
-        public void Init()
+            m_dialogueView = (DialogueView)parameters[0];
+            m_creditView = (CreditView)parameters[1];
+        }
+        public override void Init(params object[] parameters)
         {
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockVoice(UnlockVoice);
             ComicGameCore.Instance.MainGameMode.SubscribeToLockVoice(LockVoice);
@@ -47,11 +59,12 @@ namespace Comic
                 { DialogueName.Dialogue_UnlockBoss, false},
             };
         }
+        #endregion
 
-        public void LateInit(DialogueView dialogue_view, CreditView credit_view)
+        public void SubscribeToEndDialogue(Action<DialogueName> function)
         {
-            m_dialogueView = dialogue_view;
-            m_creditView = credit_view;
+            m_onEndDialogueCallback -= function;
+            m_onEndDialogueCallback += function;
         }
 
         public void SubscribeToPowerSelected(Action<PowerType> function)

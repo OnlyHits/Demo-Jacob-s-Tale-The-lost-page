@@ -34,7 +34,7 @@ namespace Comic
 
         protected override void Awake()
         {
-            base.Awake();
+            base.Awake(); // ??
 
             // Init callbacks BEFORE initializating the AInputManager
             m_inputsController.onMoveAction += OnMove;
@@ -49,7 +49,37 @@ namespace Comic
             m_inputsController.onPrevPowerAction += OnPrevPower;
         }
 
-        public override void Init()
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        {
+            base.OnFixedUpdate();
+
+            m_isGrounded = IsGrounded();
+
+            /*if (!m_isGrounded && !m_isFalling)
+            {
+                TryFall();
+            }
+            else if (m_isFalling && m_isGrounded)
+            {
+                StopFall();
+            }*/
+        }
+        protected override void OnLateUpdate()
+        {
+            base.OnLateUpdate();
+
+        }
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        public override void LateInit(params object[] parameters)
+        {
+            base.LateInit(parameters);
+        }
+        public override void Init(params object[] parameters)
         {
             base.Init();
 
@@ -63,6 +93,7 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
             ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
         }
+        #endregion
 
         private void InitInputController()
         {
@@ -73,29 +104,6 @@ namespace Comic
         {
             base.Pause(pause);
             m_inputsController.Pause(pause);
-        }
-
-        protected override void OnUpdate(float elapsed_time)
-        {
-            base.OnUpdate(elapsed_time);
-        }
-        protected override void OnFixedUpdate(float elapsed_time)
-        {
-            base.OnFixedUpdate(elapsed_time);
-            m_isGrounded = IsGrounded();
-
-            /*if (!m_isGrounded && !m_isFalling)
-            {
-                TryFall();
-            }
-            else if (m_isFalling && m_isGrounded)
-            {
-                StopFall();
-            }*/
-        }
-        protected override void OnLateUpdate(float elapsed_time)
-        {
-            base.OnLateUpdate(elapsed_time);
         }
 
         // private void OnCollisionEnter2D(Collision2D collision)

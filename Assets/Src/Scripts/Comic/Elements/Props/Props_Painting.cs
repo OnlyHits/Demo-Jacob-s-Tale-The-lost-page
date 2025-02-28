@@ -13,9 +13,23 @@ namespace Comic
         private Sequence m_rotateSequence;
         private Quaternion m_baseRotation;
 
-        private void Awake()
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
+            m_baseRotation = transform.rotation;
+
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
+        #endregion
 
         public override void StartBehaviour()
         {
@@ -43,7 +57,7 @@ namespace Comic
                 float randomRotation = UnityEngine.Random.Range(-m_rotationAngle, m_rotationAngle);
 
                 m_rotateSequence.Append(
-                    transform.DORotate(new Vector3(0, 0, randomRotation), UnityEngine.Random.Range(0.3f, 0.7f))
+                    transform.DOLocalRotate(new Vector3(0, 0, randomRotation), UnityEngine.Random.Range(0.3f, 0.7f))
                         .SetEase(Ease.InOutSine)
                 );
 
@@ -51,18 +65,11 @@ namespace Comic
             }
 
             m_rotateSequence.Append(
-                transform.DORotate(m_baseRotation.eulerAngles, 0.4f)
+                transform.DOLocalRotate(m_baseRotation.eulerAngles, 0.4f)
                     .SetEase(Ease.InOutSine)
             );
 
             m_rotateSequence.OnComplete(SetupRotate);
-        }
-
-        public override void Init()
-        {
-            m_baseRotation = transform.rotation;
-
-            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
         public override void StopBehaviour()

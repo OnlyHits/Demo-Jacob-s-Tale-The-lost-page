@@ -17,9 +17,26 @@ namespace Comic
         private Sequence m_flashSequence;
         private float m_baseIntensity;
 
-        private void Awake()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
+            m_baseIntensity = m_light.intensity;
+
+            if (m_move)
+                transform.rotation = Quaternion.Euler(0, 0, m_rotationAngle);
+
+            // if (m_flash)
+            m_light.intensity = m_baseIntensity;
         }
+        #endregion
 
         public override void StartBehaviour()
         {
@@ -31,13 +48,13 @@ namespace Comic
                     m_moveSequence.Kill();
                 
                 m_moveSequence = DOTween.Sequence();
-                m_moveSequence.Append(transform.DORotate(new Vector3(0, 0, 0), m_duration * .5f)
+                m_moveSequence.Append(transform.DOLocalRotate(new Vector3(0, 0, 0), m_duration * .5f)
                     .SetEase(Ease.InQuad))
-                    .Append(transform.DORotate(new Vector3(0, 0, -m_rotationAngle), m_duration * .5f)
+                    .Append(transform.DOLocalRotate(new Vector3(0, 0, -m_rotationAngle), m_duration * .5f)
                     .SetEase(Ease.OutQuad))
-                    .Append(transform.DORotate(new Vector3(0, 0, 0), m_duration * .5f)
+                    .Append(transform.DOLocalRotate(new Vector3(0, 0, 0), m_duration * .5f)
                     .SetEase(Ease.InQuad))
-                    .Append(transform.DORotate(new Vector3(0, 0, m_rotationAngle), m_duration * .5f)
+                    .Append(transform.DOLocalRotate(new Vector3(0, 0, m_rotationAngle), m_duration * .5f)
                     .SetEase(Ease.OutQuad));
 
                 m_moveSequence.SetLoops(-1, LoopType.Restart);
@@ -100,16 +117,6 @@ namespace Comic
             m_flashSequence.SetLoops(-1, LoopType.Restart);
 
             m_flashSequence.OnKill(() => m_light.intensity = m_baseIntensity);
-        }
-
-        public override void Init()
-        {
-            m_baseIntensity = m_light.intensity;
-
-            if (m_move)
-                transform.rotation = Quaternion.Euler(0, 0, m_rotationAngle);
-            // if (m_flash)
-            m_light.intensity = m_baseIntensity;
         }
 
         public override void StopBehaviour()

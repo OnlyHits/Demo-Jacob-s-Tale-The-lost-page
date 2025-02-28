@@ -4,6 +4,12 @@ namespace Comic
 {
     public abstract class AView : BaseBehaviour
     {
+        protected ViewManager m_viewManager;
+        public ViewManager Manager
+        {
+            set { m_viewManager = value; }
+        }
+
         public virtual void Show(bool instant = false) => gameObject.SetActive(true);
         public virtual void Hide(bool partialy = false, bool instant = false) => gameObject.SetActive(false);
 
@@ -12,8 +18,6 @@ namespace Comic
             Show(instant: true);
             Hide(partialy: true, instant: true);
         }
-
-        public abstract void Init();
         public abstract void ActiveGraphic(bool active);
     }
 }

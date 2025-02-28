@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using static CustomArchitecture.CustomArchitecture;
+using static PageHole;
+using Unity.VisualScripting;
 
 namespace Comic
 {
@@ -27,6 +29,39 @@ namespace Comic
         public TMP_AnimatedText GetAnimatedText() => m_dialogue;
         protected virtual bool IsBubbleChoice() => false;
 
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        {
+            if (m_target != null)
+                SetPinTransform();
+        }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            if (parameters.Length != 1
+                || parameters[0] is not RectTransform)
+                return;
+
+            if (!IsBubbleChoice())
+                ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValid);
+
+            m_containerRect = (RectTransform)parameters[0];
+            gameObject.SetActive(false);
+            gameObject.GetComponent<RectTransform>().position = m_containerRect.position;
+
+            m_durationByIntensity = new()
+            {
+                { DialogueAppearIntensity.Intensity_Normal, .7f },
+                { DialogueAppearIntensity.Intensity_Medium, .5f },
+                { DialogueAppearIntensity.Intensity_Hard, .3f},
+            };
+        }
+        #endregion
         public void SubscribeToAppearCallback(Action<float> function)
         {
             m_onAppearCallback -= function;
@@ -37,23 +72,6 @@ namespace Comic
         {
             m_onDisappearCallback -= function;
             m_onDisappearCallback += function;
-        }
-
-        public virtual void Init(RectTransform container_rect)
-        {
-            if (!IsBubbleChoice())
-                ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValid);
-
-            m_containerRect = container_rect;
-            gameObject.SetActive(false);
-            gameObject.GetComponent<RectTransform>().position = m_containerRect.position;
-
-            m_durationByIntensity = new()
-            {
-                { DialogueAppearIntensity.Intensity_Normal, .7f },
-                { DialogueAppearIntensity.Intensity_Medium, .5f },
-                { DialogueAppearIntensity.Intensity_Hard, .3f},
-            };
         }
 
         private void OnValid(InputType input, bool v)
@@ -82,12 +100,6 @@ namespace Comic
                 m_scaleTween.Pause();
             else if (!pause && m_scaleTween != null)
                 m_scaleTween.Play();
-        }
-
-        protected override void OnLateUpdate(float elapsed_time)
-        {
-            if (m_target != null)
-                SetPinTransform();
         }
 
         public void SetupDialogue(DialogueType type)

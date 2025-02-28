@@ -16,12 +16,27 @@ namespace Comic
 
         #endregion SUB CALLBACKS
 
-        #region INIT
-        public override void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
         {
+            base.OnUpdate();
+        }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            base.Init(parameters);
+
             InitStartingDevice();
         }
+        #endregion
 
+
+        #region INIT
         private void InitStartingDevice()
         {
             bool gamepadConnected = false;

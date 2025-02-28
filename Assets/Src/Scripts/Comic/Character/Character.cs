@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
+using static PageHole;
 
 namespace Comic
 {
@@ -25,23 +26,29 @@ namespace Comic
 
         public Collider2D GetCollider() => m_collider;
 
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            // Get spawn pos & set pos
+            //ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+        }
+        #endregion
+
+
         protected virtual void Awake()
         {
             m_baseHeadLocalPos = m_head.localPosition;
 
             var sprites = GetComponentsInChildren<SpriteRenderer>();
             m_sprites.AddRange(sprites);
-        }
-
-        public virtual void Init()
-        {
-            // Get spawn pos & set pos
-            //ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
-        }
-
-        protected override void OnUpdate(float elapsed_time)
-        {
-            base.OnUpdate(elapsed_time);
         }
 
         public override void Pause(bool pause = true)

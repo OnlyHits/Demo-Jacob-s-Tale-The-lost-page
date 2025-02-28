@@ -1,6 +1,7 @@
 using UnityEngine;
 using static Comic.Comic;
 using CustomArchitecture;
+using static PageHole;
 
 namespace Comic
 {
@@ -18,7 +19,42 @@ namespace Comic
         private bool m_isPlayerTriggerZone = false;
         private Player m_playerInstance = null;
 
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        {
+            if (!m_isMovable)
+            {
+                return;
+            }
 
+            m_playerInstance = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+
+            if (!m_playerInstance.IsPushingBox())
+            {
+                m_rigidbody.linearVelocity = Vector2.zero;
+                m_rigidbody.bodyType = RigidbodyType2D.Kinematic;
+                m_outlineSprite.color = m_colorInteractible;
+                return;
+            }
+
+            Rigidbody2D playerRb = m_playerInstance.GetComponent<Rigidbody2D>();
+
+            m_rigidbody.linearVelocity = playerRb.linearVelocity;
+
+            m_rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            m_outlineSprite.color = m_colorPushed;
+        }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        { }
+        #endregion
+
+        // could make some problem, should be replace by init
         private void Awake()
         {
             m_rigidbody = GetComponent<Rigidbody2D>();
@@ -34,7 +70,7 @@ namespace Comic
             m_isMovable = false;
         }
 
-        // could make some problem
+        // could make some problem, should be replace by lateinit and register on gamemode
         private void Start()
         {
             m_playerInstance = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
@@ -119,32 +155,5 @@ namespace Comic
         }
 
         #endregion TRIGGER
-
-        protected override void OnFixedUpdate(float elapsed_time)
-        {
-            base.OnFixedUpdate(elapsed_time);
-
-            if (!m_isMovable)
-            {
-                return;
-            }
-
-            m_playerInstance = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
-
-            if (!m_playerInstance.IsPushingBox())
-            {
-                m_rigidbody.linearVelocity = Vector2.zero;
-                m_rigidbody.bodyType = RigidbodyType2D.Kinematic;
-                m_outlineSprite.color = m_colorInteractible;
-                return;
-            }
-
-            Rigidbody2D playerRb = m_playerInstance.GetComponent<Rigidbody2D>();
-
-            m_rigidbody.linearVelocity = playerRb.linearVelocity;
-
-            m_rigidbody.bodyType = RigidbodyType2D.Dynamic;
-            m_outlineSprite.color = m_colorPushed;
-        }
     }
 }

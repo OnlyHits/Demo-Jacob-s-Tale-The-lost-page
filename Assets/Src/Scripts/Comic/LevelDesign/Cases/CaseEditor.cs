@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Comic
 {
+    // should heritate from basebahaviour
     public class CaseEditor : MonoBehaviour
     {
         public enum DecorType
@@ -20,7 +21,7 @@ namespace Comic
 
         [Space]
         public Transform m_propsParent;
-        private List<Prop> m_props;
+        //private List<Prop> m_props;
 
 
         #region DECOR FIELDS

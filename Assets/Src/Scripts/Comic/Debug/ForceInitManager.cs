@@ -20,14 +20,14 @@ public class ForceInitManager : MonoBehaviour
 
     private void Start()
     {
-        if (m_forceInitHUD)
-        {
-            gameCore.MainGameMode.InitHud();
-        }
-        if (m_forceInitGame)
-        {
-            gameCore.MainGameMode.InitGame();
-        }
+        //if (m_forceInitHUD)
+        //{
+        //    gameCore.MainGameMode.InitHud();
+        //}
+        //if (m_forceInitGame)
+        //{
+        //    gameCore.MainGameMode.InitGame();
+        //}
 
     }
 

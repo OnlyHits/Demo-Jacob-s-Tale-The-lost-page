@@ -1,5 +1,6 @@
 using UnityEngine;
 using CustomArchitecture;
+using static PageHole;
 
 namespace Comic
 {
@@ -23,12 +24,24 @@ namespace Comic
             }
         }
 
-        protected override void OnUpdate(float elasped_time)
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             MatchParentSizeAndCenter();
-            #endif
+#endif
+
         }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+        }
+        #endregion
 
         public void MatchParentSizeAndCenter()
         {

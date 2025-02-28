@@ -1,18 +1,33 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using System.Globalization;
+using Comic;
 
 namespace CustomArchitecture
 {
-    public abstract class AGameCore<T> : BaseBehaviour where T : AGameCore<T>
+    // this class heritate from MonoBehaviour and not BaseBehaviour
+    // to ensure that there is no confusion with Init/Update functions
+    public abstract class AGameCore<T> : MonoBehaviour where T : AGameCore<T>
     {
         private static T m_instance;
 
-        private List<AGameMode<T>> m_gameModes = new();
+        private readonly List<AGameMode<T>> m_gameModes = new();
         private AGameMode<T> m_currentGameMode = null;
         private AGameMode<T> m_startingGameMode = null;
+
+        // global objects use in all projects
+        [SerializeField] private InputActionAsset m_inputActionAsset;
         private Settings m_settings = null;
+        private SceneLoader m_sceneLoader = null;
+        private GlobalInput m_globalInput;
+        private DeviceManager m_deviceManager;
+
         public Settings GetSettings() => m_settings;
+        public SceneLoader GetSceneLoader() => m_sceneLoader;
+        public InputActionAsset GetInputAsset() => m_inputActionAsset;
+        public GlobalInput GetGlobalInput() => m_globalInput;
+        public DeviceManager GetDeviceManager() => m_deviceManager;
 
         // Prevent direct instantiation
         protected AGameCore() { }
@@ -42,7 +57,7 @@ namespace CustomArchitecture
         }
         #endregion
 
-        protected virtual void Awake()
+        protected void Awake()
         {
             if (Instance != null && Instance != this)
             {
@@ -54,9 +69,43 @@ namespace CustomArchitecture
             Instance = (T)this;
             DontDestroyOnLoad(gameObject);
 
+            InstantiateDependencies();
+            InstantiateGameModes();
+        }
+
+        private bool GetOrCreateComponent<U>(out U component) where U : MonoBehaviour // Replace by BaseBehaviour to avoid error ?
+        {
+            component = gameObject.GetComponent<U>();
+
+            if (component == null)
+            {
+                component = gameObject.AddComponent<U>();
+            }
+
+            return component != null;
+        }
+
+        private void InstantiateDependencies()
+        {
             m_settings = new Settings();
 
-            InstantiateGameModes();
+            if (!GetOrCreateComponent<SceneLoader>(out m_sceneLoader))
+                Debug.LogError("Unable to create SceneLoader component");
+            else
+                m_sceneLoader.SubscribeToEndLoading(OnGameModeLoaded);
+
+            if (m_inputActionAsset == null)
+                Debug.LogError("You need to assign an InputActionAsset in GameCore prefab");
+
+            if (!GetOrCreateComponent<GlobalInput>(out m_globalInput))
+                Debug.LogError("Unable to create GlobalInput component");
+            else
+                m_globalInput.Init(m_inputActionAsset);
+
+            if (!GetOrCreateComponent<DeviceManager>(out m_deviceManager))
+                Debug.LogError("Unable to create DeviceManager component");
+            else
+                m_deviceManager.Init();
         }
 
         private void Start()
@@ -130,6 +179,16 @@ namespace CustomArchitecture
             return null;
         }
 
+        private void OnGameModeLoaded()
+        {
+            m_currentGameMode.StartGameMode();
+        }
+
+        protected void LoadGameMode()
+        {
+            m_sceneLoader.LoadGameModeScenes(m_currentGameMode.GetUISceneName(), m_currentGameMode.GetGameSceneName());
+        }
+
         protected void StartGameMode(AGameMode<T> game_mode)
         {
             if (!Exist(game_mode))
@@ -141,7 +200,8 @@ namespace CustomArchitecture
             StopGameMode();
 
             m_currentGameMode = game_mode;
-            m_currentGameMode.StartGameMode();
+
+            LoadGameMode();
         }
 
         public void StartGameMode<U>() where U : AGameMode<T>
@@ -155,13 +215,13 @@ namespace CustomArchitecture
             StopGameMode();
 
             m_currentGameMode = GetGameMode<U>();
-            m_currentGameMode.StartGameMode();
+
+            LoadGameMode();
         }
 
         private void StopGameMode()
         {
-            if (m_currentGameMode != null)
-                m_currentGameMode.StopGameMode();
+            m_currentGameMode?.StopGameMode();
         }
 
         protected abstract void InstantiateGameModes();

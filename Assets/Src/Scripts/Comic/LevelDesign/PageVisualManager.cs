@@ -3,6 +3,7 @@ using CustomArchitecture;
 using DG.Tweening;
 using UnityEngine;
 using static Comic.Comic;
+using static PageHole;
 
 namespace Comic
 {
@@ -34,112 +35,111 @@ namespace Comic
         //     Init();
         // }
 
-        public void Init()
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
         {
-            // ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
-            // ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
-
-            // m_duration = ComicGameCore.Instance.MainGameMode.GetPageManager().GetSwitchPageDuration();
-
-            // m_destRotQuat = m_destTransform.rotation;
-
-            // var pages = GetComponentsInChildren<PageVisual>(true);
-            // m_pageVisuals.AddRange(pages);
         }
-
+        #endregion
 
         #region SWITCH PAGE
+        //private void OnBeforeSwitchPage(bool nextPage, Page currentPage, Page newPage)
+        //{
+        //    /*
+        //    if (nextPage == true)
+        //    {
+        //        Quaternion from = m_destRotQuat;
+        //        Quaternion to = currentPage.GetBaseVisualRot();
+        //        TranslatePage(from, to, newPage);
+        //        newPage.gameObject.GetComponent<PageVisual>().PushFront();
+        //    }
+        //    else if (nextPage == false)
+        //    {
+        //        Quaternion from = currentPage.GetBaseVisualRot();
+        //        Quaternion to = m_destRotQuat;
+        //        TranslatePage(from, to, currentPage);
+        //        currentPage.gameObject.GetComponent<PageVisual>().PushFront();
 
-        private void OnBeforeSwitchPage(bool nextPage, Page currentPage, Page newPage)
-        {
-            /*
-            if (nextPage == true)
-            {
-                Quaternion from = m_destRotQuat;
-                Quaternion to = currentPage.GetBaseVisualRot();
-                TranslatePage(from, to, newPage);
-                newPage.gameObject.GetComponent<PageVisual>().PushFront();
-            }
-            else if (nextPage == false)
-            {
-                Quaternion from = currentPage.GetBaseVisualRot();
-                Quaternion to = m_destRotQuat;
-                TranslatePage(from, to, currentPage);
-                currentPage.gameObject.GetComponent<PageVisual>().PushFront();
+        //        ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPlayer().EnableShadowVisual(true);
+        //    }
+        //    */
+        //}
 
-                ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPlayer().EnableShadowVisual(true);
-            }
-            */
-        }
+        //private void OnAfterSwitchPage(bool nextPage, Page currentPage, Page newPage)
+        //{
+        //    /*
+        //    float shadowAnimCanel = 0.5f;
+        //    Player player = ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPlayer();
 
-        private void OnAfterSwitchPage(bool nextPage, Page currentPage, Page newPage)
-        {
-            /*
-            float shadowAnimCanel = 0.5f;
-            Player player = ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPlayer();
+        //    if (nextPage == true)
+        //    {
+        //        float firstHoleFrameDuration = m_holePrefab.GetDuration() / m_holePrefab.GetNbFrames();
+        //        float firstFramDelay = firstHoleFrameDuration + shadowAnimCanel;
+        //        float totalDurtation = m_holePrefab.GetDuration() + shadowAnimCanel;
 
-            if (nextPage == true)
-            {
-                float firstHoleFrameDuration = m_holePrefab.GetDuration() / m_holePrefab.GetNbFrames();
-                float firstFramDelay = firstHoleFrameDuration + shadowAnimCanel;
-                float totalDurtation = m_holePrefab.GetDuration() + shadowAnimCanel;
+        //        newPage.gameObject.GetComponent<PageVisual>().ResetDefault();
+        //        player.EnableShadowVisual(true);
 
-                newPage.gameObject.GetComponent<PageVisual>().ResetDefault();
-                player.EnableShadowVisual(true);
+        //        //check can turn page or not
+        //        StartCoroutine(CoroutineUtils.InvokeOnDelay(shadowAnimCanel, () =>
+        //        {
+        //            InstantiateHole(newPage);
+        //            player.EnableVisual(false);
+        //            player.EnableShadowVisual(false);
+        //        }));
+        //        StartCoroutine(CoroutineUtils.InvokeOnDelay(firstFramDelay, () =>
+        //        {
+        //            player.EnableVisual(true);
+        //        }));
+        //        StartCoroutine(CoroutineUtils.InvokeOnDelay(totalDurtation, () =>
+        //        {
+        //            if (player.IsInWall())
+        //            {
+        //                Debug.Log("CANCEL SWITCH PAGE !!!");
+        //                ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPageManager().TryPrevPage();
+        //            }
+        //            else
+        //            {
+        //                ComicGameCore.Instance.GetGameMode<MainGameMode>().GetCharacterManager().PauseAllCharacters(false);
+        //            }
+        //        }));
+        //    }
+        //    else if (nextPage == false)
+        //    {
+        //        currentPage.gameObject.GetComponent<PageVisual>().ResetDefault();
+        //        StartCoroutine(CoroutineUtils.InvokeOnDelay(shadowAnimCanel, () =>
+        //        {
+        //            if (player.IsInWall())
+        //            {
+        //                Debug.Log("CANCEL SWITCH PAGE !!!");
+        //                ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPageManager().TryNextPage();
+        //            }
+        //            else
+        //            {
+        //                player.EnableShadowVisual(false);
+        //                ComicGameCore.Instance.GetGameMode<MainGameMode>().GetCharacterManager().PauseAllCharacters(false);
+        //            }
+        //        }));
+        //    }
+        //    */
+        //}
 
-                //check can turn page or not
-                StartCoroutine(CoroutineUtils.InvokeOnDelay(shadowAnimCanel, () =>
-                {
-                    InstantiateHole(newPage);
-                    player.EnableVisual(false);
-                    player.EnableShadowVisual(false);
-                }));
-                StartCoroutine(CoroutineUtils.InvokeOnDelay(firstFramDelay, () =>
-                {
-                    player.EnableVisual(true);
-                }));
-                StartCoroutine(CoroutineUtils.InvokeOnDelay(totalDurtation, () =>
-                {
-                    if (player.IsInWall())
-                    {
-                        Debug.Log("CANCEL SWITCH PAGE !!!");
-                        ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPageManager().TryPrevPage();
-                    }
-                    else
-                    {
-                        ComicGameCore.Instance.GetGameMode<MainGameMode>().GetCharacterManager().PauseAllCharacters(false);
-                    }
-                }));
-            }
-            else if (nextPage == false)
-            {
-                currentPage.gameObject.GetComponent<PageVisual>().ResetDefault();
-                StartCoroutine(CoroutineUtils.InvokeOnDelay(shadowAnimCanel, () =>
-                {
-                    if (player.IsInWall())
-                    {
-                        Debug.Log("CANCEL SWITCH PAGE !!!");
-                        ComicGameCore.Instance.GetGameMode<MainGameMode>().GetPageManager().TryNextPage();
-                    }
-                    else
-                    {
-                        player.EnableShadowVisual(false);
-                        ComicGameCore.Instance.GetGameMode<MainGameMode>().GetCharacterManager().PauseAllCharacters(false);
-                    }
-                }));
-            }
-            */
-        }
+        //private void InstantiateHole(Page page, float delayPlay = 0f)
+        //{
+        //    Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().transform.position;
 
-        private void InstantiateHole(Page page, float delayPlay = 0f)
-        {
-            Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().transform.position;
-
-            m_hole = Instantiate(m_holePrefab, page.transform);
-            m_hole.Init();
-            m_hole.Setup(playerPos, frontLayerId, 0.5f);
-            m_hole.Play(delayPlay);
-        }
+        //    m_hole = Instantiate(m_holePrefab, page.transform);
+        //    m_hole.Init();
+        //    m_hole.Setup(playerPos, frontLayerId, 0.5f);
+        //    m_hole.Play(delayPlay);
+        //}
 
         // private void TranslatePage(Quaternion from, Quaternion to, Page page)
         // {

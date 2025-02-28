@@ -74,15 +74,8 @@ namespace CustomArchitecture
             }
         }
 
-        /// <summary>
-        /// Call this Init method after have set the callbacks, it will bind all callbacks to InputActions
-        /// </summary>
-        abstract public void Init();
-
-        protected override void OnLateUpdate(float elapsed_time)
+        protected override void OnLateUpdate()
         {
-            base.OnLateUpdate(elapsed_time);
-
             foreach (var ias in m_inputActionStructsV2)
             {
                 TryGetAction<Vector2>(ias);
