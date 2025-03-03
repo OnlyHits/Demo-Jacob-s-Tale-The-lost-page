@@ -29,26 +29,7 @@ namespace Comic
         [Header("Fall")]
         [SerializeField, ReadOnly] private bool m_isFalling = false;
 
-        [Header("Others")]
-        [SerializeField] private PageManager m_pageManager;
-
-        protected override void Awake()
-        {
-            base.Awake(); // ??
-
-            // Init callbacks BEFORE initializating the AInputManager
-            m_inputsController.onMoveAction += OnMove;
-            m_inputsController.onLookAction += OnLook;
-            m_inputsController.onJumpAction += OnJump;
-            m_inputsController.onSprintAction += OnSprint;
-            m_inputsController.onInteractAction += OnInteract;
-            m_inputsController.onNextPageAction += OnNextPage;
-            m_inputsController.onPrevPageAction += OnPrevPage;
-            m_inputsController.onPowerAction += OnPower;
-            m_inputsController.onNextPowerAction += OnNextPower;
-            m_inputsController.onPrevPowerAction += OnPrevPower;
-        }
-
+        public PlayerInputsController GetInputController() => m_inputsController;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -78,32 +59,32 @@ namespace Comic
         public override void LateInit(params object[] parameters)
         {
             base.LateInit(parameters);
+
+            m_inputsController.LateInit();
         }
         public override void Init(params object[] parameters)
         {
             base.Init();
 
-            // Init AInputManager AFTER initializating the callbacks
-            InitInputController();
+            m_inputsController.Init();
 
-            m_pageManager = ComicGameCore.Instance.MainGameMode.GetPageManager();
+            m_inputsController.onMoveAction += OnMove;
+            m_inputsController.onLookAction += OnLook;
+            m_inputsController.onJumpAction += OnJump;
+            m_inputsController.onSprintAction += OnSprint;
+            m_inputsController.onInteractAction += OnInteract;
+            m_inputsController.onPowerAction += OnPower;
+            m_inputsController.onNextPowerAction += OnNextPower;
+            m_inputsController.onPrevPowerAction += OnPrevPower;
 
             ComicGameCore.Instance.MainGameMode.SubscribeToPowerSelected(OnPowerSelected);
-
-            ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
-            ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
         }
         #endregion
 
-        private void InitInputController()
-        {
-            m_inputsController.Init();
-        }
-
+        // input controller pause is handle in NavigationController
         public override void Pause(bool pause = true)
         {
             base.Pause(pause);
-            m_inputsController.Pause(pause);
         }
 
         // private void OnCollisionEnter2D(Collision2D collision)

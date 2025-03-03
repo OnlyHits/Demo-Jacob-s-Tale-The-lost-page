@@ -10,11 +10,6 @@ namespace Comic
         [SerializeField] private Transform m_lookTarget;
         [SerializeField] private DialogueName m_dialogueType;
 
-        protected override void Awake() // ??
-        {
-            base.Awake();
-        }
-
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         {

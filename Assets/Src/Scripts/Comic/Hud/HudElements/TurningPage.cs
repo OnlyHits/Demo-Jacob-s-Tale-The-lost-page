@@ -27,7 +27,7 @@ namespace Comic
 
         private Sequence m_turnSequence;
 
-        private Tween m_rotationTween;
+        public bool IsTurning() => m_turnSequence != null;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -53,7 +53,7 @@ namespace Comic
             m_onEndTurning += function;
         }
 
-        public void SwitchPageError(bool is_next)
+        public void TurnPageError(bool is_next)
         {
             gameObject.SetActive(true);
 

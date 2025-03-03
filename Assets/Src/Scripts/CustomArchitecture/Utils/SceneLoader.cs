@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Collections;
 using System;
 using static PageHole;
+using Comic;
+using System.Threading;
 
 namespace CustomArchitecture
 {
@@ -12,6 +14,7 @@ namespace CustomArchitecture
         public float m_waitAfterLoad = 1f;
         public string m_transitionScene = "LoadingScene";
         public Action m_onScenesLoaded;
+        public Action m_onLoadingEnd;
 
         private List<string> m_currentScenes = new()
         {
@@ -31,10 +34,16 @@ namespace CustomArchitecture
         { }
         #endregion
 
-        public void SubscribeToEndLoading(Action function)
+        public void SubscribeToSceneLoaded(Action function)
         {
             m_onScenesLoaded -= function;
             m_onScenesLoaded += function;
+        }
+
+        public void SubscribeToEndLoading(Action function)
+        {
+            m_onLoadingEnd -= function;
+            m_onLoadingEnd += function;
         }
 
         public void LoadGameModeScenes(string ui_scene, string game_scene)
@@ -87,12 +96,22 @@ namespace CustomArchitecture
                 yield return null;
             }
 
-            yield return new WaitForSeconds(m_waitAfterLoad);
+            if (game_load != null)
+            {
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(game_scene));
+            }
+
+            m_onScenesLoaded?.Invoke();
+
+            yield return new WaitUntil(() => ComicGameCore.Instance.MainGameMode.Compute);
 
             yield return SceneManager.UnloadSceneAsync(m_transitionScene);
             m_currentScenes.Remove(m_transitionScene);
 
-            m_onScenesLoaded?.Invoke();
+            yield return new WaitForEndOfFrame();
+
+            //yield return new WaitForSeconds(m_waitAfterLoad);
+            m_onLoadingEnd?.Invoke();
         }
     }
 }

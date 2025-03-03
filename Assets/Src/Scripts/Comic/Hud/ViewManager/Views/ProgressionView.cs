@@ -42,9 +42,12 @@ namespace Comic
         {
             base.Init(parameters);
 
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidateInput);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCanceledInput);
+            ComicGameCore.Instance.MainGameMode.GetNavigationManager()
+                .GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
+            ComicGameCore.Instance.MainGameMode.GetNavigationManager()
+                .GetNavigationInput().SubscribeToValidate(OnValidateInput);
+            ComicGameCore.Instance.MainGameMode.GetNavigationManager()
+                .GetNavigationInput().SubscribeToCancel(OnCanceledInput);
 
             ComicGameCore.Instance.MainGameMode.SubscribeToLockChapter(OnChapterLocked);
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnChapterUnlocked);

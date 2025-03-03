@@ -50,9 +50,12 @@ namespace Comic
         {
             base.Init(parameters);
 
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValidateInput);
-            ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToCancel(OnCanceledInput);
+            ComicGameCore.Instance.MainGameMode
+                .GetNavigationManager().GetNavigationInput().SubscribeToNavigate(OnNavigateInputChanged);
+            ComicGameCore.Instance.MainGameMode
+                .GetNavigationManager().GetNavigationInput().SubscribeToValidate(OnValidateInput);
+            ComicGameCore.Instance.MainGameMode
+                .GetNavigationManager().GetNavigationInput().SubscribeToCancel(OnCanceledInput);
 
             m_tLanguage.text = ComicGameCore.Instance.GetSettings().m_settingDatas.m_language.ToString();
             m_sVolumeEffect.value = ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume;
@@ -305,7 +308,7 @@ namespace Comic
 
         private void Play()
         {
-            ComicGameCore.Instance.MainGameMode.Pause(false);
+            //ComicGameCore.Instance.MainGameMode.Pause(false);
         }
 
         private void Exit()

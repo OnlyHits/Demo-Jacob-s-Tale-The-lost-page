@@ -6,14 +6,12 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using static CustomArchitecture.CustomArchitecture;
 using System.Security.Cryptography;
+using System.Collections;
 
 namespace Comic
 {
     public interface MainGameModeProvider
     {
-        // public Page GetCurrentPage();
-        // public Case GetCurrentPanel();
-
         public List<ChapterSavedData> GetUnlockChaptersData();
         public GameConfig GetGameConfig();
         public PageManager GetPageManager();
@@ -54,6 +52,7 @@ namespace Comic
         // local datas
         private HudManager m_hudManager;
         private GameManager m_gameManager;
+        private NavigationManager m_navigationManager;
 
         private Action<VoiceType> m_onUnlockVoiceCallback;
         private Action<PowerType> m_onUnlockPowerCallback;
@@ -74,6 +73,7 @@ namespace Comic
         public GameProgression GetGameProgression() => m_gameProgression;
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
+        public NavigationManager GetNavigationManager() => m_navigationManager;
 
         // ---- Sub managers ----
 
@@ -82,40 +82,33 @@ namespace Comic
         public PowerManager GetPowerManager() => m_gameManager?.GetPowerManager();
         public DialogueManager GetDialogueManager() => m_gameManager?.GetDialogueManager();
         public ViewManager GetViewManager() => m_hudManager?.GetViewManager();
-        public NavigationInput GetNavigationInput() => m_hudManager?.GetNavigationInput();
         public HudManager GetHudManager() => m_hudManager;
 
-        #region BaseBehaviour
-        protected override void OnFixedUpdate()
-        { }
-        protected override void OnLateUpdate()
-        { }
-        protected override void OnUpdate()
-        { }
-        public override void LateInit(params object[] parameters)
-        { }
-
-        public override void Init(params object[] parameters)
+        public override void InitGameMode(params object[] parameters)
         {
-            base.Init(parameters);
+            base.InitGameMode(parameters);
 
             m_gameSceneName = "GameScene";
             m_uiSceneName = "HudScene";
 
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
+            
+            ComponentUtils.GetOrCreateComponent<NavigationManager>(gameObject, out m_navigationManager);
 
             m_cameraManager = GetComponentInChildren<URP_CameraManager>(); // should be in AGameCore
-            m_cameraManager.Init(); // AGameCore
+            m_cameraManager.Init(); // AGameCore too
+
+            m_gameCore.GetGlobalInput().onPause += OnPause;
         }
 
-        #endregion
-
-        // This function is called after scenes loading are done
-        public override void StartGameMode()
+        // todo : check if resources.Load is done on one frame or multiple
+        public override IEnumerator LoadGameMode()
         {
             m_hudManager = SceneUtils.FindObjectAcrossScenes<HudManager>();
             m_gameManager = SceneUtils.FindObjectAcrossScenes<GameManager>();
+
+            m_navigationManager.Init(m_gameManager, m_hudManager, m_gameCore.GetGlobalInput(), m_cameraManager);
 
             if (GetUnlockChaptersData().Count == 0)
             {
@@ -129,9 +122,10 @@ namespace Comic
             }
             if (m_hudManager != null)
             {
-                m_hudManager.Init();
+                m_hudManager.Init(GetCameraManager());
                 m_cameraManager.RegisterCameras(m_hudManager.GetRegisteredCameras());
             }
+
             if (m_gameManager != null)
             {
                 m_gameManager.LateInit();
@@ -141,20 +135,24 @@ namespace Comic
                 m_hudManager.LateInit();
             }
 
-            ActivateGame();
-
             GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
 
-            // not really in the logic flow, but there is no better option for the moment
-            m_gameCore.GetGlobalInput().onPause += OnPause;
-            m_gameCore.GetGlobalInput().LateInit();
+            // Update : is okay but should have a globally better handle of Init/LateInit 
+            m_navigationManager.LateInit();
 
             Compute = true;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        public override void StartGameMode()
+        {
+            m_navigationManager.TryOpenBook();
         }
 
         public void OnEndMainDialogue(DialogueName type)
         {
-            GetCharacterManager().GetPlayer().Pause(false);
+            //GetCharacterManager().GetPlayer().Pause(false);
 
             if (type == DialogueName.Dialogue_UnlockBF)
                 UnlockChapter(Chapters.The_First_Chapter, true, true);
@@ -168,17 +166,15 @@ namespace Comic
 
         public void TriggerDialogue(DialogueName type)
         {
-            if (GetDialogueManager().StartDialogue(type))
-                GetCharacterManager().GetPlayer().Pause(true);
+            //if (GetDialogueManager().StartDialogue(type))
+            //    GetCharacterManager().GetPlayer().Pause(true);
         }
 
         #region END GAME
 
         public void PlayEndGame()
         {
-            // fix some issues
-            GetNavigationInput().Pause(true);
-            GetCharacterManager().GetPlayer().Pause(true);
+            //GetCharacterManager().GetPlayer().Pause(true);
 
             GetViewManager().Show<CreditView>();
             GetDialogueManager().StartCreditDialogue();
@@ -406,63 +402,13 @@ namespace Comic
 
         #endregion
 
-        private void ActivateGame()
-        {
-            GetNavigationInput().Pause(true);
-            GetCharacterManager().PauseAllCharacters(false);
-            GetViewManager().Show<ProgressionView>();
-        }
-
-        private void ActivateHud()
-        {
-            GetNavigationInput().Pause(false);
-            GetCharacterManager().PauseAllCharacters(true);
-            GetViewManager().Show<PauseView>();
-        }
-
-
         #region PAUSE & GLOBAL INPUT
-
-        private void TryResumeGame()
-        {
-            if (GetViewManager().GetCurrentView() is PauseView pauseView)
-            {
-                if (pauseView.IsBasePanelShown)
-                {
-                    Pause(false);
-                }
-            }
-        }
 
         private void OnPause(InputType input, bool b)
         {
             if (input == InputType.RELEASED)
             {
-                if (m_pause)
-                {
-                    Debug.Log("resume");
-                    TryResumeGame();
-                }
-                else
-                {
-                    Debug.Log("Pause");
-                    Pause(true);
-                }
-            }
-        }
-
-        public override void Pause(bool pause)
-        {
-            base.Pause(pause);
-            if (pause)
-            {
-                //Debug.Log("Pause game");
-                ActivateHud();
-            }
-            else
-            {
-                //Debug.Log("Reset game");
-                ActivateGame();
+                m_navigationManager.TryPause();
             }
         }
 

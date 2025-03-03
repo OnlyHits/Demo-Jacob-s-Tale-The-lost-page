@@ -1,8 +1,9 @@
 using UnityEngine;
+using System.Collections;
 
 namespace CustomArchitecture
 {
-    public abstract class AGameMode<T> : BaseBehaviour where T : AGameCore<T>
+    public abstract class AGameMode<T> : MonoBehaviour where T : AGameCore<T>
     {
         protected string m_gameName;
         protected T m_gameCore;
@@ -14,8 +15,11 @@ namespace CustomArchitecture
         public string GetUISceneName() => m_uiSceneName;
 
         /// <summary>
-        /// This function is called first
+        /// This function is call when all required scenes are load
+        /// Init/LateInit all your managed objects in this function
         /// </summary>
+        public abstract IEnumerator LoadGameMode();
+
         public abstract void StartGameMode();
 
         /// <summary>
@@ -34,7 +38,11 @@ namespace CustomArchitecture
             protected set { m_isCompute = value; }
         }
 
-        public override void Init(params object[] parameters)
+        /// <summary>
+        /// This function is called when created (ie at GameCore Awake)
+        /// Init what you need along the game
+        /// </summary>
+        public virtual void InitGameMode(params object[] parameters)
         {
             if (parameters.Length > 0 && parameters[0] is T game_core)
                 m_gameCore = game_core;

@@ -20,14 +20,18 @@ namespace Comic
         protected override void OnUpdate()
         { }
         public override void LateInit(params object[] parameters)
-        { }
+        {
+            m_player.LateInit();
+            foreach (Character npc in m_npcs.Values)
+            {
+                npc.LateInit();
+            }
+        }
         public override void Init(params object[] parameters)
         {
             LoadCharacters();
             InitCharacters();
 
-            ComicGameCore.Instance.MainGameMode.SubscribeToBeforeSwitchPage(OnBeforeSwitchPage);
-            ComicGameCore.Instance.MainGameMode.SubscribeToAfterSwitchPage(OnAfterSwitchPage);
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockVoice(OnUnlockVoice);
             ComicGameCore.Instance.MainGameMode.SubscribeToLockVoice(OnLockVoice);
             ComicGameCore.Instance.MainGameMode.SubscribeToUnlockChapter(OnUnlockChapter);
@@ -76,6 +80,7 @@ namespace Comic
         private void InitCharacters()
         {
             m_player.Init();
+
             foreach (Character npc in m_npcs.Values)
             {
                 npc.Init();
@@ -167,16 +172,6 @@ namespace Comic
 
 
         #region SWITCH PAGE
-
-        private void OnBeforeSwitchPage(bool nextPage)
-        {
-            PauseAllCharacters(true);
-        }
-
-        private void OnAfterSwitchPage(bool nextPage)
-        {
-            PauseAllCharacters(false);
-        }
 
         public void PauseAllCharacters(bool pause = true)
         {

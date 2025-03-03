@@ -5,9 +5,6 @@ using System.IO;
 using UnityEngine.Rendering.Universal;
 using System;
 using CustomArchitecture;
-using UnityEditor.ShaderGraph;
-using JetBrains.Annotations;
-using static PageHole;
 
 namespace Comic
 {
@@ -26,20 +23,19 @@ namespace Comic
         private Camera m_baseCamera;
 
         [SerializeField] private RenderTexture  m_screenshotRenderTexture;
-        [SerializeField] private Camera         m_screenshotCamera;
-        private Action<bool, Sprite>            m_onScreenshotSprite;
-
-        [SerializeField] private URP_OverlayCameraType m_screenType;
         [SerializeField] private SpriteRenderer m_leftScreenshot;
         [SerializeField] private SpriteRenderer m_rightScreenshot;
 
+        private Action<bool, Sprite> m_onScreenshotSprite;
+
+        public void SubscribeToScreenshot(Action<bool, Sprite> function) { m_onScreenshotSprite -= function; m_onScreenshotSprite += function; }
         public Bounds GetScreenshotBounds() => m_leftScreenshot.bounds;
         public bool IsCameraRegister(URP_OverlayCameraType type) => m_overlayCameras != null && m_overlayCameras.ContainsKey(type);
         public Camera GetCameraBase() => m_baseCamera;
 
         private Texture2D               m_screenLeft;
         private Texture2D               m_screenRight;
-
+        
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         { }
@@ -47,6 +43,7 @@ namespace Comic
         { }
         protected override void OnUpdate()
         {
+            // change that shit very quick
             if (m_screenshotRenderTexture.width != Screen.width || m_screenshotRenderTexture.height != Screen.height)
             {
                 m_screenshotRenderTexture.Release();
@@ -62,14 +59,10 @@ namespace Comic
         public override void Init(params object[] parameters)
         {
             m_overlayCameras = new();
-            m_onScreenshotSprite += OnScreenshotSprite;
             m_baseCamera = GetComponent<Camera>();
 
             InitScreenTexture(true);
             InitScreenTexture(false);
-
-            // important for hud instantiation
-            //((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).Init(m_baseCamera, GetScreenshotBounds());
         }
         #endregion
 
@@ -219,34 +212,20 @@ namespace Comic
             }
         }
 
-        private void OnScreenshotSprite(bool front, Sprite sprite)
-        {
-            if (front)
-            {
-                ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).SetFrontSprite(sprite);
-            }
-            else
-            {
-                ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).SetBackSprite(sprite);
-            }
-        }
+        //public void RenderOnScreenshot()
+        //{
+        //    m_baseCamera.targetTexture = m_screenshotRenderTexture;
+        //}
 
-        public void RenderOnScreenshot()
+        //public void RestoreDefaultRender()
+        //{
+        //    RenderTexture.active = null;
+        //    m_baseCamera.targetTexture = null;
+        //}
+
+        public IEnumerator TakeScreenshot(bool is_next_page)
         {
-            //m_baseCamera.enabled = false;
             m_baseCamera.targetTexture = m_screenshotRenderTexture;
-        }
-
-        public void RestoreDefaultRender()
-        {
-            RenderTexture.active = null;
-            m_baseCamera.targetTexture = null;
-        }
-
-        public IEnumerator ScreenAndApplyTexture(bool is_next_page)
-        {
-            if (!m_overlayCameras.ContainsKey(URP_OverlayCameraType.Camera_Hud))
-                yield break;
 
             yield return new WaitForEndOfFrame();
 
@@ -256,28 +235,20 @@ namespace Comic
 
             if (is_next_page)
             {
-                CaptureAllCameraURPScreenshot(m_screenRight, m_rightScreenshot, true);
-                CaptureAllCameraURPScreenshot(m_screenLeft, m_leftScreenshot, false);
+                CaptureScreenshot(m_screenRight, m_rightScreenshot, true);
+                CaptureScreenshot(m_screenLeft, m_leftScreenshot, false);
                 yield return null;
             }
             else
             {
-                CaptureAllCameraURPScreenshot(m_screenLeft, m_leftScreenshot, false);
-                CaptureAllCameraURPScreenshot(m_screenRight, m_rightScreenshot, true);
+                CaptureScreenshot(m_screenLeft, m_leftScreenshot, false);
+                CaptureScreenshot(m_screenRight, m_rightScreenshot, true);
                 yield return null;
             }
-        }
 
-        public void TurnPage(bool is_next_page)
-        {
-            ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).TurnPage(is_next_page);
+            RenderTexture.active = null;
+            m_baseCamera.targetTexture = null;
         }
-
-        public void TurnPageError(bool is_next_page)
-        {
-            ((HudCameraRegister)m_overlayCameras[URP_OverlayCameraType.Camera_Hud]).TurnPageError(is_next_page);
-        }
-
 
         #region Screenshot
 
@@ -303,7 +274,7 @@ namespace Comic
             return Sprite.Create(texture, spriteRect, new Vector2(0.5f, 0.5f));
         }
 
-        private void CaptureAllCameraURPScreenshot(Texture2D texture, SpriteRenderer render_area, bool front)
+        private void CaptureScreenshot(Texture2D texture, SpriteRenderer render_area, bool front)
         {
             Bounds spriteBounds = render_area.bounds;
 
@@ -320,7 +291,7 @@ namespace Comic
             texture.ReadPixels(captureRect, 0, 0);
             texture.Apply();
 
-            SaveTextureAsPNG(texture, front ? "Tests/front.png" : "Tests/back.png");
+//            SaveTextureAsPNG(texture, front ? "Tests/front.png" : "Tests/back.png");
 
             m_onScreenshotSprite?.Invoke(front, ConvertTextureToSprite(texture));
         }

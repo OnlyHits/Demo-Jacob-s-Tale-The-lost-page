@@ -84,20 +84,6 @@ namespace Comic
         }
         #endregion POWERS ADD & REMOVE
 
-        #region ON SWITCH PAGE
-
-        private void OnBeforeSwitchPage(bool isNextPage)
-        {
-            //DestroyDummies();
-        }
-
-        private void OnAfterSwitchPage(bool isNextPage)
-        {
-
-        }
-
-        #endregion ON SWITCH PAGE
-
         private void OnPowerSelected(PowerType powerType)
         {
             Power power = GetPowerByType(powerType);

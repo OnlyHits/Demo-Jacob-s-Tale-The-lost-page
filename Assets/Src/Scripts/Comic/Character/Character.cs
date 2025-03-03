@@ -37,23 +37,17 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
-            // Get spawn pos & set pos
-            //ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
-        }
-        #endregion
-
-
-        protected virtual void Awake()
-        {
             m_baseHeadLocalPos = m_head.localPosition;
 
             var sprites = GetComponentsInChildren<SpriteRenderer>();
             m_sprites.AddRange(sprites);
         }
+        #endregion
 
         public override void Pause(bool pause = true)
         {
             base.Pause(pause);
+
             m_animator.speed = pause ? 0 : 1f;
 
             m_rb.constraints = pause ? RigidbodyConstraints2D.FreezeAll : RigidbodyConstraints2D.FreezeRotation;

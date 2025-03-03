@@ -72,6 +72,7 @@ namespace Comic
             m_navigationAction = ComicGameCore.Instance.GetInputAsset().FindAction("Navigation");
             m_cancelAction = ComicGameCore.Instance.GetInputAsset().FindAction("Cancel");
             m_validateAction = ComicGameCore.Instance.GetInputAsset().FindAction("Validate");
+
         }
 
         private void InitInputActions()
@@ -79,6 +80,10 @@ namespace Comic
             InputActionStruct<Vector2> iNavigate = new InputActionStruct<Vector2>(m_navigationAction, onNavigationAction, Vector2.zero, true);
             InputActionStruct<bool> iValidate = new InputActionStruct<bool>(m_validateAction, onValidateAction, false);
             InputActionStruct<bool> iCancel = new InputActionStruct<bool>(m_cancelAction, onCancelAction, false);
+
+            // Clear struct in case of already defined list (if reloaded for example)
+            m_inputActionStructsV2.Clear();
+            m_inputActionStructsBool.Clear();
 
             m_inputActionStructsV2.Add(iNavigate);
             m_inputActionStructsBool.Add(iValidate);

@@ -48,7 +48,7 @@ namespace Comic
                 return;
 
             if (!IsBubbleChoice())
-                ComicGameCore.Instance.MainGameMode.GetNavigationInput().SubscribeToValidate(OnValid);
+                ComicGameCore.Instance.MainGameMode.GetNavigationManager().GetNavigationInput().SubscribeToValidate(OnValid);
 
             m_containerRect = (RectTransform)parameters[0];
             gameObject.SetActive(false);

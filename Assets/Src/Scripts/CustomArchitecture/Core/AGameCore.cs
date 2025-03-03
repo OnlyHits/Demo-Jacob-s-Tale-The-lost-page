@@ -73,36 +73,27 @@ namespace CustomArchitecture
             InstantiateGameModes();
         }
 
-        private bool GetOrCreateComponent<U>(out U component) where U : MonoBehaviour // Replace by BaseBehaviour to avoid error ?
-        {
-            component = gameObject.GetComponent<U>();
-
-            if (component == null)
-            {
-                component = gameObject.AddComponent<U>();
-            }
-
-            return component != null;
-        }
-
         private void InstantiateDependencies()
         {
             m_settings = new Settings();
 
-            if (!GetOrCreateComponent<SceneLoader>(out m_sceneLoader))
+            if (!ComponentUtils.GetOrCreateComponent<SceneLoader>(gameObject, out m_sceneLoader))
                 Debug.LogError("Unable to create SceneLoader component");
             else
-                m_sceneLoader.SubscribeToEndLoading(OnGameModeLoaded);
+            {
+                m_sceneLoader.SubscribeToSceneLoaded(OnSceneLoaded);
+                m_sceneLoader.SubscribeToEndLoading(OnEndLoading);
+            }
 
             if (m_inputActionAsset == null)
                 Debug.LogError("You need to assign an InputActionAsset in GameCore prefab");
 
-            if (!GetOrCreateComponent<GlobalInput>(out m_globalInput))
+            if (!ComponentUtils.GetOrCreateComponent<GlobalInput>(gameObject, out m_globalInput))
                 Debug.LogError("Unable to create GlobalInput component");
             else
                 m_globalInput.Init(m_inputActionAsset);
 
-            if (!GetOrCreateComponent<DeviceManager>(out m_deviceManager))
+            if (!ComponentUtils.GetOrCreateComponent<DeviceManager>(gameObject, out m_deviceManager))
                 Debug.LogError("Unable to create DeviceManager component");
             else
                 m_deviceManager.Init();
@@ -129,7 +120,7 @@ namespace CustomArchitecture
             if (game_mode != null)
             {
                 m_gameModes.Add(game_mode);
-                game_mode.Init((T)this, parameters);
+                game_mode.InitGameMode((T)this, parameters);
             }
             else
             {
@@ -179,7 +170,12 @@ namespace CustomArchitecture
             return null;
         }
 
-        private void OnGameModeLoaded()
+        private void OnSceneLoaded()
+        {
+            StartCoroutine(m_currentGameMode.LoadGameMode());
+        }
+
+        private void OnEndLoading()
         {
             m_currentGameMode.StartGameMode();
         }

@@ -13,9 +13,5 @@ namespace Comic
         public List<Camera> m_cameras;
 
         public List<Camera> GetCameras() => m_cameras;
-
-        public abstract Camera GetCameraForScreenshot();
-        public abstract Vector3? GetScreenshotMin(Camera base_camera);
-        public abstract Vector3? GetScreenshotMax(Camera base_camera);
     }
 }

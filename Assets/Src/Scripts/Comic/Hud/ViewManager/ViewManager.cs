@@ -26,9 +26,9 @@ namespace Comic
                 m_views[i].LateInit();
             }
 
-            // remove this and replace by ShowStartingView function
-            if (m_startingView != null)
-                Show(m_startingView, true);
+            //// remove this and replace by ShowStartingView function
+            //if (m_startingView != null)
+            //    Show(m_startingView, true);
         }
         public override void Init(params object[] parameters)
         {
@@ -106,10 +106,8 @@ namespace Comic
             foreach (AView ite_view in m_views)
             {
                 if (ite_view == m_currentView) continue;
-                if (m_currentView is PauseView)
-                {
-                    ite_view.Hide(false, true);
-                }
+                if (m_currentView is PauseView) ite_view.Hide(false, true);
+                if (m_currentView is BookCoverView) ite_view.Hide(false, true);
                 if (m_currentView is ProgressionView)
                 {
                     if (ite_view is DialogueView)
@@ -117,7 +115,8 @@ namespace Comic
                         ite_view.ShowPartial();
                     }
                 }
-                if (m_currentView is not PauseView && m_currentView is not ProgressionView)
+                if (m_currentView is not PauseView && m_currentView is not ProgressionView
+                    && m_currentView is not BookCoverView)
                 {
                     ite_view.Hide(true, false);
                 }

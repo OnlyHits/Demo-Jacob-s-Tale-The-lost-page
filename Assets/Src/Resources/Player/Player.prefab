@@ -87,8 +87,6 @@ MonoBehaviour:
   m_spriteBody: {fileID: 6289555180810094471}
   m_baseColor: {r: 1, g: 1, b: 1, a: 1}
   m_shadowColor: {r: 0, g: 0, b: 0, a: 0.5019608}
-  m_triggerCollider: {fileID: 8945407140214950461}
-  m_isInWall: 0
   m_isGrounded: 0
   m_isMoving: 0
   m_speed: 250
