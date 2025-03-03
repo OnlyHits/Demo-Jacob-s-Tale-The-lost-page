@@ -6,6 +6,9 @@ namespace Comic
 {
     public class GameManager : BaseBehaviour
     {
+        [SerializeField] private GameObject m_coverRight;
+        [SerializeField] private GameObject m_coverLeft;
+        [SerializeField] private GameObject m_gameBackground;
         private PageManager m_pageManager;
         private CharacterManager m_characterManager;
         private PowerManager m_powerManager;
@@ -17,6 +20,24 @@ namespace Comic
         public PowerManager GetPowerManager() => m_powerManager;
         public GameCameraRegister GetRegisteredCameras() => m_cameras;
         public DialogueManager GetDialogueManager() => m_dialogueManager;
+
+        public SpriteRenderer GetCoverSpriteRenderer(bool right)
+        {
+            return right ? m_coverRight.GetComponent<SpriteRenderer>() : m_coverLeft.GetComponent<SpriteRenderer>();
+        }
+
+        public void EnableBookBackground(bool enable, bool right)
+        {
+            if (right)
+                m_coverRight.SetActive(enable);
+            else
+                m_coverLeft.SetActive(enable);
+        }
+
+        public void EnableGameBackground(bool enable)
+        {
+            m_gameBackground.SetActive(enable);
+        }
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()

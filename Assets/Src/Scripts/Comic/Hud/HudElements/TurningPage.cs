@@ -17,7 +17,8 @@ namespace Comic
         [SerializeField] private Image m_leftShadow;
         [SerializeField] private Image m_rightShadow;
 
-        [SerializeField] private float m_turnDuration;
+        [SerializeField] private float m_turnPageDuration;
+        [SerializeField] private float m_turnCoverDuration;
         [SerializeField, Range(0f, 90f)] private float m_errorAngle = 45f;
         [SerializeField] private bool m_vibrateOnError = false;
         [SerializeField] private float m_vibrationDuration = .1f;
@@ -68,7 +69,7 @@ namespace Comic
             m_errorAngle = Mathf.Clamp(m_errorAngle, 0f, max_error_angle);
 
             float error_ratio = m_errorAngle / max_error_angle;
-            float error_rotate_duration = (m_turnDuration * .5f) * error_ratio;
+            float error_rotate_duration = (m_turnPageDuration * .5f) * error_ratio;
 
             float from_rotation = is_next ? 90f : 270f;
             float to_rotation = is_next ? 270f : 90f;
@@ -94,7 +95,7 @@ namespace Comic
             Sequence rotate_sequence = DOTween.Sequence();
             Sequence shadow_sequence = DOTween.Sequence();
 
-            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, from_rotation, 0), m_turnDuration * 0.5f)
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, from_rotation, 0), m_turnPageDuration * 0.5f)
                 .SetEase(Ease.InQuad)
                 .OnComplete(() => {
                     Vector3 rotation = rect.eulerAngles;
@@ -123,20 +124,20 @@ namespace Comic
                     m_turningPage.sprite = is_next ? m_frontSprite : m_backSprite;
                 }));
 
-            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 0, 0), m_turnDuration * 0.5f)
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 0, 0), m_turnPageDuration * 0.5f)
                 .SetEase(Ease.OutQuad));
 
             Image starting_shadow = is_next ? m_rightShadow : m_leftShadow;
             Image ending_shadow = is_next ? m_leftShadow : m_rightShadow;
 
-            shadow_sequence.Append(starting_shadow.DOColor(is_next ? right_color : left_color, m_turnDuration * 0.5f).SetEase(Ease.InQuad));
+            shadow_sequence.Append(starting_shadow.DOColor(is_next ? right_color : left_color, m_turnPageDuration * 0.5f).SetEase(Ease.InQuad));
             shadow_sequence.Append(ending_shadow.DOColor(is_next ? left_color : right_color, error_rotate_duration).SetEase(Ease.OutQuad));
             
             if (m_vibrateOnError)
                 shadow_sequence.AppendInterval(m_vibrationDuration);
     
             shadow_sequence.Append(ending_shadow.DOColor(is_next ? right_color : left_color, error_rotate_duration).SetEase(Ease.InQuad));
-            shadow_sequence.Append(starting_shadow.DOColor(is_next ? left_color : right_color, m_turnDuration * 0.5f).SetEase(Ease.OutQuad));
+            shadow_sequence.Append(starting_shadow.DOColor(is_next ? left_color : right_color, m_turnPageDuration * 0.5f).SetEase(Ease.OutQuad));
 
             m_turnSequence.Join(rotate_sequence);
             m_turnSequence.Join(shadow_sequence);
@@ -181,7 +182,7 @@ namespace Comic
             Sequence rotate_sequence = DOTween.Sequence();
             Sequence shadow_sequence = DOTween.Sequence();
 
-            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 270, 0), m_turnDuration * 0.5f)
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 270, 0), m_turnPageDuration * 0.5f)
                 .SetEase(Ease.InQuad)
                 .OnComplete(() =>
                 {
@@ -193,11 +194,11 @@ namespace Comic
 
                     m_turningPage.sprite = m_frontSprite;
                 }));
-            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 0, 0), m_turnDuration * 0.5f)
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 0, 0), m_turnPageDuration * 0.5f)
                 .SetEase(Ease.OutQuad));
 
-            shadow_sequence.Append(m_leftShadow.DOColor(left_color, m_turnDuration * .5f).SetEase(Ease.InQuad));
-            shadow_sequence.Append(m_rightShadow.DOColor(right_color, m_turnDuration * .5f).SetEase(Ease.OutQuad));
+            shadow_sequence.Append(m_leftShadow.DOColor(left_color, m_turnPageDuration * .5f).SetEase(Ease.InQuad));
+            shadow_sequence.Append(m_rightShadow.DOColor(right_color, m_turnPageDuration * .5f).SetEase(Ease.OutQuad));
 
             m_turnSequence.Join(rotate_sequence);
             m_turnSequence.Join(shadow_sequence);
@@ -241,7 +242,7 @@ namespace Comic
             Sequence rotate_sequence = DOTween.Sequence();
             Sequence shadow_sequence = DOTween.Sequence();
 
-            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 90, 0), m_turnDuration * 0.5f)
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 90, 0), m_turnPageDuration * 0.5f)
                 .SetEase(Ease.InQuad)
                 .OnComplete(() => {
                     Vector3 rotation = rect.eulerAngles;
@@ -252,14 +253,66 @@ namespace Comic
 
                     m_turningPage.sprite = m_backSprite;
                 }));
-            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 360, 0), m_turnDuration * 0.5f)
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 360, 0), m_turnPageDuration * 0.5f)
                 .SetEase(Ease.OutQuad));
 
-            shadow_sequence.Append(m_rightShadow.DOColor(right_color, m_turnDuration * .5f).SetEase(Ease.InQuad));
-            shadow_sequence.Append(m_leftShadow.DOColor(left_color, m_turnDuration * .5f).SetEase(Ease.OutQuad));
+            shadow_sequence.Append(m_rightShadow.DOColor(right_color, m_turnPageDuration * .5f).SetEase(Ease.InQuad));
+            shadow_sequence.Append(m_leftShadow.DOColor(left_color, m_turnPageDuration * .5f).SetEase(Ease.OutQuad));
 
             m_turnSequence.Join(rotate_sequence);
             m_turnSequence.Join(shadow_sequence);
+            m_turnSequence.OnComplete(() => {
+                m_onEndTurning?.Invoke();
+                m_turnSequence = null;
+                gameObject.SetActive(false);
+            });
+        }
+
+        public void TurnCover()
+        {
+            gameObject.SetActive(true);
+
+            if (m_turnSequence != null)
+            {
+                m_turnSequence.Kill();
+                m_turnSequence = null;
+            }
+
+            var right_color = m_rightShadow.color;
+            right_color.a = 0f;
+            m_rightShadow.color = right_color;
+
+            var left_color = m_leftShadow.color;
+            left_color.a = 0f;
+            m_leftShadow.color = left_color;
+
+            RectTransform rect = m_turningPage.GetComponent<RectTransform>();
+
+            rect.eulerAngles = Vector3.zero;
+
+            SetupRect(true);
+            m_turningPage.sprite = m_frontSprite;
+
+            m_turnSequence = DOTween.Sequence();
+
+            Sequence rotate_sequence = DOTween.Sequence();
+
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 90, 0), m_turnCoverDuration * 0.5f)
+                .SetEase(Ease.InQuad)
+                .OnComplete(() => {
+                    Vector3 rotation = rect.eulerAngles;
+                    rotation.y = 270f;
+                    rect.eulerAngles = rotation;
+
+                    SetupRect(false);
+
+                    m_turningPage.sprite = m_backSprite;
+                }));
+            rotate_sequence.Append(rect.DORotateQuaternion(Quaternion.Euler(0, 360, 0), m_turnCoverDuration * 0.5f)
+                .SetEase(Ease.OutQuad));
+
+            m_turnSequence.Join(rotate_sequence);
+
             m_turnSequence.OnComplete(() => {
                 m_onEndTurning?.Invoke();
                 m_turnSequence = null;
@@ -300,10 +353,15 @@ namespace Comic
         {
             if (rendering_camera == null)
                 return;
+
+            //Vector3 min_screen = sprite_bounds.min;
+            //Vector3 max_screen = sprite_bounds.max;
+
             RectTransform canvasRect = m_canvas.GetComponent<RectTransform>();
 
             Vector2 min = min_screen;
             Vector2 max = max_screen;
+
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, min_screen, rendering_camera, out min);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, max_screen, rendering_camera, out max);
 

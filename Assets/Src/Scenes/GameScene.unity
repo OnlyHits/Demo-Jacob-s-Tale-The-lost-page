@@ -7803,6 +7803,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
+  m_coverRight: {fileID: 2014640544}
+  m_coverLeft: {fileID: 246662916}
+  m_gameBackground: {fileID: 1128726072}
 --- !u!114 &1889044443
 MonoBehaviour:
   m_ObjectHideFlags: 0

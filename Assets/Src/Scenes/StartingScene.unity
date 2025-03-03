@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameCore
       objectReference: {fileID: 0}
+    - target: {fileID: 3897897761463895517, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_BackGroundColor.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4558377320441313647, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

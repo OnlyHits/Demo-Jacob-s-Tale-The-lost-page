@@ -22,6 +22,7 @@ namespace Comic
         public void SetFrontSprite(Sprite sprite) => m_turningPage.SetFrontSprite(sprite);
         public void SetBackSprite(Sprite sprite) => m_turningPage.SetBackSprite(sprite);
         public void RegisterToEndTurning(Action function) => m_turningPage.RegisterToEndTurning(function);
+        public void TurnCover() => m_turningPage.TurnCover();
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -32,9 +33,26 @@ namespace Comic
         { }
         public override void LateInit(params object[] parameters)
         {
+            if (parameters.Length != 1
+                || parameters[0] is not SpriteRenderer)
+            {
+                Debug.LogWarning("Bad parameters");
+                return;
+            }
+
             m_viewManager.LateInit();
             m_cameras.LateInit();
             m_turningPage.LateInit();
+
+            Bounds to_match = ((SpriteRenderer)parameters[0]).bounds;
+            SpriteRenderer sprite_to_match = ((SpriteRenderer)parameters[0]);
+
+            Vector3 minWorld = to_match.min;
+            Vector3 maxWorld = to_match.max;
+
+//            m_viewManager.GetView<BookCoverView>().MatchBounds(sprite_to_match);
+                //m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
+                //m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
         }
         public override void Init(params object[] parameters)
         {
@@ -53,7 +71,7 @@ namespace Comic
 
             m_cameraManager = (URP_CameraManager)parameters[0];
 
-            InitTurningPage(m_cameraManager.GetCameraBase(), m_cameraManager.GetScreenshotBounds());
+            //MatchBounds(m_cameraManager.GetScreenshotBounds());
 
             m_cameraManager.SubscribeToScreenshot(OnScreenshot);
         }
@@ -100,7 +118,6 @@ namespace Comic
                 m_turningPage.SetBackSprite(sprite);
         }
 
-
         public void TurnPage(bool next_page, bool dirty, bool error)
         {
             if (dirty)
@@ -119,7 +136,7 @@ namespace Comic
         private IEnumerator DirtyTurnPage(bool next_page)
         {
             if (m_requestScreenshotDebug)
-                yield return StartCoroutine(m_cameraManager.TakeScreenshot(next_page));
+                yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
 
             if (m_turnPageErrorDebug)
                 TurnPageErrorInternal(next_page);
@@ -142,7 +159,7 @@ namespace Comic
             m_turningPage.TurnPageError(next_page);
         }
 
-        public void InitTurningPage(Camera world_camera, Bounds sprite_bounds)
+        public void MatchBounds(Bounds sprite_bounds)
         {
             Vector3 minWorld = sprite_bounds.min;
             Vector3 maxWorld = sprite_bounds.max;
@@ -150,8 +167,8 @@ namespace Comic
             // should find another system to get the right camera, and made this in Init
             if (m_cameras.GetCameras().Count > 1)
                 m_turningPage.MatchBounds(m_cameras.GetCameras()[1],
-                    world_camera.WorldToScreenPoint(minWorld),
-                    world_camera.WorldToScreenPoint(maxWorld));
+                    m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
+                    m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
         }
     }
 }

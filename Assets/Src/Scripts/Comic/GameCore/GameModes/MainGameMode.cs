@@ -132,13 +132,14 @@ namespace Comic
             }
             if (m_hudManager != null)
             {
-                m_hudManager.LateInit();
+                m_hudManager.LateInit(m_gameManager.GetCoverSpriteRenderer(true));
             }
 
             GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
 
             // Update : is okay but should have a globally better handle of Init/LateInit 
             m_navigationManager.LateInit();
+            m_cameraManager.LateInit(m_gameManager.GetCoverSpriteRenderer(true), m_gameManager.GetCoverSpriteRenderer(false));
 
             Compute = true;
 

@@ -50,14 +50,17 @@ namespace Comic
                 page.Init();
                 page.gameObject.SetActive(false);
             }
-
-            //SwitchPageByIndex(m_currentPageIndex);
         }
         #endregion
 
         public void SetStartingPage()
         {
             SwitchPageByIndex(m_currentPageIndex);
+        }
+
+        public void DisableCurrentPage()
+        {
+            m_currentPage.Enable(false);
         }
 
         #region ON LOCK & UNLOCK CHAPTERS

@@ -24,8 +24,6 @@ namespace LittleKnightOdyssey
 
         private IEnumerator LoadScenesCoroutine(string ui_scene, string game_scene)
         {
-            
-
             // load transition scene
             if (!SceneManager.GetSceneByName(m_transitionScene).isLoaded)
             {
@@ -69,9 +67,13 @@ namespace LittleKnightOdyssey
                 yield return null;
             }
 
+            yield return new WaitForEndOfFrame();
+
             // Unload transition scene
             yield return SceneManager.UnloadSceneAsync(m_transitionScene);
             m_currentScenes.Remove(m_transitionScene);
+
+            yield return new WaitForEndOfFrame();
 
             // All game & ui scene are loaded
             m_onScenesLoaded?.Invoke();

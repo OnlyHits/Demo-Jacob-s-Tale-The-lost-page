@@ -201,3 +201,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
+  m_coverImage: {fileID: 8440157448966745774}
+  m_canvas: {fileID: 0}

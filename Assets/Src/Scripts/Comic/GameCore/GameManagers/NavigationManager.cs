@@ -162,7 +162,7 @@ namespace Comic
 
                 SetupChangePage(is_next);
 
-                yield return StartCoroutine(m_cameraManager.TakeScreenshot(is_next));
+                yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
 
                 m_gameManager.GetPageManager().RestorePageAfterScreenshot(is_next);
 
@@ -182,6 +182,8 @@ namespace Comic
 
         private void SetupChangePage(bool is_next)
         {
+            m_hudManager.MatchBounds(m_cameraManager.GetScreenshotBounds());
+
             PauseInput();
             m_gameManager.GetPageManager().SetupPageForScreenshot(is_next);
 
@@ -220,7 +222,7 @@ namespace Comic
 
             RestoreOpenBook();
 
-            m_hudManager.TurnPage(true, false, false);
+            m_hudManager.TurnCover();
 
             yield return new WaitUntil(() => !m_hudManager.GetTurningPage().IsTurning());
 
@@ -231,23 +233,35 @@ namespace Comic
             yield return null;
         }
 
+        // not so sure for the SetStartingPage & DisableCurrentPage logic
         private void SetupOpenBook()
         {
+            m_hudManager.MatchBounds(m_gameManager.GetCoverSpriteRenderer(true).bounds);
             m_hudManager.GetViewManager().Show<BookCoverView>();
 
-            PauseInput();
+            m_gameManager.EnableGameBackground(false);
+            m_gameManager.GetPageManager().SetStartingPage();
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
             m_gameManager.GetCharacterManager().PauseAllCharacters(true);
+
+            PauseInput();
         }
 
         private void RestoreOpenBook()
         {
             m_hudManager.GetViewManager().Show<ProgressionView>();
+            m_gameManager.GetPageManager().DisableCurrentPage();
+            m_gameManager.EnableGameBackground(true);
+            m_gameManager.EnableBookBackground(false, false);
         }
 
         private void OnOpenBookEnd()
         {
             m_gameManager.GetCharacterManager().PauseAllCharacters(false);
+            m_gameManager.EnableBookBackground(true, false);
+
             m_gameManager.GetPageManager().SetStartingPage();
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
 
             ChangeInputFocus(Focus_Game);
         }
@@ -291,7 +305,7 @@ namespace Comic
 
             SetupPause(pause);
 
-            yield return StartCoroutine(m_cameraManager.TakeScreenshot(pause));
+            yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
 
             RestorePause(pause);
 
@@ -308,6 +322,8 @@ namespace Comic
 
         private void SetupPause(bool pause)
         {
+            m_hudManager.MatchBounds(m_cameraManager.GetScreenshotBounds());
+
             m_hudManager.SetupPageForScreenshot(pause);
 
             PauseInput();
