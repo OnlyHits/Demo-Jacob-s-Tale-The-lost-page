@@ -29,56 +29,28 @@ namespace Comic
         { }
         #endregion
 
-        public void MatchBounds(SpriteRenderer spriteRenderer)
+        private void MatchImage(Image image, Vector2 min, Vector2 max)
         {
-            Bounds spriteBounds = spriteRenderer.bounds;
-            Vector3 worldSize = spriteBounds.size;
+            RectTransform rect = image.GetComponent<RectTransform>();
 
-            Vector2 screenSize = WorldToUISize(worldSize, spriteRenderer);
-
-            m_coverImage.GetComponent<RectTransform>().sizeDelta = screenSize;
+            rect.sizeDelta = new Vector2(Mathf.Abs(max.x - min.x), Mathf.Abs(max.y - min.y));
         }
 
-        Vector2 WorldToUISize(Vector3 worldSize, SpriteRenderer spriteRenderer)
+        public void MatchBounds(Vector3 min_screen, Vector3 max_screen)
         {
-            Camera cam = m_canvas.worldCamera != null ? m_canvas.worldCamera : Camera.main;
+            RectTransform canvasRect = m_canvas.GetComponent<RectTransform>();
 
-            if (cam == null)
-            {
-                Debug.LogError("No camera found for Canvas!");
-                return Vector2.zero;
-            }
+            Vector2 min = min_screen;
+            Vector2 max = max_screen;
 
-            // Convert world positions to screen points
-            Vector2 screenPointMin = cam.WorldToScreenPoint(spriteRenderer.bounds.min);
-            Vector2 screenPointMax = cam.WorldToScreenPoint(spriteRenderer.bounds.max);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, min_screen, m_canvas.worldCamera, out min);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, max_screen, m_canvas.worldCamera, out max);
 
-            // Get the size in screen space
-            Vector2 screenSize = screenPointMax - screenPointMin;
+            Debug.Log($"Screen Min: {min_screen}, Max: {max_screen}");
+            Debug.Log($"Local UI Min: {min}, Max: {max}");
 
-            // Convert screen size to UI size (based on Canvas scaler)
-            return screenSize / m_canvas.scaleFactor;
+            MatchImage(m_coverImage, min, max);
         }
-
-        //public void MatchBounds(Vector3 min_screen, Vector3 max_screen)
-        //{
-        //    Camera rendering_camera = m_canvas.worldCamera;
-
-        //    if (rendering_camera == null)
-        //        return;
-
-        //    RectTransform canvasRect = m_canvas.GetComponent<RectTransform>();
-
-        //    Vector2 min = min_screen;
-        //    Vector2 max = max_screen;
-
-        //    RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, min_screen, rendering_camera, out min);
-        //    RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, max_screen, rendering_camera, out max);
-
-        //    RectTransform rect = m_coverImage.GetComponent<RectTransform>();
-
-        //    rect.sizeDelta = new Vector2(Mathf.Abs(max.x - min.x), Mathf.Abs(max.y - min.y));
-        //}
 
         public override void ActiveGraphic(bool active)
         {

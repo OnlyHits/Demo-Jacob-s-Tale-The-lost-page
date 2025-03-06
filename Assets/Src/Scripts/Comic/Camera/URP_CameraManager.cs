@@ -104,13 +104,13 @@ namespace Comic
             if (left)
             {
                 m_coverLeftScreenshot = sprite_renderer;
-                m_coverLeft = new Texture2D(rectWidth, rectHeight, TextureFormat.RGB24, false);
+                m_coverLeft = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
                 m_coverLeft.filterMode = FilterMode.Point;
             }
             else
             {
                 m_coverRightScreenshot = sprite_renderer;
-                m_coverRight = new Texture2D(rectWidth, rectHeight, TextureFormat.RGB24, false);
+                m_coverRight = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
                 m_coverRight.filterMode = FilterMode.Point;
             }
         }
@@ -125,7 +125,7 @@ namespace Comic
                 int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
                 int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
 
-                m_screenLeft = new Texture2D(rectWidth, rectHeight, TextureFormat.RGB24, false);
+                m_screenLeft = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
                 m_screenLeft.filterMode = FilterMode.Point;
             }
             else
@@ -136,7 +136,7 @@ namespace Comic
                 int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
                 int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
 
-                m_screenRight = new Texture2D(rectWidth, rectHeight, TextureFormat.RGB24, false);
+                m_screenRight = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
                 m_screenRight.filterMode = FilterMode.Point;
             }
         }

@@ -349,21 +349,15 @@ namespace Comic
             rect.sizeDelta = new Vector2(Mathf.Abs(max.x - min.x), Mathf.Abs(max.y - min.y));
         }
 
-        public void MatchBounds(Camera rendering_camera, Vector3 min_screen, Vector3 max_screen)
+        public void MatchBounds(Vector3 min_screen, Vector3 max_screen)
         {
-            if (rendering_camera == null)
-                return;
-
-            //Vector3 min_screen = sprite_bounds.min;
-            //Vector3 max_screen = sprite_bounds.max;
-
             RectTransform canvasRect = m_canvas.GetComponent<RectTransform>();
 
             Vector2 min = min_screen;
             Vector2 max = max_screen;
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, min_screen, rendering_camera, out min);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, max_screen, rendering_camera, out max);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, min_screen, m_canvas.worldCamera, out min);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, max_screen, m_canvas.worldCamera, out max);
 
             MatchImage(m_turningPage, min, max);
             MatchImage(m_rightShadow, min, max);

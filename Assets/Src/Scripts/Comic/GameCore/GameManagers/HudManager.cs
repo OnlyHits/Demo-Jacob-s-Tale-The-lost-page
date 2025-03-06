@@ -31,9 +31,20 @@ namespace Comic
         { }
         protected override void OnUpdate()
         { }
+
+        private void SetupBookCoverView(Bounds sprite_bounds)
+        {
+            Vector3 minWorld = sprite_bounds.min;
+            Vector3 maxWorld = sprite_bounds.max;
+
+            m_viewManager.GetView<BookCoverView>().MatchBounds(
+                m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
+                m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
+        }
+
         public override void LateInit(params object[] parameters)
         {
-            if (parameters.Length != 1
+            if (parameters.Length < 1
                 || parameters[0] is not SpriteRenderer)
             {
                 Debug.LogWarning("Bad parameters");
@@ -44,16 +55,9 @@ namespace Comic
             m_cameras.LateInit();
             m_turningPage.LateInit();
 
-            Bounds to_match = ((SpriteRenderer)parameters[0]).bounds;
-            SpriteRenderer sprite_to_match = ((SpriteRenderer)parameters[0]);
-
-            Vector3 minWorld = to_match.min;
-            Vector3 maxWorld = to_match.max;
-
-//            m_viewManager.GetView<BookCoverView>().MatchBounds(sprite_to_match);
-                //m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
-                //m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
+            SetupBookCoverView(((SpriteRenderer)parameters[0]).bounds);
         }
+
         public override void Init(params object[] parameters)
         {
             if (parameters.Length != 1
@@ -164,11 +168,9 @@ namespace Comic
             Vector3 minWorld = sprite_bounds.min;
             Vector3 maxWorld = sprite_bounds.max;
 
-            // should find another system to get the right camera, and made this in Init
-            if (m_cameras.GetCameras().Count > 1)
-                m_turningPage.MatchBounds(m_cameras.GetCameras()[1],
-                    m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
-                    m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
+            m_turningPage.MatchBounds(
+                m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
+                m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
         }
     }
 }
