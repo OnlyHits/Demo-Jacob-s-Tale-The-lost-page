@@ -21,8 +21,7 @@ namespace Comic
 
         public void SetFrontSprite(Sprite sprite) => m_turningPage.SetFrontSprite(sprite);
         public void SetBackSprite(Sprite sprite) => m_turningPage.SetBackSprite(sprite);
-        public void RegisterToEndTurning(Action function) => m_turningPage.RegisterToEndTurning(function);
-        public void TurnCover() => m_turningPage.TurnCover();
+        public void TurnCover() => m_turningPage.TurnCover(true);
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -74,8 +73,6 @@ namespace Comic
             m_viewManager.Init();
 
             m_cameraManager = (URP_CameraManager)parameters[0];
-
-            //MatchBounds(m_cameraManager.GetScreenshotBounds());
 
             m_cameraManager.SubscribeToScreenshot(OnScreenshot);
         }
@@ -152,10 +149,7 @@ namespace Comic
 
         private void TurnPageInternal(bool next_page)
         {
-            if (!next_page)
-                m_turningPage.PreviousPage();
-            else
-                m_turningPage.NextPage();
+            m_turningPage.TurnPage(next_page);
         }
 
         private void TurnPageErrorInternal(bool next_page)

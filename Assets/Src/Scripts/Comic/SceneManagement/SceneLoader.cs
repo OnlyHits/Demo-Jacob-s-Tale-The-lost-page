@@ -22,6 +22,14 @@ namespace LittleKnightOdyssey
             StartCoroutine(LoadScenesCoroutine(ui_scene, game_scene));
         }
 
+        // Unload transition scene
+        public IEnumerator UnloadLoadingScene()
+        {
+            yield return SceneManager.UnloadSceneAsync(m_transitionScene);
+
+            m_currentScenes.Remove(m_transitionScene);
+        }
+
         private IEnumerator LoadScenesCoroutine(string ui_scene, string game_scene)
         {
             // load transition scene
@@ -69,60 +77,53 @@ namespace LittleKnightOdyssey
 
             yield return new WaitForEndOfFrame();
 
-            // Unload transition scene
-            yield return SceneManager.UnloadSceneAsync(m_transitionScene);
-            m_currentScenes.Remove(m_transitionScene);
-
-            yield return new WaitForEndOfFrame();
-
-            // All game & ui scene are loaded
+            // Send onloaded message
             m_onScenesLoaded?.Invoke();
         }
 
+        //#region ACTIVE_SCENE
+        //public void SetGameScenePrincipal()
+        //{
+        //    if (m_currentScenes.Count < 2)
+        //    {
+        //        Debug.LogError("Trying set principal scene but none scene has been Loaded with this SceneLoader");
+        //        return;
+        //    }
 
-        #region ACTIVE_SCENE
-        public void SetGameScenePrincipal()
-        {
-            if (m_currentScenes.Count < 2)
-            {
-                Debug.LogError("Trying set principal scene but none scene has been Loaded with this SceneLoader");
-                return;
-            }
+        //    SetScenePrincipalByIdex(1);
+        //}
 
-            SetScenePrincipalByIdex(1);
-        }
+        //public void SetUiScenePrincipal()
+        //{
+        //    if (m_currentScenes.Count < 1)
+        //    {
+        //        Debug.LogError("Trying set principal scene but none scene has been Loaded with this SceneLoader");
+        //        return;
+        //    }
 
-        public void SetUiScenePrincipal()
-        {
-            if (m_currentScenes.Count < 1)
-            {
-                Debug.LogError("Trying set principal scene but none scene has been Loaded with this SceneLoader");
-                return;
-            }
+        //    SetScenePrincipalByIdex(0);
+        //}
 
-            SetScenePrincipalByIdex(0);
-        }
+        //private void SetScenePrincipalByIdex(int index)
+        //{
+        //    Scene scene = SceneManager.GetSceneByName(m_currentScenes[index]);
 
-        private void SetScenePrincipalByIdex(int index)
-        {
-            Scene scene = SceneManager.GetSceneByName(m_currentScenes[index]);
+        //    if (!scene.IsValid())
+        //    {
+        //        Debug.LogError("Trying set principal scene but the scene is not valid");
+        //        return;
+        //    }
 
-            if (!scene.IsValid())
-            {
-                Debug.LogError("Trying set principal scene but the scene is not valid");
-                return;
-            }
+        //    if (!scene.isLoaded)
+        //    {
+        //        Debug.LogError("Trying set principal scene but the scene is not loaded yet");
+        //        return;
+        //    }
 
-            if (!scene.isLoaded)
-            {
-                Debug.LogError("Trying set principal scene but the scene is not loaded yet");
-                return;
-            }
+        //    SceneManager.SetActiveScene(scene);
+        //}
 
-            SceneManager.SetActiveScene(scene);
-        }
-
-        #endregion ACTIVE_SCENE
+        //#endregion ACTIVE_SCENE
 
         #region GET_SCENE_OBJ
         public T GetGameSceneObj<T>()

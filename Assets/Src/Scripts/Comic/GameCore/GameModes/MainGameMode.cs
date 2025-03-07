@@ -44,6 +44,11 @@ namespace Comic
 
     public class MainGameMode : AGameMode<ComicGameCore>, MainGameModeProvider
     {
+#if UNITY_EDITOR && !DEVELOPMENT_BUILD
+        private bool m_playStartAnimation_DEBUG = true;
+#endif
+
+
         // globals datas
         private GameConfig m_gameConfig;
         private GameProgression m_gameProgression;
@@ -143,12 +148,24 @@ namespace Comic
 
             Compute = true;
 
+#if UNITY_EDITOR && !DEVELOPMENT_BUILD
+            if (!m_playStartAnimation_DEBUG)
+                m_gameManager.GetPageManager().SetStartingPage();
+#endif
+
             yield return new WaitForEndOfFrame();
+
+            m_gameCore.OnGameModeLoaded();
         }
 
         public override void StartGameMode()
         {
-            m_navigationManager.TryOpenBook();
+#if UNITY_EDITOR && !DEVELOPMENT_BUILD
+    if (m_playStartAnimation_DEBUG)
+#endif
+            {
+                m_navigationManager.StartGameSequence();
+            }
         }
 
         public void OnEndMainDialogue(DialogueName type)

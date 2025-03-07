@@ -3,6 +3,7 @@ using CustomArchitecture;
 using UnityEngine;
 using static CustomArchitecture.CustomArchitecture;
 using static Comic.NavigationManager.NavigationFocus;
+using Unity.VisualScripting;
 
 namespace Comic
 {
@@ -198,23 +199,26 @@ namespace Comic
             m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
             m_gameManager.GetCharacterManager().PauseAllCharacters(false);
 
-            ChangeInputFocus(NavigationFocus.Focus_Game);
+            ChangeInputFocus(Focus_Game);
         }
 
-        public void TryOpenBook()
+        public void StartGameSequence()
         {
             if (m_hudManager != null && m_gameManager != null)
             {
-                StartCoroutine(OpenBook());
+                StartCoroutine(StartGameCoroutine());
             }
         }
 
-        private IEnumerator OpenBook()
+        private IEnumerator StartGameCoroutine()
         {
             if (IsRunning())
                 yield break;
 
             m_isRunning = true;
+
+            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
+            PauseInput();
 
             SetupOpenBook();
 
@@ -228,44 +232,66 @@ namespace Comic
 
             OnOpenBookEnd();
 
-            m_isRunning = false;
+            yield return new WaitForSeconds(1f);
 
-            yield return null;
+            SetupFirstPage();
+
+            yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+
+            RestoreFirstPage();
+
+            m_hudManager.TurnCover();
+
+            yield return new WaitUntil(() => !m_hudManager.GetTurningPage().IsTurning());
+
+            OnOpenFirstPageEnd();
+
+            ChangeInputFocus(Focus_Game);
+
+            m_isRunning = false;
         }
 
-        // not so sure for the SetStartingPage & DisableCurrentPage logic
-        private void SetupOpenBook()
+        public void SetupOpenBook()
         {
             m_hudManager.MatchBounds(m_gameManager.GetCoverSpriteRenderer(true).bounds);
             m_hudManager.GetViewManager().Show<BookCoverView>();
-
             m_gameManager.EnableGameBackground(false);
-            m_gameManager.GetPageManager().SetStartingPage();
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
-            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
-
-            PauseInput();
         }
 
         private void RestoreOpenBook()
         {
-            m_hudManager.GetViewManager().Show<ProgressionView>();
-            m_gameManager.GetPageManager().DisableCurrentPage();
+            m_hudManager.GetViewManager().Show<ProductionView>();
             m_gameManager.EnableGameBackground(true);
             m_gameManager.EnableBookBackground(false, false);
         }
 
         private void OnOpenBookEnd()
         {
-            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
             m_gameManager.EnableBookBackground(true, false);
+        }
+
+        public void SetupFirstPage()
+        {
+            m_hudManager.MatchBounds(m_cameraManager.GetScreenshotBounds());
+
+            m_gameManager.GetPageManager().SetStartingPage();
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
+            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
+        }
+
+        private void RestoreFirstPage()
+        {
+            m_hudManager.GetViewManager().Show<ProgressionView>();
+            m_gameManager.GetPageManager().DisableCurrentPage();
+        }
+
+        private void OnOpenFirstPageEnd()
+        {
+            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
 
             m_gameManager.GetPageManager().SetStartingPage();
             m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
-
-            ChangeInputFocus(Focus_Game);
         }
-
 
         public void TryPause()
         {
@@ -348,7 +374,7 @@ namespace Comic
         }
 
 
-        private void PauseInput()
+        public void PauseInput()
         {
             m_navigationInput.Pause(true);
             m_pageInput.Pause(true);
