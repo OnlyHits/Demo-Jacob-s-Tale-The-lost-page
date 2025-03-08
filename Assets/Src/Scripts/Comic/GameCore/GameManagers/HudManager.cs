@@ -8,20 +8,40 @@ namespace Comic
 {
     public class HudManager : BaseBehaviour
     {
-        [SerializeField] private TurningPage    m_turningPage;
-        private HudCameraRegister               m_cameras;
-        private ViewManager                     m_viewManager;
-        private URP_CameraManager               m_cameraManager;
-        private bool                            m_requestScreenshotDebug;
-        private bool                            m_turnPageErrorDebug;
+        [SerializeField] private HudTurnPageManager m_hudPageMgr;
+        private HudCameraRegister                   m_cameras;
+        private ViewManager                         m_viewManager;
+        private URP_CameraManager                   m_cameraManager;
+        private bool                                m_requestScreenshotDebug;
+        private bool                                m_turnPageErrorDebug;
 
         public ViewManager GetViewManager() => m_viewManager;
         public HudCameraRegister GetRegisteredCameras() => m_cameras;
-        public TurningPage GetTurningPage() => m_turningPage;
+        public HudTurnPageManager GetHudPageMgr() => m_hudPageMgr;
 
-        public void SetFrontSprite(Sprite sprite) => m_turningPage.SetFrontSprite(sprite);
-        public void SetBackSprite(Sprite sprite) => m_turningPage.SetBackSprite(sprite);
-        public void TurnCover() => m_turningPage.TurnCover(true);
+        public void SetFrontSprite(Sprite sprite) => m_hudPageMgr.SetFrontSprite(sprite);
+        public void SetBackSprite(Sprite sprite) => m_hudPageMgr.SetBackSprite(sprite);
+
+        public IEnumerator TurnMultiplePages(bool is_next, Bounds page_bounds)
+        {
+            yield return StartCoroutine(m_hudPageMgr.TurnMultiplePagesCoroutine(is_next, page_bounds, m_cameraManager.GetCameraBase()));
+        }
+
+        public IEnumerator TurnCover(Bounds page_bounds)
+        {
+            yield return StartCoroutine(m_hudPageMgr.TurnCoverCoroutine(true, page_bounds, m_cameraManager.GetCameraBase()));
+        }
+
+        public IEnumerator TurnPage(bool next_page, Bounds page_bounds)
+        {
+            yield return StartCoroutine(m_hudPageMgr.TurnPageCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase()));
+        }
+
+        public IEnumerator TurnPageError(bool next_page, Bounds page_bounds)
+        {
+            yield return StartCoroutine(m_hudPageMgr.TurnPageErrorCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase()));
+        }
+
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -52,7 +72,7 @@ namespace Comic
 
             m_viewManager.LateInit();
             m_cameras.LateInit();
-            m_turningPage.LateInit();
+            m_hudPageMgr.LateInit();
 
             SetupBookCoverView(((SpriteRenderer)parameters[0]).bounds);
         }
@@ -71,6 +91,7 @@ namespace Comic
 
             m_cameras.Init();
             m_viewManager.Init();
+            m_hudPageMgr.Init();
 
             m_cameraManager = (URP_CameraManager)parameters[0];
 
@@ -114,24 +135,21 @@ namespace Comic
         private void OnScreenshot(bool front, Sprite sprite)
         {
             if (front)
-                m_turningPage.SetFrontSprite(sprite);
+                m_hudPageMgr.SetFrontSprite(sprite);
             else
-                m_turningPage.SetBackSprite(sprite);
+                m_hudPageMgr.SetBackSprite(sprite);
         }
 
-        public void TurnPage(bool next_page, bool dirty, bool error)
+        public void TurnPageDirty(bool next_page, bool error, Bounds page_bounds)
         {
-            if (dirty)
-            {
-                StartCoroutine(DirtyTurnPage(next_page));
-            }
-            else
-            {
-                if (error)
-                    TurnPageErrorInternal(next_page);
-                else
-                    TurnPageInternal(next_page);
-            }
+            StartCoroutine(DirtyTurnPage(next_page));
+            //else
+            //{
+            //    if (error)
+            //        TurnPageErrorInternal(next_page, page_bounds);
+            //    else
+            //        TurnPageInternal(next_page, page_bounds);
+            //}
         }
 
         private IEnumerator DirtyTurnPage(bool next_page)
@@ -140,31 +158,21 @@ namespace Comic
                 yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
 
             if (m_turnPageErrorDebug)
-                TurnPageErrorInternal(next_page);
+                yield return StartCoroutine(TurnPageError(next_page, new Bounds()));
             else
-                TurnPageInternal(next_page);
+                yield return StartCoroutine(TurnPage(next_page, new Bounds()));
 
-            yield return null;
+            //yield return null;
         }
 
-        private void TurnPageInternal(bool next_page)
-        {
-            m_turningPage.TurnPage(next_page);
-        }
+        //public void MatchBounds(Bounds sprite_bounds)
+        //{
+        //    Vector3 minWorld = sprite_bounds.min;
+        //    Vector3 maxWorld = sprite_bounds.max;
 
-        private void TurnPageErrorInternal(bool next_page)
-        {
-            m_turningPage.TurnPageError(next_page);
-        }
-
-        public void MatchBounds(Bounds sprite_bounds)
-        {
-            Vector3 minWorld = sprite_bounds.min;
-            Vector3 maxWorld = sprite_bounds.max;
-
-            m_turningPage.MatchBounds(
-                m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
-                m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
-        }
+        //    m_turningPage.MatchBounds(
+        //        m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
+        //        m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
+        //}
     }
 }

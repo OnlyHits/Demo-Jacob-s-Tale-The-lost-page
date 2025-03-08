@@ -23,22 +23,24 @@ namespace Comic
         private Camera m_baseCamera;
 
         [SerializeField] private RenderTexture  m_screenshotRenderTexture;
-        [SerializeField] private SpriteRenderer m_leftScreenshot;
-        [SerializeField] private SpriteRenderer m_rightScreenshot;
+
+        // references for the textures size
+        [SerializeField] private SpriteRenderer m_pageLeftScreenshot;
+        [SerializeField] private SpriteRenderer m_pageRightScreenshot;
         [SerializeField] private SpriteRenderer m_coverLeftScreenshot;
         [SerializeField] private SpriteRenderer m_coverRightScreenshot;
+
+        private Texture2D m_pageLeftTexture;
+        private Texture2D m_pageRightTexture;
+        private Texture2D m_coverLeftTexture;
+        private Texture2D m_coverRightTexture;
 
         private Action<bool, Sprite> m_onScreenshotSprite;
 
         public void SubscribeToScreenshot(Action<bool, Sprite> function) { m_onScreenshotSprite -= function; m_onScreenshotSprite += function; }
-        public Bounds GetScreenshotBounds() => m_leftScreenshot.bounds;
+        public Bounds GetScreenshotBounds() => m_pageLeftScreenshot.bounds;
         public bool IsCameraRegister(URP_OverlayCameraType type) => m_overlayCameras != null && m_overlayCameras.ContainsKey(type);
         public Camera GetCameraBase() => m_baseCamera;
-
-        private Texture2D               m_screenLeft;
-        private Texture2D               m_screenRight;
-        private Texture2D               m_coverLeft;
-        private Texture2D               m_coverRight;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -60,24 +62,31 @@ namespace Comic
         }
         public override void LateInit(params object[] parameters)
         {
-            if (parameters.Length != 2
+            if (parameters.Length != 4
                 || parameters[0] is not SpriteRenderer
-                || parameters[1] is not SpriteRenderer)
+                || parameters[1] is not SpriteRenderer
+                || parameters[2] is not SpriteRenderer
+                || parameters[3] is not SpriteRenderer)
             {
                 Debug.LogWarning("Bad parameters");
                 return;
             }
 
-            InitCover((SpriteRenderer)parameters[0], false);
-            InitCover((SpriteRenderer)parameters[1], true);
+            m_coverRightScreenshot = (SpriteRenderer)parameters[0];
+            m_coverLeftScreenshot = (SpriteRenderer)parameters[1];
+            m_pageRightScreenshot = (SpriteRenderer)parameters[2];
+            m_pageLeftScreenshot = (SpriteRenderer)parameters[3];
+
+            InitTexture(out m_coverRightTexture, m_coverRightScreenshot);
+            InitTexture(out m_coverLeftTexture, m_coverLeftScreenshot);
+            InitTexture(out m_pageRightTexture, m_pageRightScreenshot);
+            InitTexture(out m_pageLeftTexture, m_pageLeftScreenshot);
         }
+
         public override void Init(params object[] parameters)
         {
             m_overlayCameras = new();
             m_baseCamera = GetComponent<Camera>();
-
-            InitScreenTexture(true);
-            InitScreenTexture(false);
         }
         #endregion
 
@@ -93,7 +102,7 @@ namespace Comic
             baseCameraData.cameraStack.Clear();
         }
 
-        public void InitCover(SpriteRenderer sprite_renderer, bool left)
+        public void InitTexture(out Texture2D texture, SpriteRenderer sprite_renderer)
         {
             Vector3 screenBottomLeft = m_baseCamera.WorldToScreenPoint(sprite_renderer.bounds.min);
             Vector3 screenTopRight = m_baseCamera.WorldToScreenPoint(sprite_renderer.bounds.max);
@@ -101,44 +110,9 @@ namespace Comic
             int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
             int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
 
-            if (left)
-            {
-                m_coverLeftScreenshot = sprite_renderer;
-                m_coverLeft = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
-                m_coverLeft.filterMode = FilterMode.Point;
-            }
-            else
-            {
-                m_coverRightScreenshot = sprite_renderer;
-                m_coverRight = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
-                m_coverRight.filterMode = FilterMode.Point;
-            }
-        }
 
-        public void InitScreenTexture(bool left)
-        {
-            if (left)
-            {
-                Vector3 screenBottomLeft = m_baseCamera.WorldToScreenPoint(m_leftScreenshot.bounds.min);
-                Vector3 screenTopRight = m_baseCamera.WorldToScreenPoint(m_leftScreenshot.bounds.max);
-
-                int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
-                int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
-
-                m_screenLeft = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
-                m_screenLeft.filterMode = FilterMode.Point;
-            }
-            else
-            {
-                Vector3 screenBottomLeft = Camera.main.WorldToScreenPoint(m_rightScreenshot.bounds.min);
-                Vector3 screenTopRight = Camera.main.WorldToScreenPoint(m_rightScreenshot.bounds.max);
-
-                int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
-                int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
-
-                m_screenRight = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
-                m_screenRight.filterMode = FilterMode.Point;
-            }
+            texture = new Texture2D(rectWidth, rectHeight, TextureFormat.ARGB32, false);
+            texture.filterMode = FilterMode.Point;
         }
 
         public void RegisterCameras(GameCameraRegister game_camera)
@@ -281,15 +255,15 @@ namespace Comic
 
         private IEnumerator TakeCoverScreenshot()
         {
-            CaptureScreenshot(m_coverRight, m_coverRightScreenshot, true);
-            CaptureScreenshot(m_coverLeft, m_coverLeftScreenshot, false);
+            CaptureScreenshot(m_coverRightTexture, m_coverRightScreenshot, true);
+            CaptureScreenshot(m_coverLeftTexture, m_coverLeftScreenshot, false);
             yield return null;
         }
 
         private IEnumerator TakePageScreenshot()
         {
-            CaptureScreenshot(m_screenRight, m_rightScreenshot, true);
-            CaptureScreenshot(m_screenLeft, m_leftScreenshot, false);
+            CaptureScreenshot(m_pageRightTexture, m_pageRightScreenshot, true);
+            CaptureScreenshot(m_pageLeftTexture, m_pageLeftScreenshot, false);
             yield return null;
         }
 

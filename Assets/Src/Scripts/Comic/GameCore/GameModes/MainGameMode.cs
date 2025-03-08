@@ -34,9 +34,6 @@ namespace Comic
         public void SubscribeToNextPower(Action function);
         public void SubscribeToPrevPower(Action function);
 
-        public void SubscribeToBeforeSwitchPage(Action<bool> function);
-        public void SubscribeToAfterSwitchPage(Action<bool> function);
-
         public void TriggerDialogue(DialogueName type);
 
         public void ClearSaveDebug();
@@ -144,7 +141,11 @@ namespace Comic
 
             // Update : is okay but should have a globally better handle of Init/LateInit 
             m_navigationManager.LateInit();
-            m_cameraManager.LateInit(m_gameManager.GetCoverSpriteRenderer(true), m_gameManager.GetCoverSpriteRenderer(false));
+            m_cameraManager.LateInit(
+                m_gameManager.GetCoverSpriteRenderer(true),
+                m_gameManager.GetCoverSpriteRenderer(false),
+                m_gameManager.GetPageSpriteRenderer(true),
+                m_gameManager.GetPageSpriteRenderer(false));
 
             Compute = true;
 
@@ -358,28 +359,6 @@ namespace Comic
             }
 
             GetCharacterManager().GetPlayer().SubscribeToPrevPower(function);
-        }
-
-        public void SubscribeToBeforeSwitchPage(Action<bool> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToBeforeSwitchPage(function);
-        }
-
-        public void SubscribeToAfterSwitchPage(Action<bool> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToAfterSwitchPage(function);
         }
 
         public void SubscribeToLockChapter(Action<Chapters> function)
