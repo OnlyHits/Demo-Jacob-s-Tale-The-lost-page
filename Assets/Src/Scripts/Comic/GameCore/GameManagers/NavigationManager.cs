@@ -207,7 +207,7 @@ namespace Comic
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_Production);
 
-            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds));
+            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 8));
 
             OnTurnSequenceFinish(true, TurnSequenceType.Sequence_Production);
 
@@ -249,7 +249,7 @@ namespace Comic
 
             OnAfterScreenshot(pause, TurnSequenceType.Sequence_Pause);
 
-            yield return StartCoroutine(m_hudManager.TurnPage(pause, m_gameManager.GetPageSpriteRenderer(true).bounds));
+            yield return StartCoroutine(m_hudManager.TurnMultiplePages(pause, m_gameManager.GetPageSpriteRenderer(true).bounds, 5));
 
             OnTurnSequenceFinish(pause, TurnSequenceType.Sequence_Pause);
 

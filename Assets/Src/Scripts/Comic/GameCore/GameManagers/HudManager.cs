@@ -22,9 +22,9 @@ namespace Comic
         public void SetFrontSprite(Sprite sprite) => m_hudPageMgr.SetFrontSprite(sprite);
         public void SetBackSprite(Sprite sprite) => m_hudPageMgr.SetBackSprite(sprite);
 
-        public IEnumerator TurnMultiplePages(bool is_next, Bounds page_bounds)
+        public IEnumerator TurnMultiplePages(bool is_next, Bounds page_bounds, int page_number)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnMultiplePagesCoroutine(is_next, page_bounds, m_cameraManager.GetCameraBase()));
+            yield return StartCoroutine(m_hudPageMgr.TurnMultiplePagesCoroutine(is_next, page_bounds, m_cameraManager.GetCameraBase(), page_number));
         }
 
         public IEnumerator TurnCover(Bounds page_bounds)

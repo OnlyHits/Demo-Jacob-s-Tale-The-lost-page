@@ -141,47 +141,49 @@ namespace Comic
             }
         }
 
-        public IEnumerator TurnMultiplePagesCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera)
+        public IEnumerator TurnMultiplePagesCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, int pages_number)
         {
             float base_ratio = 1f;
-            int page_number = 10;
 
-            for (int i = 0; i < page_number; ++i)
+            for (int i = 0; i < pages_number; ++i)
             {
                 Sprite front_sprite = null;
                 Sprite back_sprite = null;
 
-                if (i == 0)
-                    front_sprite = m_frontSprite;
-                else
+                if (is_next)
                 {
-                    if (is_next)
+                    if (i == 0)
+                        front_sprite = m_frontSprite;
+                    else
                         front_sprite = m_blankPageRightSprite;
-                    else
-                        front_sprite = m_blankPageLeftSprite;
-                }
 
-                if (i == page_number - 1)
-                {
-                    back_sprite = m_backSprite;
+                    if (i == pages_number - 1)
+                        back_sprite = m_backSprite;
+                    else
+                        back_sprite = m_blankPageLeftSprite;
                 }
                 else
                 {
-                    if (is_next)
-                        back_sprite = m_blankPageLeftSprite;
+                    if (i == 0)
+                        back_sprite = m_backSprite;
                     else
-                        back_sprite = m_blankPageRightSprite;
+                        back_sprite = m_blankPageLeftSprite;
+
+                    if (i == pages_number - 1)
+                        front_sprite = m_frontSprite;
+                    else
+                        front_sprite = m_blankPageRightSprite;
                 }
 
                 var new_page = m_pages.AllocateElement(sprite_bounds, base_camera, m_canvas, front_sprite, back_sprite, (HudTurnPageManager)this);
 
                 SetPageSessionData(new_page, sprite_bounds, base_camera);
 
-                TurnAnimation(new_page, is_next, false, m_turnPageDuration, Ease.InQuad, Ease.OutQuad);
+                TurnAnimation(new_page, is_next, false, m_turnPageDuration * base_ratio, Ease.InQuad, Ease.OutQuad);
 
-                yield return new WaitForSeconds(0.1f * base_ratio);
+                //yield return new WaitForSeconds(0.1f * base_ratio);
 
-//                base_ratio += .1f;
+                base_ratio *= 1.2f;
             }
 
             yield return new WaitUntil(() => !m_pages.IsCompute());
