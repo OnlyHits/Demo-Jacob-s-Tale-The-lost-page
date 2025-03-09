@@ -77,7 +77,7 @@ namespace CustomArchitecture
                 }
 
                 m_currentObjects.Add(obj.GetComponent<T>());
-                obj.GetComponent<T>().OnAllocate();
+                obj.GetComponent<T>().OnAllocate(parameters);
                 obj.SetActive(true);
 
                 SortElements(true);
