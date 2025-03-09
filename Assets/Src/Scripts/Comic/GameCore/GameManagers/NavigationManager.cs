@@ -207,7 +207,7 @@ namespace Comic
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_Production);
 
-            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 8, 1f));
+            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 10, .7f));
 
             OnTurnSequenceFinish(true, TurnSequenceType.Sequence_Production);
 
