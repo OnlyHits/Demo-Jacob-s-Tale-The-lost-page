@@ -18,7 +18,7 @@ namespace CustomArchitecture
 
         private List<string> m_currentScenes = new()
         {
-            "StartingScene",
+            "GameScene",
         };
 
         #region BaseBehaviour

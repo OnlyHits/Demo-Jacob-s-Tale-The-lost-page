@@ -62,7 +62,7 @@ namespace CustomArchitecture
             if (Instance != null && Instance != this)
             {
                 Debug.Log("Already instantiate");
-                Destroy(this);
+                Destroy(this.gameObject);
                 return;
             }
 
