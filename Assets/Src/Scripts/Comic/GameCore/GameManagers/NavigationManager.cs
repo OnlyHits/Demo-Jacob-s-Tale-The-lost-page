@@ -263,7 +263,7 @@ namespace Comic
         #region Before screenshot
         private void OnBeforeScreenshot(bool is_next, TurnSequenceType setup_type)
         {
-            PauseInput();
+            PauseAllInputs();
 
             switch (setup_type)
             {
@@ -315,7 +315,7 @@ namespace Comic
         #region After screenshot
         private void OnAfterScreenshot(bool is_next, TurnSequenceType setup_type)
         {
-            PauseInput();
+            PauseAllInputs();
 
             switch (setup_type)
             {
@@ -368,7 +368,7 @@ namespace Comic
         #region On sequence finished
         private void OnTurnSequenceFinish(bool is_next, TurnSequenceType setup_type)
         {
-            PauseInput();
+            PauseAllInputs();
 
             switch (setup_type)
             {
@@ -389,6 +389,10 @@ namespace Comic
             }
         }
 
+        /// <summary>
+        /// Called on pause sequence has ended
+        /// </summary>
+        /// <param name="pause"></param>
         private void StopPause(bool pause)
         {
             m_hudManager.OnPageChangeEnd(pause);
@@ -398,7 +402,11 @@ namespace Comic
 
             ChangeInputFocus(m_navigationFocus == Focus_Hud ? Focus_Game : Focus_Hud);
         }
-
+        
+        /// <summary>
+        /// Called on turn page sequence ended
+        /// </summary>
+        /// <param name="pause"></param>
         private void StopTurnPage(bool is_next)
         {
             bool can_change_page = m_gameManager.GetPageManager().IsAbleToAccessPage();
@@ -411,6 +419,10 @@ namespace Comic
             ChangeInputFocus(Focus_Game);
         }
 
+        /// <summary>
+        /// Called on turn pqge "OnlyhtiProduction" ended
+        /// </summary>
+        /// <param name="pause"></param>
         private void StopFirstPage()
         {
             m_gameManager.GetCharacterManager().PauseAllCharacters(false);
@@ -439,7 +451,11 @@ namespace Comic
             }
         }
 
-        public void PauseInput()
+        /// <summary>
+        /// Pause all input :
+        //  on trun page sequence or on game start for exemple
+        /// </summary>
+        public void PauseAllInputs()
         {
             m_navigationInput.Pause(true);
             m_pageInput.Pause(true);
@@ -449,6 +465,10 @@ namespace Comic
                 m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
         }
 
+        /// <summary>
+        /// Change the input managers which going to be used (for ui navigation or game navigation)
+        /// </summary>
+        /// <param name="new_focus"></param>
         private void ChangeInputFocus(NavigationFocus new_focus)
         {
             m_navigationFocus = new_focus;
