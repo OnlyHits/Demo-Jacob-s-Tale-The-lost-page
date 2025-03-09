@@ -89,3 +89,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pageImage: {fileID: 3680903456074044792}
+  m_blankPageColor:
+    serializedVersion: 2
+    rgba: 4291875024

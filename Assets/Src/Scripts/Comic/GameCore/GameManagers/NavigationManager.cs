@@ -158,9 +158,9 @@ namespace Comic
                 bool can_change_page = m_gameManager.GetPageManager().IsAbleToAccessPage();
 
                 if (can_change_page)
-                    yield return StartCoroutine(m_hudManager.TurnPage(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds));
+                    yield return StartCoroutine(m_hudManager.TurnPage(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
                 else
-                    yield return StartCoroutine(m_hudManager.TurnPageError(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds));
+                    yield return StartCoroutine(m_hudManager.TurnPageError(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
 
                 OnTurnSequenceFinish(is_next, TurnSequenceType.Sequence_TurnPage);
 
@@ -195,7 +195,7 @@ namespace Comic
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_OpenBook);
 
-            yield return StartCoroutine(m_hudManager.TurnCover(m_gameManager.GetCoverSpriteRenderer(true).bounds));
+            yield return StartCoroutine(m_hudManager.TurnCover(m_gameManager.GetCoverSpriteRenderer(true).bounds, 4f));
 
             OnTurnSequenceFinish(true, TurnSequenceType.Sequence_OpenBook);
 
@@ -207,7 +207,7 @@ namespace Comic
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_Production);
 
-            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 8));
+            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 8, 1f));
 
             OnTurnSequenceFinish(true, TurnSequenceType.Sequence_Production);
 
@@ -249,7 +249,7 @@ namespace Comic
 
             OnAfterScreenshot(pause, TurnSequenceType.Sequence_Pause);
 
-            yield return StartCoroutine(m_hudManager.TurnMultiplePages(pause, m_gameManager.GetPageSpriteRenderer(true).bounds, 5));
+            yield return StartCoroutine(m_hudManager.TurnMultiplePages(pause, m_gameManager.GetPageSpriteRenderer(true).bounds, 5, .6f));
 
             OnTurnSequenceFinish(pause, TurnSequenceType.Sequence_Pause);
 

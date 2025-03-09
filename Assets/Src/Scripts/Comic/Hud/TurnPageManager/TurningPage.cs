@@ -8,12 +8,12 @@ namespace Comic
 {
     public class TurningPage : APoolElement
     {
-        [SerializeField] private Image                  m_pageImage;
-
-        private HudTurnPageManager m_manager;
-        private bool    m_isFirstHalf = false;
-        private Sprite  m_frontSprite;
-        private Sprite  m_backSprite;
+        [SerializeField] private Image      m_pageImage;
+        [SerializeField] private Color32    m_blankPageColor;
+        private HudTurnPageManager          m_manager;
+        private bool                        m_isFirstHalf = false;
+        private Sprite                      m_frontSprite;
+        private Sprite                      m_backSprite;
 
         public bool IsFirstHalf() => m_isFirstHalf;
 
@@ -73,7 +73,7 @@ namespace Comic
 
                     SetupPivot(!is_next);
 
-                    m_pageImage.sprite = is_next ? m_backSprite : m_frontSprite;
+                    SetupSprite(is_next? m_backSprite : m_frontSprite);
                     m_manager.RefreshRenderingSortOrder();
                 }));
 
@@ -89,7 +89,7 @@ namespace Comic
 
                     SetupPivot(is_next);
 
-                    m_pageImage.sprite = is_next ? m_frontSprite : m_backSprite;
+                    SetupSprite(is_next ? m_frontSprite : m_backSprite);
                     m_manager.RefreshRenderingSortOrder();
                 }));
 
@@ -141,7 +141,7 @@ namespace Comic
 
                     SetupPivot(!is_next);
 
-                    m_pageImage.sprite = is_next ? m_backSprite : m_frontSprite;
+                    SetupSprite(is_next ? m_backSprite : m_frontSprite);
                     m_manager.RefreshRenderingSortOrder();
                 }));
 
@@ -156,11 +156,24 @@ namespace Comic
         #endregion
 
         #region Class utility
+
+        private void SetupSprite(Sprite sprite)
+        {
+            m_pageImage.sprite = sprite;
+
+            // that shity but very convenient
+            if (sprite.name == "BookPage_0"
+                || sprite.name == "BookPageRight_0")
+                m_pageImage.color = m_blankPageColor;
+            else
+                m_pageImage.color = Color.white;
+        }
+
         private void OnStartAnimation(bool is_next)
         {
             gameObject.SetActive(true);
 
-            m_pageImage.sprite = is_next ? m_frontSprite : m_backSprite;
+            SetupSprite(is_next ? m_frontSprite : m_backSprite);
 
             m_isFirstHalf = true;
 

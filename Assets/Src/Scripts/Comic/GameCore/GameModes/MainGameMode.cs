@@ -45,7 +45,6 @@ namespace Comic
         private bool m_playStartAnimation_DEBUG = true;
 #endif
 
-
         // globals datas
         private GameConfig m_gameConfig;
         private GameProgression m_gameProgression;
@@ -171,8 +170,6 @@ namespace Comic
 
         public void OnEndMainDialogue(DialogueName type)
         {
-            //GetCharacterManager().GetPlayer().Pause(false);
-
             if (type == DialogueName.Dialogue_UnlockBF)
                 UnlockChapter(Chapters.The_First_Chapter, true, true);
             else if (type == DialogueName.Dialogue_UnlockBully)

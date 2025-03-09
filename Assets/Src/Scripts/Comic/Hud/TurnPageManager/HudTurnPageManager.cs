@@ -18,9 +18,6 @@ namespace Comic
         [SerializeField] private Sprite         m_blankPageLeftSprite;
         [SerializeField] private Sprite         m_blankPageRightSprite;
 
-        [SerializeField] private float          m_turnPageDuration;
-        [SerializeField] private float          m_turnCoverDuration;
-
         [SerializeField] private Canvas         m_canvas;
 
         [SerializeField, Range(0f, 90f)] private float m_errorAngle = 90f;
@@ -141,10 +138,8 @@ namespace Comic
             }
         }
 
-        public IEnumerator TurnMultiplePagesCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, int pages_number)
+        public IEnumerator TurnMultiplePagesCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, int pages_number, float duration)
         {
-            float base_ratio = 1f;
-
             for (int i = 0; i < pages_number; ++i)
             {
                 Sprite front_sprite = null;
@@ -179,45 +174,43 @@ namespace Comic
 
                 SetPageSessionData(new_page, sprite_bounds, base_camera);
 
-                TurnAnimation(new_page, is_next, false, m_turnPageDuration * base_ratio, Ease.InQuad, Ease.OutQuad);
+                TurnAnimation(new_page, is_next, false, duration, Ease.InQuad, Ease.OutQuad);
 
-                //yield return new WaitForSeconds(0.1f * base_ratio);
-
-                base_ratio *= 1.2f;
+                duration *= 1.2f;
             }
 
             yield return new WaitUntil(() => !m_pages.IsCompute());
         }
 
-        public IEnumerator TurnPageCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera)
+        public IEnumerator TurnPageCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, float duration)
         {
             var new_page = m_pages.AllocateElement(sprite_bounds, base_camera, m_canvas, m_frontSprite, m_backSprite, (HudTurnPageManager)this);
 
             SetPageSessionData(new_page, sprite_bounds, base_camera);
 
-            TurnAnimation(new_page, is_next, true, m_turnPageDuration, Ease.InQuad, Ease.OutQuad);
+            TurnAnimation(new_page, is_next, true, duration, Ease.InQuad, Ease.OutQuad);
 
             yield return new WaitUntil(() => !m_pages.IsCompute());
         }
 
-        public IEnumerator TurnCoverCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera)
+        public IEnumerator TurnCoverCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, float duration)
         {
             var new_page = m_pages.AllocateElement(sprite_bounds, base_camera, m_canvas, m_frontSprite, m_backSprite, (HudTurnPageManager)this);
 
             SetPageSessionData(new_page, sprite_bounds, base_camera);
 
-            TurnAnimation(new_page, is_next, false, m_turnCoverDuration, Ease.InQuad, Ease.OutQuad);
+            TurnAnimation(new_page, is_next, true, duration, Ease.InQuad, Ease.OutQuad);
 
             yield return new WaitUntil(() => !m_pages.IsCompute());
         }
 
-        public IEnumerator TurnPageErrorCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera)
+        public IEnumerator TurnPageErrorCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, float duration)
         {
             var new_page = m_pages.AllocateElement(sprite_bounds, base_camera, m_canvas, m_frontSprite, m_backSprite, (HudTurnPageManager)this);
 
             SetPageSessionData(new_page, sprite_bounds, base_camera);
 
-            TurnAnimationError(new_page, is_next, true, m_turnPageDuration, Ease.InQuad, Ease.OutQuad);
+            TurnAnimationError(new_page, is_next, true, duration, Ease.InQuad, Ease.OutQuad);
 
             yield return new WaitUntil(() => !m_pages.IsCompute());
         }

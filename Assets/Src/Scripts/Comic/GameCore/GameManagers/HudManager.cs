@@ -22,24 +22,24 @@ namespace Comic
         public void SetFrontSprite(Sprite sprite) => m_hudPageMgr.SetFrontSprite(sprite);
         public void SetBackSprite(Sprite sprite) => m_hudPageMgr.SetBackSprite(sprite);
 
-        public IEnumerator TurnMultiplePages(bool is_next, Bounds page_bounds, int page_number)
+        public IEnumerator TurnMultiplePages(bool is_next, Bounds page_bounds, int page_number, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnMultiplePagesCoroutine(is_next, page_bounds, m_cameraManager.GetCameraBase(), page_number));
+            yield return StartCoroutine(m_hudPageMgr.TurnMultiplePagesCoroutine(is_next, page_bounds, m_cameraManager.GetCameraBase(), page_number, duration));
         }
 
-        public IEnumerator TurnCover(Bounds page_bounds)
+        public IEnumerator TurnCover(Bounds page_bounds, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnCoverCoroutine(true, page_bounds, m_cameraManager.GetCameraBase()));
+            yield return StartCoroutine(m_hudPageMgr.TurnCoverCoroutine(true, page_bounds, m_cameraManager.GetCameraBase(), duration));
         }
 
-        public IEnumerator TurnPage(bool next_page, Bounds page_bounds)
+        public IEnumerator TurnPage(bool next_page, Bounds page_bounds, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnPageCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase()));
+            yield return StartCoroutine(m_hudPageMgr.TurnPageCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase(), duration));
         }
 
-        public IEnumerator TurnPageError(bool next_page, Bounds page_bounds)
+        public IEnumerator TurnPageError(bool next_page, Bounds page_bounds, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnPageErrorCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase()));
+            yield return StartCoroutine(m_hudPageMgr.TurnPageErrorCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase(), duration));
         }
 
 
@@ -158,9 +158,9 @@ namespace Comic
                 yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
 
             if (m_turnPageErrorDebug)
-                yield return StartCoroutine(TurnPageError(next_page, new Bounds()));
+                yield return StartCoroutine(TurnPageError(next_page, new Bounds(), 0.8f));
             else
-                yield return StartCoroutine(TurnPage(next_page, new Bounds()));
+                yield return StartCoroutine(TurnPage(next_page, new Bounds(), 0.8f));
 
             //yield return null;
         }
