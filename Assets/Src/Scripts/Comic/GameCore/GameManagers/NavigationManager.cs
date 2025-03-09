@@ -397,8 +397,8 @@ namespace Comic
         {
             m_hudManager.OnPageChangeEnd(pause);
 
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
-            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(pause);
+            m_gameManager.GetCharacterManager().PauseAllCharacters(pause);
 
             ChangeInputFocus(m_navigationFocus == Focus_Hud ? Focus_Game : Focus_Hud);
         }
