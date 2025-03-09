@@ -308,7 +308,7 @@ namespace Comic
 
         private void Play()
         {
-            //ComicGameCore.Instance.MainGameMode.Pause(false);
+            ComicGameCore.Instance.MainGameMode.GetNavigationManager().TryPause();
         }
 
         private void Exit()

@@ -42,7 +42,7 @@ namespace Comic
     public class MainGameMode : AGameMode<ComicGameCore>, MainGameModeProvider
     {
 #if UNITY_EDITOR && !DEVELOPMENT_BUILD
-        private bool m_playStartAnimation_DEBUG = true;
+        private bool m_playStartAnimation_DEBUG = false;
 #endif
 
         // globals datas

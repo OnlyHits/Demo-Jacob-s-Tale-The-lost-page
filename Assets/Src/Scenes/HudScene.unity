@@ -2246,8 +2246,6 @@ MonoBehaviour:
   m_rightShadow: {fileID: 496223441}
   m_blankPageLeftSprite: {fileID: 6402278180436502126, guid: 807196392ed5db336b2f202745604692, type: 3}
   m_blankPageRightSprite: {fileID: -2129436227603846148, guid: b2b6fe9c93d03f545a818cdb82c24152, type: 3}
-  m_turnPageDuration: 0.8
-  m_turnCoverDuration: 4
   m_canvas: {fileID: 1907668672}
   m_errorAngle: 90
 --- !u!1001 &2935301041441200086

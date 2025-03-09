@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using CustomArchitecture;
 using Sirenix.Utilities;
 using UnityEngine;
-using static PageHole;
 
 namespace Comic
 {

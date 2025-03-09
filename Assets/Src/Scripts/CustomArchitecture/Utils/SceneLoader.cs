@@ -3,9 +3,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
 using System;
-using static PageHole;
-using Comic;
-using System.Threading;
 
 namespace CustomArchitecture
 {
@@ -18,7 +15,8 @@ namespace CustomArchitecture
 
         private List<string> m_currentScenes = new()
         {
-            "StartingScene",
+            "GameScene",
+            //"StartingScene",
         };
 
         #region BaseBehaviour

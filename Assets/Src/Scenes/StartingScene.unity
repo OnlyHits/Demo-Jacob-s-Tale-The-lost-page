@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2214847435383796880, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
+      propertyPath: m_waitAfterLoad
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3738079250973514455, guid: d3d8336788958983dad6b6c0edc74942, type: 3}
       propertyPath: m_Name
       value: GameCore

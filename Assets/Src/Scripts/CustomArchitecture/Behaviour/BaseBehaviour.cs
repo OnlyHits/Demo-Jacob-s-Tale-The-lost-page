@@ -7,14 +7,21 @@ namespace CustomArchitecture
         [Header("BaseBehaviour")]
         [ReadOnly, SerializeField] protected bool m_pause;
 
+        /// <summary>
+        /// Is called after GameMode awake
+        /// </summary>
+        /// <param name="parameters"></param>
+        public abstract void Init(params object[] parameters);
+        
+        /// <summary>
+        /// Is call after all init are done
+        /// </summary>
+        /// <param name="parameters"></param>
+        public abstract void LateInit(params object[] parameters);
+
         protected abstract void OnUpdate();
         protected abstract void OnFixedUpdate();
         protected abstract void OnLateUpdate();
-
-        // is call after GameMode awake
-        public abstract void Init(params object[] parameters);
-        // is call after all init are done
-        public abstract void LateInit(params object[] parameters);
 
         public bool IsPaused() => m_pause;
 
