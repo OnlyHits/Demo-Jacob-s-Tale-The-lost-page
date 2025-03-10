@@ -158,9 +158,13 @@ namespace Comic
                 bool can_change_page = m_gameManager.GetPageManager().IsAbleToAccessPage();
 
                 if (can_change_page)
+                {
                     yield return StartCoroutine(m_hudManager.TurnPage(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
+                }
                 else
+                {
                     yield return StartCoroutine(m_hudManager.TurnPageError(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
+                }
 
                 OnTurnSequenceFinish(is_next, TurnSequenceType.Sequence_TurnPage);
 

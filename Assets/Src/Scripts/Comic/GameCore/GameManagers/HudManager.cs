@@ -7,11 +7,11 @@ namespace Comic
     public class HudManager : BaseBehaviour
     {
         [SerializeField] private HudTurnPageManager m_hudPageMgr;
-        private HudCameraRegister                   m_cameras;
-        private ViewManager                         m_viewManager;
-        private URP_CameraManager                   m_cameraManager;
-        private bool                                m_requestScreenshotDebug;
-        private bool                                m_turnPageErrorDebug;
+        private HudCameraRegister m_cameras;
+        private ViewManager m_viewManager;
+        private URP_CameraManager m_cameraManager;
+        private bool m_requestScreenshotDebug;
+        private bool m_turnPageErrorDebug;
 
         public ViewManager GetViewManager() => m_viewManager;
         public HudCameraRegister GetRegisteredCameras() => m_cameras;
@@ -49,20 +49,9 @@ namespace Comic
         protected override void OnUpdate()
         { }
 
-        private void SetupBookCoverView(Bounds sprite_bounds)
-        {
-            Vector3 minWorld = sprite_bounds.min;
-            Vector3 maxWorld = sprite_bounds.max;
-
-            m_viewManager.GetView<BookCoverView>().MatchBounds(
-                m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
-                m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
-        }
-
         public override void LateInit(params object[] parameters)
         {
-            if (parameters.Length < 1
-                || parameters[0] is not SpriteRenderer)
+            if (parameters.Length < 1 || parameters[0] is not SpriteRenderer)
             {
                 Debug.LogWarning("Bad parameters");
                 return;
@@ -77,8 +66,7 @@ namespace Comic
 
         public override void Init(params object[] parameters)
         {
-            if (parameters.Length != 1
-                || parameters[0] is not URP_CameraManager)
+            if (parameters.Length != 1 || parameters[0] is not URP_CameraManager)
             {
                 Debug.LogWarning("Unable to get URP_CameraManager");
                 return;
@@ -97,24 +85,42 @@ namespace Comic
         }
         #endregion
 
+        private void SetupBookCoverView(Bounds sprite_bounds)
+        {
+            Vector3 minWorld = sprite_bounds.min;
+            Vector3 maxWorld = sprite_bounds.max;
+
+            m_viewManager.GetView<BookCoverView>().MatchBounds(
+                m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
+                m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
+        }
+
         public void SetupPageForScreenshot(bool pause)
         {
             if (!pause)
+            {
                 GetViewManager().Show<ProgressionView>(true);
+            }
         }
 
         public void RestorePageAfterScreenshot(bool pause)
         {
             if (!pause)
+            {
                 GetViewManager().ShowLast();
+            }
             else
+            {
                 GetViewManager().Show<PauseView>();
+            }
         }
 
         public void OnPageChangeEnd(bool pause)
         {
             if (!pause)
+            {
                 GetViewManager().Show<ProgressionView>();
+            }
         }
 
         public bool CanResume()
@@ -133,9 +139,13 @@ namespace Comic
         private void OnScreenshot(bool front, Sprite sprite)
         {
             if (front)
+            {
                 m_hudPageMgr.SetFrontSprite(sprite);
+            }
             else
+            {
                 m_hudPageMgr.SetBackSprite(sprite);
+            }
         }
 
         public void TurnPageDirty(bool next_page, bool error, Bounds page_bounds)
