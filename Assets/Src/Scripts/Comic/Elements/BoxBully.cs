@@ -73,7 +73,7 @@ namespace Comic
         // could make some problem, should be replace by lateinit and register on gamemode
         private void Start()
         {
-            m_playerInstance = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            //m_playerInstance = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
 
             ComicGameCore.Instance.MainGameMode.SubscribeToPowerSelected(OnPowerSelected);
         }

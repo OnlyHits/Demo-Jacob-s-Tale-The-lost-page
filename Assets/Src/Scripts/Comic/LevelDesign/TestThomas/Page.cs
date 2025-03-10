@@ -7,22 +7,21 @@ using Sirenix.OdinInspector.Editor.Validation;
 
 namespace Comic
 {
-
     [ExecuteAlways]
     public class Page : BaseBehaviour
     {
         // Page content
-        [SerializeField] private SpriteRenderer     m_pageSprite;
-        [SerializeField] private Transform          m_panelContainer;
-        [SerializeField] private GameObject         m_panelPrefab;
-        [SerializeField] private List<Panel>        m_currentPanels;
+        [SerializeField] private SpriteRenderer m_pageSprite;
+        [SerializeField] private Transform m_panelContainer;
+        [SerializeField] private GameObject m_panelPrefab;
+        [SerializeField] private List<Panel> m_currentPanels;
         private Dictionary<PropsType, List<AProps>> m_props;
 
         // Debug visual
-        [SerializeField] private SpriteRenderer     m_margin;
+        [SerializeField] private SpriteRenderer m_margin;
 
         // Game logic
-        [SerializeField] private Transform          m_spawnPoint;
+        [SerializeField] private Transform m_spawnPoint;
 
         public SpriteRenderer GetPageSpriteRenderer() => m_pageSprite;
 
@@ -124,7 +123,7 @@ namespace Comic
             foreach (var panel in m_currentPanels)
                 sprites.Add(panel.GetPanelVisual().PanelReference());
 
-            return sprites;            
+            return sprites;
         }
 
         #region SPAWN POINT

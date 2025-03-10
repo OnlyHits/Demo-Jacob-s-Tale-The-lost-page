@@ -15,7 +15,9 @@ namespace CustomArchitecture
                 {
                     T component = rootObject.GetComponentInChildren<T>(true);
                     if (component != null)
+                    {
                         return component;
+                    }
                 }
             }
             return null;

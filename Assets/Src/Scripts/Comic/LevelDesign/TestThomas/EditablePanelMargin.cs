@@ -2,23 +2,23 @@ using UnityEngine;
 
 namespace Comic
 {
-    [ExecuteAlways]
+    //[ExecuteAlways]
     public class EditablePanelMargin : MonoBehaviour
     {
         [SerializeField] private float topOffset = 0.5f;
         [SerializeField] private float bottomOffset = 0.5f;
         [SerializeField] private float leftOffset = 0.5f;
-        [SerializeField] private float rightOffset = 0.5f;        
+        [SerializeField] private float rightOffset = 0.5f;
         [SerializeField] private Color gapColor = new Color(1f, 0f, 0f, 0.3f);
 
         private void OnDrawGizmos()
         {
             SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
             if (spriteRenderer == null) return;
-            
+
             Vector2 spriteSize = GetWorldSize(spriteRenderer);
             Vector3 spritePosition = transform.position;
-            
+
             float halfWidth = spriteSize.x / 2f;
             float halfHeight = spriteSize.y / 2f;
 

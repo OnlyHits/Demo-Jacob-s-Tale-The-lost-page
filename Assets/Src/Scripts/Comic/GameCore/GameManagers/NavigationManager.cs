@@ -402,7 +402,7 @@ namespace Comic
 
             ChangeInputFocus(m_navigationFocus == Focus_Hud ? Focus_Game : Focus_Hud);
         }
-        
+
         /// <summary>
         /// Called on turn page sequence ended
         /// </summary>

@@ -1,7 +1,5 @@
 using UnityEngine;
 using CustomArchitecture;
-using UnityEngine.InputSystem;
-using static PageHole;
 
 namespace Comic
 {
@@ -22,6 +20,8 @@ namespace Comic
 
         protected override void InstantiateGameModes()
         {
+            Application.targetFrameRate = 60;
+
             CreateGameMode<MainGameMode>();
 
 #if UNITY_EDITOR

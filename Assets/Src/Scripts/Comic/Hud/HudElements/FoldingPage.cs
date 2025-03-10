@@ -20,11 +20,11 @@ namespace Comic
 #endif
     public class FoldingPage : BaseBehaviour
     {
-        private RectTransform   m_rectTransform;
-        private Mesh            m_mesh;
-        private Vector3[]       m_originalVertex;
-        private Vector3[]       m_modifiedVertex;
-        [SerializeField] private bool       m_isInit = false;
+        private RectTransform m_rectTransform;
+        private Mesh m_mesh;
+        private Vector3[] m_originalVertex;
+        private Vector3[] m_modifiedVertex;
+        [SerializeField] private bool m_isInit = false;
         [SerializeField, Range(0, 1)] private float m_foldAmount;
         [SerializeField] private float m_bendStrength;
         [SerializeField] private float m_foldDepth;

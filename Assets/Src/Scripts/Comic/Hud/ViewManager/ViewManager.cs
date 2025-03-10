@@ -27,8 +27,8 @@ namespace Comic
             }
 
             //// remove this and replace by ShowStartingView function
-            //if (m_startingView != null)
-            //    Show(m_startingView, true);
+            if (m_startingView != null)
+                Show(m_startingView, true);
         }
         public override void Init(params object[] parameters)
         {

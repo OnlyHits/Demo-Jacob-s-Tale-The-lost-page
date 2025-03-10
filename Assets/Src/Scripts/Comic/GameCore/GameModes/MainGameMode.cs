@@ -94,7 +94,7 @@ namespace Comic
 
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
-            
+
             ComponentUtils.GetOrCreateComponent<NavigationManager>(gameObject, out m_navigationManager);
 
             m_cameraManager = GetComponentInChildren<URP_CameraManager>(); // should be in AGameCore
@@ -150,7 +150,9 @@ namespace Comic
 
 #if UNITY_EDITOR && !DEVELOPMENT_BUILD
             if (!m_playStartAnimation_DEBUG)
+            {
                 m_gameManager.GetPageManager().SetStartingPage();
+            }
 #endif
 
             yield return new WaitForEndOfFrame();
@@ -161,11 +163,13 @@ namespace Comic
         public override void StartGameMode()
         {
 #if UNITY_EDITOR && !DEVELOPMENT_BUILD
-    if (m_playStartAnimation_DEBUG)
-#endif
+            if (m_playStartAnimation_DEBUG)
             {
                 m_navigationManager.StartGameSequence();
             }
+#else
+            m_navigationManager.StartGameSequence();
+#endif
         }
 
         public void OnEndMainDialogue(DialogueName type)

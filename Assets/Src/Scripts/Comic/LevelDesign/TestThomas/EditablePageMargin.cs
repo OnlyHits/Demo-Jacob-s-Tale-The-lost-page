@@ -150,7 +150,6 @@ namespace Comic
             float leftGapWidth = (childPosition.x - childHalfWidth) - (parentPosition.x - parentHalfWidth);
             if (leftGapWidth > 0)
                 DrawFilledRectangle(new Vector3(childPosition.x - childHalfWidth - (leftGapWidth * .5f), childPosition.y, 0), new Vector2(leftGapWidth, childSize.y));
-
         }
 
         private void DrawFilledRectangle(Vector3 position, Vector2 size)

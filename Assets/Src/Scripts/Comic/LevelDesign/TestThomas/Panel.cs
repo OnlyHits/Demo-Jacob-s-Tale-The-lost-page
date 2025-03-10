@@ -3,9 +3,6 @@ using CustomArchitecture;
 using System;
 using DG.Tweening;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEngine.Jobs;
-using Unity.VisualScripting;
 
 namespace Comic
 {
@@ -82,7 +79,7 @@ namespace Comic
                     component.Init();
                 }
             }
-        }        
+        }
 
         // could be only in unity editor, will see later if needed
         private void ClampPosition()
