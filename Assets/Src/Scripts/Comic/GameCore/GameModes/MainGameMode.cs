@@ -34,9 +34,6 @@ namespace Comic
         public void SubscribeToNextPower(Action function);
         public void SubscribeToPrevPower(Action function);
 
-        public void SubscribeToBeforeSwitchPage(Action<bool> function);
-        public void SubscribeToAfterSwitchPage(Action<bool> function);
-
         public void TriggerDialogue(DialogueName type);
 
         public void ClearSaveDebug();
@@ -44,6 +41,10 @@ namespace Comic
 
     public class MainGameMode : AGameMode<ComicGameCore>, MainGameModeProvider
     {
+#if UNITY_EDITOR && !DEVELOPMENT_BUILD
+        private bool m_playStartAnimation_DEBUG = false;
+#endif
+
         // globals datas
         private GameConfig m_gameConfig;
         private GameProgression m_gameProgression;
@@ -139,22 +140,36 @@ namespace Comic
 
             // Update : is okay but should have a globally better handle of Init/LateInit 
             m_navigationManager.LateInit();
-            m_cameraManager.LateInit(m_gameManager.GetCoverSpriteRenderer(true), m_gameManager.GetCoverSpriteRenderer(false));
+            m_cameraManager.LateInit(
+                m_gameManager.GetCoverSpriteRenderer(true),
+                m_gameManager.GetCoverSpriteRenderer(false),
+                m_gameManager.GetPageSpriteRenderer(true),
+                m_gameManager.GetPageSpriteRenderer(false));
 
             Compute = true;
 
+#if UNITY_EDITOR && !DEVELOPMENT_BUILD
+            if (!m_playStartAnimation_DEBUG)
+                m_gameManager.GetPageManager().SetStartingPage();
+#endif
+
             yield return new WaitForEndOfFrame();
+
+            m_gameCore.OnGameModeLoaded();
         }
 
         public override void StartGameMode()
         {
-            m_navigationManager.TryOpenBook();
+#if UNITY_EDITOR && !DEVELOPMENT_BUILD
+    if (m_playStartAnimation_DEBUG)
+#endif
+            {
+                m_navigationManager.StartGameSequence();
+            }
         }
 
         public void OnEndMainDialogue(DialogueName type)
         {
-            //GetCharacterManager().GetPlayer().Pause(false);
-
             if (type == DialogueName.Dialogue_UnlockBF)
                 UnlockChapter(Chapters.The_First_Chapter, true, true);
             else if (type == DialogueName.Dialogue_UnlockBully)
@@ -341,28 +356,6 @@ namespace Comic
             }
 
             GetCharacterManager().GetPlayer().SubscribeToPrevPower(function);
-        }
-
-        public void SubscribeToBeforeSwitchPage(Action<bool> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToBeforeSwitchPage(function);
-        }
-
-        public void SubscribeToAfterSwitchPage(Action<bool> function)
-        {
-            if (GetPageManager() == null)
-            {
-                Debug.LogWarning("Page manager could not be found");
-                return;
-            }
-
-            GetPageManager().SubscribeToAfterSwitchPage(function);
         }
 
         public void SubscribeToLockChapter(Action<Chapters> function)

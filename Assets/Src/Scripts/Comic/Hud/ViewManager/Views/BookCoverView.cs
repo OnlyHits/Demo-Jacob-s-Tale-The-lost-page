@@ -46,9 +46,6 @@ namespace Comic
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, min_screen, m_canvas.worldCamera, out min);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, max_screen, m_canvas.worldCamera, out max);
 
-            Debug.Log($"Screen Min: {min_screen}, Max: {max_screen}");
-            Debug.Log($"Local UI Min: {min}, Max: {max}");
-
             MatchImage(m_coverImage, min, max);
         }
 

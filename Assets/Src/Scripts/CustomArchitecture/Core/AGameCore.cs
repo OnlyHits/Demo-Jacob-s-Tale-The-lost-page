@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
-using System.Globalization;
+using System.Collections;
 using Comic;
 
 namespace CustomArchitecture
@@ -62,7 +62,7 @@ namespace CustomArchitecture
             if (Instance != null && Instance != this)
             {
                 Debug.Log("Already instantiate");
-                Destroy(this);
+                Destroy(this.gameObject);
                 return;
             }
 
@@ -82,7 +82,7 @@ namespace CustomArchitecture
             else
             {
                 m_sceneLoader.SubscribeToSceneLoaded(OnSceneLoaded);
-                m_sceneLoader.SubscribeToEndLoading(OnEndLoading);
+//                m_sceneLoader.SubscribeToEndLoading(OnEndLoading);
             }
 
             if (m_inputActionAsset == null)
@@ -175,8 +175,14 @@ namespace CustomArchitecture
             StartCoroutine(m_currentGameMode.LoadGameMode());
         }
 
-        private void OnEndLoading()
+        public void OnGameModeLoaded()
         {
+            StartCoroutine(OnGameModeLoadedInternal());
+        }
+
+        private IEnumerator OnGameModeLoadedInternal()
+        {
+            yield return StartCoroutine(m_sceneLoader.UnloadLoadingScene());
             m_currentGameMode.StartGameMode();
         }
 

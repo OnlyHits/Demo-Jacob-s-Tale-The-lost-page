@@ -3,8 +3,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
 using System;
-using Comic;
-using System.Threading;
 
 namespace CustomArchitecture
 {
@@ -23,7 +21,8 @@ namespace CustomArchitecture
 
         private List<string> m_currentScenes = new()
         {
-            "StartingScene",
+            "GameScene",
+            //"StartingScene",
         };
 
         #region BaseBehaviour
@@ -108,14 +107,24 @@ namespace CustomArchitecture
 
             m_onScenesLoaded?.Invoke();
 
-            yield return new WaitUntil(() => ComicGameCore.Instance.MainGameMode.Compute);
+//            yield return new WaitUntil(() => ComicGameCore.Instance.MainGameMode.Compute);
 
-            yield return SceneManager.UnloadSceneAsync(m_transitionScene);
-            m_currentScenes.Remove(m_transitionScene);
+            //yield return SceneManager.UnloadSceneAsync(m_transitionScene);
+            //m_currentScenes.Remove(m_transitionScene);
 
-            yield return new WaitForEndOfFrame();
+            //yield return new WaitForEndOfFrame();
 
-            m_onLoadingEnd?.Invoke();
+            //yield return new WaitForSeconds(m_waitAfterLoad);
+//            m_onLoadingEnd?.Invoke();
         }
+
+        // Unload transition scene
+        public IEnumerator UnloadLoadingScene()
+        {
+            yield return SceneManager.UnloadSceneAsync(m_transitionScene);
+
+            m_currentScenes.Remove(m_transitionScene);
+        }
+
     }
 }

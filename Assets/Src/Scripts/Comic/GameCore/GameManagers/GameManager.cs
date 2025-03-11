@@ -6,8 +6,11 @@ namespace Comic
 {
     public class GameManager : BaseBehaviour
     {
-        [SerializeField] private GameObject m_coverRight;
-        [SerializeField] private GameObject m_coverLeft;
+        [SerializeField] private SpriteRenderer m_leftPageSR;
+        [SerializeField] private SpriteRenderer m_rightPageSR;
+        [SerializeField] private SpriteRenderer m_coverRightSR;
+        [SerializeField] private SpriteRenderer m_coverLeftSR;
+
         [SerializeField] private GameObject m_gameBackground;
         private PageManager m_pageManager;
         private CharacterManager m_characterManager;
@@ -21,17 +24,28 @@ namespace Comic
         public GameCameraRegister GetRegisteredCameras() => m_cameras;
         public DialogueManager GetDialogueManager() => m_dialogueManager;
 
+        public SpriteRenderer GetPageSpriteRenderer(bool right)
+        {
+            return right ? m_rightPageSR : m_leftPageSR;
+        }
+
         public SpriteRenderer GetCoverSpriteRenderer(bool right)
         {
-            return right ? m_coverRight.GetComponent<SpriteRenderer>() : m_coverLeft.GetComponent<SpriteRenderer>();
+            return right ? m_coverRightSR : m_coverLeftSR;
         }
 
         public void EnableBookBackground(bool enable, bool right)
         {
             if (right)
-                m_coverRight.SetActive(enable);
+            {
+                m_coverRightSR.gameObject.SetActive(enable);
+                m_rightPageSR.gameObject.SetActive(enable);
+            }
             else
-                m_coverLeft.SetActive(enable);
+            {
+                m_coverLeftSR.gameObject.SetActive(enable);
+                m_leftPageSR.gameObject.SetActive(enable);
+            }
         }
 
         public void EnableGameBackground(bool enable)

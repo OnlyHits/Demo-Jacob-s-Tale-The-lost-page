@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using Sirenix.Utilities;
 using UnityEngine;
-using static PageHole;
 
 namespace Comic
 {
@@ -12,8 +11,8 @@ namespace Comic
         [SerializeField, ReadOnly] private Page m_currentPage;
         [SerializeField, ReadOnly] private int m_currentPageIndex;
         [SerializeField, ReadOnly] private List<Page> m_unlockedPageList = new List<Page>();
-        [SerializeField] private float m_durationStartGame = 5f;
 
+        //public SpriteRenderer GetPageSpriteRenderer() => m_pageRenderSprite;
         public Page GetCurrentPage() => m_currentPage;
         public Panel GetCurrentPanel() => m_currentPage.GetCurrentPanel();
 
@@ -52,6 +51,10 @@ namespace Comic
             }
         }
         #endregion
+        public Bounds GetPageBounds()
+        {
+            return m_currentPage.GetPageSpriteRenderer().sprite.bounds;
+        }
 
         public void SetStartingPage()
         {

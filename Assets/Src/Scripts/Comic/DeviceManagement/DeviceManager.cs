@@ -5,6 +5,7 @@ using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
+    // make it CustomArchitecture ?
     public class DeviceManager : ADeviceManager
     {
         #region SUB CALLBACKS
@@ -34,7 +35,6 @@ namespace Comic
             InitStartingDevice();
         }
         #endregion
-
 
         #region INIT
         private void InitStartingDevice()

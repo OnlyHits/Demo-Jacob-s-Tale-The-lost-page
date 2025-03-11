@@ -14,6 +14,15 @@ namespace Comic
             Focus_Hud
         }
 
+        public enum TurnSequenceType
+        {
+            Sequence_Pause,
+            Sequence_TurnPage,
+            Sequence_OpenBook,
+            Sequence_Production,
+            Sequence_None,
+        }
+
         // Input managers
         private NavigationInput m_navigationInput;
         private GlobalInput m_globalInput;
@@ -23,9 +32,11 @@ namespace Comic
         private HudManager m_hudManager;
         private GameManager m_gameManager;
         private URP_CameraManager m_cameraManager;
+
         private bool m_isInitialized;
         private bool m_isRunning = false;
         private NavigationFocus m_navigationFocus;
+        private TurnSequenceType m_turnSequenceType = TurnSequenceType.Sequence_None;
 
         public NavigationInput GetNavigationInput() => m_navigationInput;
         public GlobalInput GetGlobalInput() => m_globalInput;
@@ -50,7 +61,8 @@ namespace Comic
             if (m_globalInput != null)
                 m_globalInput.LateInit();
 
-            InitFocus();
+            // could be remove or on preprocessor call
+            InitInputFocus();
         }
         public override void Init(params object[] parameters)
         {
@@ -89,7 +101,341 @@ namespace Comic
         }
         #endregion
 
-        private void InitFocus()
+        #region Navigate Sequence
+        public void TryNextPage(InputType input, bool b)
+        {
+            if (input == InputType.PRESSED)
+            {
+                if (m_hudManager != null && m_gameManager == null)
+                {
+                    // not implemented
+                }
+                else if (m_hudManager == null && m_gameManager != null)
+                {
+                    if (m_gameManager.GetPageManager().CanChangePage(true))
+                        m_gameManager.GetPageManager().ChangePageDirty(true);
+                }
+                else if (m_hudManager != null && m_gameManager != null)
+                {
+                    StartCoroutine(TryChangePageAll(true));
+                }
+            }
+        }
+
+        public void TryPrevPage(InputType input, bool b)
+        {
+            if (input == InputType.PRESSED)
+            {
+                if (m_hudManager != null && m_gameManager == null)
+                {
+                    // not implemented
+                }
+                else if (m_hudManager == null && m_gameManager != null)
+                {
+                    if (m_gameManager.GetPageManager().CanChangePage(false))
+                        m_gameManager.GetPageManager().ChangePageDirty(false);
+                }
+                else
+                if (m_hudManager != null && m_gameManager != null)
+                {
+                    StartCoroutine(TryChangePageAll(false));
+                }
+            }
+        }
+
+        private IEnumerator TryChangePageAll(bool is_next)
+        {
+            if (!IsRunning() && m_gameManager.GetPageManager().CanChangePage(is_next))
+            {
+                m_isRunning = true;
+
+                OnBeforeScreenshot(is_next, TurnSequenceType.Sequence_TurnPage);
+
+                yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+
+                OnAfterScreenshot(is_next, TurnSequenceType.Sequence_TurnPage);
+
+                bool can_change_page = m_gameManager.GetPageManager().IsAbleToAccessPage();
+
+                if (can_change_page)
+                    yield return StartCoroutine(m_hudManager.TurnPage(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
+                else
+                    yield return StartCoroutine(m_hudManager.TurnPageError(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
+
+                OnTurnSequenceFinish(is_next, TurnSequenceType.Sequence_TurnPage);
+
+                m_isRunning = false;
+            }
+            else
+                yield break;
+        }
+        #endregion
+
+        #region Begin game sequence
+        public void StartGameSequence()
+        {
+            if (m_hudManager != null && m_gameManager != null)
+            {
+                StartCoroutine(StartGameCoroutine());
+            }
+        }
+
+        private IEnumerator StartGameCoroutine()
+        {
+            if (IsRunning())
+                yield break;
+
+            m_isRunning = true;
+
+            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
+
+            OnBeforeScreenshot(true, TurnSequenceType.Sequence_OpenBook);
+
+            yield return StartCoroutine(m_cameraManager.TakeScreenshot(true));
+
+            OnAfterScreenshot(true, TurnSequenceType.Sequence_OpenBook);
+
+            yield return StartCoroutine(m_hudManager.TurnCover(m_gameManager.GetCoverSpriteRenderer(true).bounds, 4f));
+
+            OnTurnSequenceFinish(true, TurnSequenceType.Sequence_OpenBook);
+
+            yield return new WaitForSeconds(1f);
+
+            OnBeforeScreenshot(true, TurnSequenceType.Sequence_Production);
+
+            yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+
+            OnAfterScreenshot(true, TurnSequenceType.Sequence_Production);
+
+            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 10, .7f));
+
+            OnTurnSequenceFinish(true, TurnSequenceType.Sequence_Production);
+
+            m_isRunning = false;
+        }
+
+        #endregion
+
+        #region Pause Sequence
+        public void TryPause()
+        {
+            if (m_hudManager != null && m_gameManager == null)
+            {
+                // not implemented
+            }
+            else if (m_hudManager == null && m_gameManager != null)
+            {
+                // not implemented
+            }
+            else if (m_hudManager != null && m_gameManager != null)
+            {
+                StartCoroutine(TryPauseAll());
+            }
+        }
+
+        private IEnumerator TryPauseAll()
+        {
+            // mdr
+            bool pause = m_navigationFocus == NavigationFocus.Focus_Game;
+
+            if (IsRunning() || (!pause && !m_hudManager.CanResume()))
+                yield break;
+
+            m_isRunning = true;
+
+            OnBeforeScreenshot(pause, TurnSequenceType.Sequence_Pause);
+
+            yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+
+            OnAfterScreenshot(pause, TurnSequenceType.Sequence_Pause);
+
+            yield return StartCoroutine(m_hudManager.TurnMultiplePages(pause, m_gameManager.GetPageSpriteRenderer(true).bounds, 5, .6f));
+
+            OnTurnSequenceFinish(pause, TurnSequenceType.Sequence_Pause);
+
+            m_isRunning = false;
+
+            yield return null;
+        }
+
+        #endregion
+
+        #region Before screenshot
+        private void OnBeforeScreenshot(bool is_next, TurnSequenceType setup_type)
+        {
+            PauseAllInputs();
+
+            switch (setup_type)
+            {
+                case TurnSequenceType.Sequence_Pause:
+                    SetupPause(is_next);
+                    break;
+                case TurnSequenceType.Sequence_TurnPage:
+                    SetupTurnPage(is_next);
+                    break;
+                case TurnSequenceType.Sequence_Production:
+                    SetupFirstPage();
+                    break;
+                case TurnSequenceType.Sequence_OpenBook:
+                    SetupBookCover(is_next);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetupTurnPage(bool is_next)
+        {
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
+            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
+            m_gameManager.GetPageManager().OnBeforeScreenshot(is_next);
+        }
+
+        private void SetupBookCover(bool is_next)
+        {
+            m_hudManager.GetViewManager().Show<BookCoverView>();
+            m_gameManager.EnableGameBackground(false);
+        }
+
+        private void SetupPause(bool pause)
+        {
+            m_hudManager.SetupPageForScreenshot(pause);
+
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
+            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
+        }
+        public void SetupFirstPage()
+        {
+            m_gameManager.GetPageManager().SetStartingPage();
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
+            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
+        }
+        #endregion
+
+        #region After screenshot
+        private void OnAfterScreenshot(bool is_next, TurnSequenceType setup_type)
+        {
+            PauseAllInputs();
+
+            switch (setup_type)
+            {
+                case TurnSequenceType.Sequence_Pause:
+                    RestorePause(is_next);
+                    break;
+                case TurnSequenceType.Sequence_TurnPage:
+                    RestoreTurnPage(is_next);
+                    break;
+                case TurnSequenceType.Sequence_Production:
+                    RestoreFirstPage();
+                    break;
+                case TurnSequenceType.Sequence_OpenBook:
+                    RestoreOpenBook();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void RestoreTurnPage(bool is_next)
+        {
+            m_gameManager.GetPageManager().OnAfterScreenshot(is_next);
+        }
+
+        private void RestoreOpenBook()
+        {
+            m_hudManager.GetViewManager().Show<ProductionView>();
+            m_gameManager.EnableGameBackground(true);
+            m_gameManager.EnableBookBackground(false, false);
+        }
+
+        private void RestorePause(bool pause)
+        {
+            m_hudManager.RestorePageAfterScreenshot(pause);
+        }
+
+        private void StopBookCover()
+        {
+            m_gameManager.EnableBookBackground(true, false);
+        }
+
+        private void RestoreFirstPage()
+        {
+            m_hudManager.GetViewManager().Show<ProgressionView>();
+            m_gameManager.GetPageManager().DisableCurrentPage();
+        }
+        #endregion
+
+        #region On sequence finished
+        private void OnTurnSequenceFinish(bool is_next, TurnSequenceType setup_type)
+        {
+            PauseAllInputs();
+
+            switch (setup_type)
+            {
+                case TurnSequenceType.Sequence_Pause:
+                    StopPause(is_next);
+                    break;
+                case TurnSequenceType.Sequence_TurnPage:
+                    StopTurnPage(is_next);
+                    break;
+                case TurnSequenceType.Sequence_Production:
+                    StopFirstPage();
+                    break;
+                case TurnSequenceType.Sequence_OpenBook:
+                    StopBookCover();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Called on pause sequence has ended
+        /// </summary>
+        /// <param name="pause"></param>
+        private void StopPause(bool pause)
+        {
+            m_hudManager.OnPageChangeEnd(pause);
+
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(pause);
+            m_gameManager.GetCharacterManager().PauseAllCharacters(pause);
+
+            ChangeInputFocus(m_navigationFocus == Focus_Hud ? Focus_Game : Focus_Hud);
+        }
+        
+        /// <summary>
+        /// Called on turn page sequence ended
+        /// </summary>
+        /// <param name="pause"></param>
+        private void StopTurnPage(bool is_next)
+        {
+            bool can_change_page = m_gameManager.GetPageManager().IsAbleToAccessPage();
+
+            m_gameManager.GetPageManager().OnTurnSequenceFinish(is_next, !can_change_page);
+
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
+            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
+
+            ChangeInputFocus(Focus_Game);
+        }
+
+        /// <summary>
+        /// Called on turn pqge "OnlyhtiProduction" ended
+        /// </summary>
+        /// <param name="pause"></param>
+        private void StopFirstPage()
+        {
+            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
+
+            m_gameManager.GetPageManager().SetStartingPage();
+            m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
+
+            ChangeInputFocus(Focus_Game);
+        }
+        #endregion
+
+        #region Input Management
+        private void InitInputFocus()
         {
             if (m_hudManager != null && m_gameManager == null)
             {
@@ -105,250 +451,11 @@ namespace Comic
             }
         }
 
-        public void TryNextPage(InputType input, bool b)
-        {
-            if (input == InputType.PRESSED)
-            {
-                if (m_hudManager != null && m_gameManager == null)
-                {
-                    TryChangePageHudOnly(true);
-                }
-                else if (m_hudManager == null && m_gameManager != null)
-                {
-                    TryChangePageGameOnly(true);
-                }
-                else if (m_hudManager != null && m_gameManager != null)
-                {
-                    StartCoroutine(TryChangePageAll(true));
-                }
-            }
-        }
-
-        public void TryPrevPage(InputType input, bool b)
-        {
-            if (input == InputType.PRESSED)
-            {
-                if (m_hudManager != null && m_gameManager == null)
-                {
-                    TryChangePageHudOnly(false);
-                }
-                else if (m_hudManager == null && m_gameManager != null)
-                {
-                    TryChangePageGameOnly(false);
-                }
-                else if (m_hudManager != null && m_gameManager != null)
-                {
-                    StartCoroutine(TryChangePageAll(false));
-                }
-            }
-        }
-
-        private void TryChangePageGameOnly(bool is_next)
-        {
-            if (m_gameManager.GetPageManager().CanChangePage(is_next))
-                m_gameManager.GetPageManager().ChangePageDirty(is_next);
-        }
-
-        private void TryChangePageHudOnly(bool is_next)
-        {
-            m_hudManager.TurnPage(is_next, true, false);
-        }
-
-        private IEnumerator TryChangePageAll(bool is_next)
-        {
-            if (!IsRunning() && m_gameManager.GetPageManager().CanChangePage(is_next))
-            {
-                m_isRunning = true;
-
-                SetupChangePage(is_next);
-
-                yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
-
-                m_gameManager.GetPageManager().RestorePageAfterScreenshot(is_next);
-
-                bool can_change_page = m_gameManager.GetPageManager().IsAbleToAccessPage();
-
-                m_hudManager.TurnPage(is_next, false, !can_change_page);
-
-                yield return new WaitUntil(() => !m_hudManager.GetTurningPage().IsTurning());
-
-                OnChangePageEnd(is_next, can_change_page);
-
-                m_isRunning = false;
-            }
-            else
-                yield break;
-        }
-
-        private void SetupChangePage(bool is_next)
-        {
-            m_hudManager.MatchBounds(m_cameraManager.GetScreenshotBounds());
-
-            PauseInput();
-            m_gameManager.GetPageManager().SetupPageForScreenshot(is_next);
-
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
-            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
-        }
-
-        private void OnChangePageEnd(bool is_next, bool can_change_page)
-        {
-            m_gameManager.GetPageManager().OnPageChangeEnd(is_next, !can_change_page);
-
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
-            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
-
-            ChangeInputFocus(NavigationFocus.Focus_Game);
-        }
-
-        public void TryOpenBook()
-        {
-            if (m_hudManager != null && m_gameManager != null)
-            {
-                StartCoroutine(OpenBook());
-            }
-        }
-
-        private IEnumerator OpenBook()
-        {
-            if (IsRunning())
-                yield break;
-
-            m_isRunning = true;
-
-            SetupOpenBook();
-
-            yield return StartCoroutine(m_cameraManager.TakeScreenshot(true));
-
-            RestoreOpenBook();
-
-            m_hudManager.TurnCover();
-
-            yield return new WaitUntil(() => !m_hudManager.GetTurningPage().IsTurning());
-
-            OnOpenBookEnd();
-
-            m_isRunning = false;
-
-            yield return null;
-        }
-
-        // not so sure for the SetStartingPage & DisableCurrentPage logic
-        private void SetupOpenBook()
-        {
-            m_hudManager.MatchBounds(m_gameManager.GetCoverSpriteRenderer(true).bounds);
-            m_hudManager.GetViewManager().Show<BookCoverView>();
-
-            m_gameManager.EnableGameBackground(false);
-            m_gameManager.GetPageManager().SetStartingPage();
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
-            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
-
-            PauseInput();
-        }
-
-        private void RestoreOpenBook()
-        {
-            m_hudManager.GetViewManager().Show<ProgressionView>();
-            m_gameManager.GetPageManager().DisableCurrentPage();
-            m_gameManager.EnableGameBackground(true);
-            m_gameManager.EnableBookBackground(false, false);
-        }
-
-        private void OnOpenBookEnd()
-        {
-            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
-            m_gameManager.EnableBookBackground(true, false);
-
-            m_gameManager.GetPageManager().SetStartingPage();
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
-
-            ChangeInputFocus(Focus_Game);
-        }
-
-
-        public void TryPause()
-        {
-            if (m_hudManager != null && m_gameManager == null)
-            {
-                // whatever for the moment
-                TryPauseHudOnly(true);
-            }
-            else if (m_hudManager == null && m_gameManager != null)
-            {
-                // whatever for the moment
-                TryPauseGameOnly(true);
-            }
-            else if (m_hudManager != null && m_gameManager != null)
-            {
-                StartCoroutine(TryPauseAll());
-            }
-        }
-
-        private void TryPauseGameOnly(bool pause)
-        {
-
-        }
-
-        private void TryPauseHudOnly(bool pause)
-        {
-        }
-
-        private IEnumerator TryPauseAll()
-        {
-            bool pause = m_navigationFocus == NavigationFocus.Focus_Game;
-
-            if (IsRunning() || (!pause && !m_hudManager.CanResume()))
-                yield break;
-
-            m_isRunning = true;
-
-            SetupPause(pause);
-
-            yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
-
-            RestorePause(pause);
-
-            m_hudManager.TurnPage(pause, false, false);
-
-            yield return new WaitUntil(() => !m_hudManager.GetTurningPage().IsTurning());
-
-            OnPauseEnd(pause);
-
-            m_isRunning = false;
-
-            yield return null;
-        }
-
-        private void SetupPause(bool pause)
-        {
-            m_hudManager.MatchBounds(m_cameraManager.GetScreenshotBounds());
-
-            m_hudManager.SetupPageForScreenshot(pause);
-
-            PauseInput();
-
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
-            m_gameManager.GetCharacterManager().PauseAllCharacters(true);
-        }
-
-        private void RestorePause(bool pause)
-        {
-            m_hudManager.RestorePageAfterScreenshot(pause);
-        }
-
-        private void OnPauseEnd(bool pause)
-        {
-            m_hudManager.OnPageChangeEnd(pause);
-
-            m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
-            m_gameManager.GetCharacterManager().PauseAllCharacters(false);
-
-            ChangeInputFocus(m_navigationFocus == Focus_Hud ? Focus_Game : Focus_Hud);
-        }
-
-
-        private void PauseInput()
+        /// <summary>
+        /// Pause all input :
+        //  on trun page sequence or on game start for exemple
+        /// </summary>
+        public void PauseAllInputs()
         {
             m_navigationInput.Pause(true);
             m_pageInput.Pause(true);
@@ -358,6 +465,10 @@ namespace Comic
                 m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
         }
 
+        /// <summary>
+        /// Change the input managers which going to be used (for ui navigation or game navigation)
+        /// </summary>
+        /// <param name="new_focus"></param>
         private void ChangeInputFocus(NavigationFocus new_focus)
         {
             m_navigationFocus = new_focus;
@@ -381,5 +492,6 @@ namespace Comic
                     m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
             }
         }
+        #endregion
     }
 }

@@ -7,26 +7,24 @@ using Sirenix.OdinInspector.Editor.Validation;
 
 namespace Comic
 {
+
     [ExecuteAlways]
     public class Page : BaseBehaviour
     {
-        [SerializeField] private Transform m_panelContainer;
-        [SerializeField] private SpriteRenderer m_margin;
-        [SerializeField] private GameObject m_panelPrefab;
-        [SerializeField] private List<Panel> m_currentPanels;
-        [SerializeField] private Transform m_spawnPoint;
+        // Page content
+        [SerializeField] private SpriteRenderer     m_pageSprite;
+        [SerializeField] private Transform          m_panelContainer;
+        [SerializeField] private GameObject         m_panelPrefab;
+        [SerializeField] private List<Panel>        m_currentPanels;
         private Dictionary<PropsType, List<AProps>> m_props;
 
-        private void Awake()
-        {
-            if (m_margin != null)
-            {
-                foreach (var panel in m_currentPanels)
-                {
-                    panel.Init(m_margin);
-                }
-            }
-        }
+        // Debug visual
+        [SerializeField] private SpriteRenderer     m_margin;
+
+        // Game logic
+        [SerializeField] private Transform          m_spawnPoint;
+
+        public SpriteRenderer GetPageSpriteRenderer() => m_pageSprite;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -61,6 +59,7 @@ namespace Comic
             }
         }
         #endregion
+
         public bool CanAccessPanel(Vector3 position)
         {
             foreach (var panel in m_currentPanels)
