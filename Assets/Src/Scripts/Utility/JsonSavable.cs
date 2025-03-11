@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
+[Obsolete("Use SaveUtils from Custom architecture instead")]
 public class GenericSaver<T> where T : class
 {
     private string filePath;

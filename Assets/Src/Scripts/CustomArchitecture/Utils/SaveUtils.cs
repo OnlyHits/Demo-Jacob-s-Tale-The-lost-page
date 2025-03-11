@@ -7,14 +7,17 @@ using System.Collections.Generic;
 
 namespace CustomArchitecture
 {
-    public enum FileType
-    {
-        ConfigFile,
-        SaveFile,
-    }
+    // alias for conveniency
+    using FileType = SaveUtils.FileType;
 
-    public class SaveUtilitary<T>
+    public class SaveUtils<T>
     {
+        public enum FileType
+        {
+            ConfigFile,
+            SaveFile,
+        }
+        ²
         private string                          m_paths = "default_path";
         private bool                            m_backup = true;
         private string                          m_backupExtension = ".backup";
@@ -23,7 +26,7 @@ namespace CustomArchitecture
         {
             { DataFormat.JSON, ".json" },
             { DataFormat.Binary, ".bin" },
-            { DataFormat.Nodes, ".nodes" }, // better not using this one
+            { DataFormat.Nodes, ".nodes" }, // better not using this one, look at DataFormat for more info
         };
 
         public DataFormat Format
@@ -32,7 +35,7 @@ namespace CustomArchitecture
             set { m_dataFormat = value; }
         }
 
-        public SaveUtilitary(string file_path, FileType type, bool backup = true)
+        public SaveUtils(string file_path, FileType type, bool backup = true)
         {
             m_backup = backup;
 

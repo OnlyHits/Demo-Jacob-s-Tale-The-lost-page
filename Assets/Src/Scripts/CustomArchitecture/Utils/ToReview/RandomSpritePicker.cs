@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
 
+// todo : what is the use case? May be too precise to be in utils 
 [RequireComponent(typeof(SpriteRenderer))]
 public class RandomSpritePicker : BaseBehaviour
 {

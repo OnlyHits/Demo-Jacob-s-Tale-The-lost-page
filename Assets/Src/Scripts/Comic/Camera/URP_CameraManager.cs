@@ -23,10 +23,6 @@ namespace Comic
         private Camera m_baseCamera;
 
         [SerializeField] private RenderTexture  m_screenshotRenderTexture;
-        [SerializeField] private SpriteRenderer m_leftScreenshot;
-        [SerializeField] private SpriteRenderer m_rightScreenshot;
-        [SerializeField] private SpriteRenderer m_coverLeftScreenshot;
-        [SerializeField] private SpriteRenderer m_coverRightScreenshot;
 
         private Action<bool, Sprite> m_onScreenshotSprite;
 
@@ -47,7 +43,7 @@ namespace Comic
         { }
         protected override void OnUpdate()
         {
-            // change that shit very quick
+            // c caca
             if (m_screenshotRenderTexture.width != Screen.width || m_screenshotRenderTexture.height != Screen.height)
             {
                 m_screenshotRenderTexture.Release();
@@ -308,15 +304,6 @@ namespace Comic
             File.WriteAllBytes(path, bytes);
         }
 
-        private Sprite ConvertTextureToSprite(Texture2D texture)
-        {
-            if (texture == null)
-                return null;
-
-            Rect spriteRect = new Rect(0, 0, texture.width, texture.height);
-            return Sprite.Create(texture, spriteRect, new Vector2(0.5f, 0.5f));
-        }
-
         private void CaptureScreenshot(Texture2D texture, SpriteRenderer render_area, bool front)
         {
             Bounds spriteBounds = render_area.bounds;
@@ -336,7 +323,7 @@ namespace Comic
 
 //            SaveTextureAsPNG(texture, front ? "Tests/front.png" : "Tests/back.png");
 
-            m_onScreenshotSprite?.Invoke(front, ConvertTextureToSprite(texture));
+            m_onScreenshotSprite?.Invoke(front, texture.ConvertTextureToSprite());
         }
 
         #endregion

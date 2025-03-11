@@ -3,12 +3,17 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
 using System;
-using static PageHole;
 using Comic;
 using System.Threading;
 
 namespace CustomArchitecture
 {
+    // todo : not as generic as i want, can not handle more than two scenes at the same time (hud/game)
+    // Starting scene should be detected dynamically.
+    // Loading scene should not be define in this class. Maybe on LoadGameModeScene parameters
+    // todo : add the option to invoke m_onLoadingEnd when LoadingScene want
+    // todo : BaseBehaviour is not pertinent until SceneLoader is related with GameCore,
+    // which doesn't inherit from BaseBehaviour
     public class SceneLoader : BaseBehaviour
     {
         public float m_waitAfterLoad = 1f;
@@ -110,7 +115,6 @@ namespace CustomArchitecture
 
             yield return new WaitForEndOfFrame();
 
-            //yield return new WaitForSeconds(m_waitAfterLoad);
             m_onLoadingEnd?.Invoke();
         }
     }

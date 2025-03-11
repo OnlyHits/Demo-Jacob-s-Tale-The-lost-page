@@ -3,6 +3,8 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor.Animations;
 #endif
+
+// cool but need some improvment to be on CustomArchitecture (BaseBahaviour)
 public class RecordTransform : MonoBehaviour {
 #if UNITY_EDITOR
     public AnimationClip clip;

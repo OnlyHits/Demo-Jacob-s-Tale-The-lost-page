@@ -1,6 +1,3 @@
-
-using UnityEngine;
-
 namespace CustomArchitecture
 {
     public static class CustomArchitecture

@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
-using static PageHole;
 
 namespace CustomArchitecture
 {
+    // todo : what the use case ?
     public class EventOnCollide2D : BaseBehaviour
     {
         public Action<Collision2D> onCollisionEnter;
