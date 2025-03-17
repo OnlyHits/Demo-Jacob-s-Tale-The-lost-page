@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Math;
 using System.Linq;
+using UnityEngine;
 
 namespace CustomArchitecture
 {
@@ -10,18 +10,18 @@ namespace CustomArchitecture
         // Get random elements on list with Fisher-Yates Shuffle
         // More optimize with large list
         // Todo : make an extension method for List
-        public static List<T> GetRandomInList<T>(this, List<T> base_list, int element_number = 1)
+        public static List<T> GetRandomInList<T>(this List<T> base_list, int element_number = 1)
         {
             if (base_list == null || base_list.Count == 0)
                 return new List<T>();
 
-            element_number = Mathf.Clamp(element_number, 1, base_list.Count);
+            element_number = Math.Clamp(element_number, 1, base_list.Count);
 
             List<T> shuffledList = new List<T>(base_list);
 
             for (int i = 0; i < element_number; i++)
             {
-                int randomIndex = Random.Range(i, shuffledList.Count);
+                int randomIndex = UnityEngine.Random.Range(i, shuffledList.Count);
                 (shuffledList[i], shuffledList[randomIndex]) = (shuffledList[randomIndex], shuffledList[i]);
             }
 

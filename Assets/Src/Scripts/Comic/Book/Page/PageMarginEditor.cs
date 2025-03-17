@@ -5,7 +5,7 @@ using static PageHole;
 namespace Comic
 {
     [ExecuteAlways]
-    public class EditablePageMargin : BaseBehaviour
+    public class PageMarginEditor : BaseBehaviour
     {
         public SpriteRenderer parentSpriteRenderer;
 

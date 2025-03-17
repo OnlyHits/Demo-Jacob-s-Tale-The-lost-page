@@ -50,13 +50,13 @@ namespace Comic
     [System.Serializable]
     public class GameConfig : SerializedScriptableObject
     {
-        [NonSerialized] private readonly SaveUtilitary<Dictionary<Chapters, ChapterConfig>> m_saveUtilitary;
+        [NonSerialized] private readonly SaveUtils<Dictionary<Chapters, ChapterConfig>> m_saveUtilitary;
 
         [OdinSerialize, ShowInInspector] public Dictionary<Chapters, ChapterConfig> m_config;
 
         public GameConfig()
         {
-            m_saveUtilitary = new SaveUtilitary<Dictionary<Chapters, ChapterConfig>>("GameConfig", FileType.ConfigFile);
+            m_saveUtilitary = new SaveUtils<Dictionary<Chapters, ChapterConfig>>("GameConfig", FileType.ConfigFile);
 
             Load();
         }

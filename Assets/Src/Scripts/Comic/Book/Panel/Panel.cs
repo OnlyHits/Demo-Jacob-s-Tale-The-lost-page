@@ -15,7 +15,6 @@ namespace Comic
     public class Panel : BaseBehaviour
     {
         [SerializeField] private PanelVisual m_panelVisual;
-        [SerializeField] private List<Transform> m_allElements;
         [SerializeField] private Transform m_propsContainer;
         // this value must be save
         [SerializeField] private bool m_isLock = false;
@@ -24,7 +23,6 @@ namespace Comic
         private Tween m_rotateTween;
         //private List<Tween> m_rotCaseTweens = new List<Tween>();
         private bool m_isRotating = false;
-        private Vector3 m_currentRotation = Vector3.zero;
 
         public bool IsLock() => m_isLock;
         public PanelVisual GetPanelVisual() => m_panelVisual;

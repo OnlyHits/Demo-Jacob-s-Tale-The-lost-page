@@ -106,8 +106,8 @@ namespace Comic
         // todo : check if resources.Load is done on one frame or multiple
         public override IEnumerator LoadGameMode()
         {
-            m_hudManager = SceneUtils.FindObjectAcrossScenes<HudManager>();
-            m_gameManager = SceneUtils.FindObjectAcrossScenes<GameManager>();
+            m_hudManager = ComponentUtils.FindObjectAcrossScenes<HudManager>();
+            m_gameManager = ComponentUtils.FindObjectAcrossScenes<GameManager>();
 
             m_navigationManager.Init(m_gameManager, m_hudManager, m_gameCore.GetGlobalInput(), m_cameraManager);
 

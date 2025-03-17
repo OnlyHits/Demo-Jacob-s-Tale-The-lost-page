@@ -19,11 +19,11 @@ namespace CustomArchitecture
     public class Settings
     {
         private SettingDatas m_settingDatas = null;
-        private readonly SaveUtilitary<SettingDatas> m_saveUtilitary;
+        private readonly SaveUtils<SettingDatas> m_saveUtilitary;
 
         public Settings()
         {
-            m_saveUtilitary = new SaveUtilitary<SettingDatas>("SettingDatas", FileType.SaveFile);
+            m_saveUtilitary = new SaveUtils<SettingDatas>("SettingDatas", FileType.SaveFile);
 
             m_settingDatas = new();
             m_settingDatas = m_saveUtilitary.Load();

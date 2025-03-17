@@ -23,6 +23,10 @@ namespace Comic
         private Camera m_baseCamera;
 
         [SerializeField] private RenderTexture  m_screenshotRenderTexture;
+        private SpriteRenderer m_coverRightScreenshot;
+        private SpriteRenderer m_coverLeftScreenshot;
+        private SpriteRenderer m_pageRightScreenshot;
+        private SpriteRenderer m_pageLeftScreenshot;
 
         private Texture2D m_pageLeftTexture;
         private Texture2D m_pageRightTexture;
@@ -32,7 +36,7 @@ namespace Comic
         private Action<bool, Sprite> m_onScreenshotSprite;
 
         public void SubscribeToScreenshot(Action<bool, Sprite> function) { m_onScreenshotSprite -= function; m_onScreenshotSprite += function; }
-        public Bounds GetScreenshotBounds() => m_pageLeftScreenshot.bounds;
+        //public Bounds GetScreenshotBounds() => m_pageLeftScreenshot.bounds;
         public bool IsCameraRegister(URP_OverlayCameraType type) => m_overlayCameras != null && m_overlayCameras.ContainsKey(type);
         public Camera GetCameraBase() => m_baseCamera;
 

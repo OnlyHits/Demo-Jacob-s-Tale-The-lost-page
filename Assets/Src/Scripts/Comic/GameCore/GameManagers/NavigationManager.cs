@@ -33,10 +33,9 @@ namespace Comic
         private GameManager m_gameManager;
         private URP_CameraManager m_cameraManager;
 
-        private bool m_isInitialized;
+        //private bool m_isInitialized;
         private bool m_isRunning = false;
         private NavigationFocus m_navigationFocus;
-        private TurnSequenceType m_turnSequenceType = TurnSequenceType.Sequence_None;
 
         public NavigationInput GetNavigationInput() => m_navigationInput;
         public GlobalInput GetGlobalInput() => m_globalInput;

@@ -57,9 +57,9 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode
                 .GetNavigationManager().GetNavigationInput().SubscribeToCancel(OnCanceledInput);
 
-            m_tLanguage.text = ComicGameCore.Instance.GetSettings().m_settingDatas.m_language.ToString();
-            m_sVolumeEffect.value = ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume;
-            m_sVolumeMusic.value = ComicGameCore.Instance.GetSettings().m_settingDatas.m_effectVolume;
+            m_tLanguage.text = ComicGameCore.Instance.GetSettings().Language.ToString();
+            m_sVolumeEffect.value = ComicGameCore.Instance.GetSettings().MusicVolume;
+            m_sVolumeMusic.value = ComicGameCore.Instance.GetSettings().SoundEffectVolume;
 
             m_bPlay.onClick.AddListener(Play);
             m_bOptions.onClick.AddListener(() => ShowPanelByIndex(1));
@@ -123,19 +123,19 @@ namespace Comic
                 // Move music volume (the only slider is the volume)
                 if (slider == m_sVolumeEffect)
                 {
-                    ComicGameCore.Instance.GetSettings().m_settingDatas.m_effectVolume = volume;
+                    ComicGameCore.Instance.GetSettings().SetSoundEffectVolume(volume);
                 }
                 // Move effect volume (the only slider is the volume)
                 else if (slider == m_sVolumeMusic)
                 {
-                    ComicGameCore.Instance.GetSettings().m_settingDatas.m_musicVolume = volume;
+                    ComicGameCore.Instance.GetSettings().SetMusicVolume(volume);
                 }
             }
 
             // Move language (the only text is the lang)
             else if (m_currentElement is TextMeshProUGUI text)
             {
-                Language currentLang = ComicGameCore.Instance.GetSettings().m_settingDatas.m_language;
+                Language currentLang = ComicGameCore.Instance.GetSettings().Language;
                 Language destLang = default;
                 int langCount = System.Enum.GetValues(typeof(Language)).Length;
 
@@ -150,7 +150,7 @@ namespace Comic
                     destLang = (Language)nextValue;
                 }
 
-                ComicGameCore.Instance.GetSettings().m_settingDatas.m_language = destLang;
+                ComicGameCore.Instance.GetSettings().SetLanguage(destLang);
                 text.text = destLang.ToString();
             }
         }

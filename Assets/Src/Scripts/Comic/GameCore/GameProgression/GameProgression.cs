@@ -17,11 +17,11 @@ namespace Comic
     public class GameProgression
     {
         private List<ChapterSavedData>                              m_unlockChapters = null;
-        private readonly SaveUtilitary<List<ChapterSavedData>>      m_saveUtilitary;
+        private readonly SaveUtils<List<ChapterSavedData>>      m_saveUtilitary;
 
         public GameProgression()
         {
-            m_saveUtilitary = new SaveUtilitary<List<ChapterSavedData>>("ChapterSavedData", FileType.SaveFile);
+            m_saveUtilitary = new SaveUtils<List<ChapterSavedData>>("ChapterSavedData", FileType.SaveFile);
             m_unlockChapters = m_saveUtilitary.Load();
 
             if (m_unlockChapters == null)

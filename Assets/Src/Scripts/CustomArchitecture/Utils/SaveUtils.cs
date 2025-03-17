@@ -7,17 +7,14 @@ using System.Collections.Generic;
 
 namespace CustomArchitecture
 {
-    // alias for conveniency
-    using FileType = SaveUtils.FileType;
+    public enum FileType
+    {
+        ConfigFile,
+        SaveFile,
+    }
 
     public class SaveUtils<T>
     {
-        public enum FileType
-        {
-            ConfigFile,
-            SaveFile,
-        }
-        ²
         private string                          m_paths = "default_path";
         private bool                            m_backup = true;
         private string                          m_backupExtension = ".backup";

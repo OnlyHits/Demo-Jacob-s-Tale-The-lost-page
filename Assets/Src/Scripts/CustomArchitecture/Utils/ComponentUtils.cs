@@ -1,5 +1,5 @@
 using UnityEngine;
-using CustomArchitecture;
+using UnityEngine.SceneManagement;
 
 namespace CustomArchitecture
 {

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CustomArchitecture
 {
-    public class Texture2DExtension
+    public static class Texture2DExtension
     {
         public static Sprite ConvertTextureToSprite(this Texture2D texture)
         {
