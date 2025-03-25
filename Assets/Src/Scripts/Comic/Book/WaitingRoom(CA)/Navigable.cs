@@ -6,15 +6,24 @@ namespace CustomArchitecture
 {
     public abstract class Navigable : BaseBehaviour
     {
-        Dictionary<NavigationDirection, Navigable> m_links = null;
+        private Dictionary<NavigationDirection, Navigable> m_links = null;
+        [SerializeField] private bool m_isNavigable = true;
+
+        public bool IsNavigable() => m_isNavigable;
 
         // override this function to specify the bounds of your
-        // navigable object (Have to be in world space).
+        // navigable object.
         // This bound determine which navigable object
         // is going to be linked to this object
+        // On a SpriteRenderer call sr.bounds()
+        // On a RectTransform construct bounds by calling GetWorldCorners()
+        // Todo : make an extension for rectTransform, or a wrapper class to make it generic
         public abstract Bounds GetGlobalBounds();
         public abstract void Focus();
         public abstract void Unfocus();
+
+        // /!\ null check this function
+        public Navigable GetLinkedNavigable(NavigationDirection direction) => m_links?[direction];
 
         public override void Init(params object[] parameters)
         {
@@ -40,6 +49,9 @@ namespace CustomArchitecture
         // First thought is that there is no ideal way to generalize
         private void SetLinks(List<Navigable> navigables)
         {
+            if (!IsNavigable())
+                return;
+
             Bounds self_bounds = GetGlobalBounds();
             Vector3 self_center = self_bounds.center;
 
@@ -61,7 +73,7 @@ namespace CustomArchitecture
 
             foreach (var nav in navigables)
             {
-                if (nav == this)
+                if (nav == this || !nav.IsNavigable())
                     continue;
 
                 Bounds target_bounds = nav.GetGlobalBounds();

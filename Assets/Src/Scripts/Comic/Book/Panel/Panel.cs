@@ -12,7 +12,7 @@ namespace Comic
 #if UNITY_EDITOR
     [ExecuteAlways]
 #endif
-    public class Panel : BaseBehaviour
+    public class Panel : Navigable
     {
         [SerializeField] private PanelVisual m_panelVisual;
         [SerializeField] private Transform m_propsContainer;
@@ -47,15 +47,27 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
-            if (parameters.Length != 1
-                || parameters[0] is not SpriteRenderer)
+            if (parameters.Length != 2
+                || parameters[0] is not List<Navigable>
+                || parameters[1] is not SpriteRenderer)
+            {
+                Debug.LogWarning("Bad parameters");
                 return;
+            }
 
-            m_margin = (SpriteRenderer)parameters[0];
+            base.Init(parameters[0]);
+
+            m_margin = (SpriteRenderer)parameters[1];
             m_panelVisual.Init();
 
             InitProps();
         }
+        #endregion
+
+        #region Navigable
+        public override Bounds GetGlobalBounds() => m_panelVisual.PanelReference().bounds;
+        public override void Focus() => m_panelVisual.Focus();
+        public override void Unfocus() => m_panelVisual.Unfocus();
         #endregion
 
         public bool ContainPosition(Vector3 position)

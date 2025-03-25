@@ -24,7 +24,6 @@ namespace Comic
         public Action<InputType, Vector2> onNavigationAction;
         public Action<InputType, bool> onValidateAction;
         public Action<InputType, bool> onCancelAction;
-
         #endregion CALLBACKS
 
 
@@ -72,7 +71,6 @@ namespace Comic
             m_navigationAction = ComicGameCore.Instance.GetInputAsset().FindAction("Navigation");
             m_cancelAction = ComicGameCore.Instance.GetInputAsset().FindAction("Cancel");
             m_validateAction = ComicGameCore.Instance.GetInputAsset().FindAction("Validate");
-
         }
 
         private void InitInputActions()

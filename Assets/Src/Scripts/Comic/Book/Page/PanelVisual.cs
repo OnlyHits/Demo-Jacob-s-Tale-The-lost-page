@@ -16,6 +16,9 @@ namespace Comic
         public SpriteRenderer GetHideSprite() => m_hideSprite;
         public void LockPosition() => transform.localPosition = Vector3.zero;
 
+        public void Focus() => m_outlineSprite.color = Color.red;
+        public void Unfocus() => m_outlineSprite.color = Color.black;
+
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         { }
