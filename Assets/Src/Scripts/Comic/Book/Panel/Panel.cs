@@ -12,21 +12,36 @@ namespace Comic
 #if UNITY_EDITOR
     [ExecuteAlways]
 #endif
-    public class Panel : BaseBehaviour
+    public class Panel : Navigable
     {
-        [SerializeField] private PanelVisual m_panelVisual;
-        [SerializeField] private Transform m_propsContainer;
+        [SerializeField] private        PanelVisual m_panelVisual;
+        [SerializeField] private        Transform m_propsContainer;
         // this value must be save
-        [SerializeField] private bool m_isLock = false;
-        private List<AProps> m_props = null;
-        private SpriteRenderer m_margin;
-        private Tween m_rotateTween;
-        //private List<Tween> m_rotCaseTweens = new List<Tween>();
-        private bool m_isRotating = false;
+        [SerializeField] private bool   m_isLock = false;
+
+        private List<AProps>            m_props = null;
+        private SpriteRenderer          m_margin;
+        private Tween                   m_rotateTween;
+        private bool                    m_isRotating = false;
 
         public bool IsLock() => m_isLock;
         public PanelVisual GetPanelVisual() => m_panelVisual;
         public List<AProps> GetProps() => m_props;
+
+        #region Navigable
+        public override Bounds GetGlobalBounds()
+        {
+            return m_panelVisual.PanelReference().bounds;
+        }
+        public override void Focus()
+        {
+            m_panelVisual.SetOutlineColor(true);
+        }
+        public override void Unfocus()
+        {
+            m_panelVisual.SetOutlineColor(false);
+        }
+        #endregion
 
 
         #region BaseBehaviour
@@ -49,7 +64,10 @@ namespace Comic
         {
             if (parameters.Length != 1
                 || parameters[0] is not SpriteRenderer)
+            {
+                Debug.LogWarning("Bad parameters");
                 return;
+            }
 
             m_margin = (SpriteRenderer)parameters[0];
             m_panelVisual.Init();

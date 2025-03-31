@@ -1,6 +1,7 @@
 using UnityEngine;
 using CustomArchitecture;
 using static PageHole;
+using System;
 
 namespace Comic
 {
@@ -11,10 +12,13 @@ namespace Comic
         [SerializeField] private SpriteRenderer m_outlineSprite;
         [SerializeField] private SpriteRenderer m_hideSprite;
         [SerializeField] private float m_outlineThickness = 0.1f;
+        [SerializeField] private Color m_unfocusOutlineColor;
+        [SerializeField] private Color m_focusOutlineColor;
 
         public SpriteRenderer PanelReference() => m_referenceSprite;
         public SpriteRenderer GetHideSprite() => m_hideSprite;
         public void LockPosition() => transform.localPosition = Vector3.zero;
+        public void SetOutlineColor(bool focus) => m_outlineSprite.color = focus ? m_focusOutlineColor : m_unfocusOutlineColor;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()

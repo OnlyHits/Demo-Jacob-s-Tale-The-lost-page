@@ -15,9 +15,33 @@ namespace CustomArchitecture
         Down = 1 << 3
     }
 
-    public class AutomaticNavigationSystem : BaseBehaviour
+    public class AutomaticNavigationSystem<T> : BaseBehaviour where T : Navigable
     {
-        [SerializeField] private List<Navigable>    m_navigables;
+        [SerializeField] private List<T>    m_navigables;
+        private T                           m_currentNavigable = null;
+
+        public List<T> GetNavigables() => m_navigables;
+
+        public void Navigate(NavigationDirection direction)
+        {
+            if (m_navigables == null || m_navigables.Count == 0)
+                return;
+
+            // ensure that we focus a navigable
+            if (m_currentNavigable == null)
+            {
+                m_currentNavigable = m_navigables[0];
+            }
+
+            var nav = m_currentNavigable.GetLinkedNavigable(direction);
+
+            if (nav != null)
+            {
+                m_currentNavigable.Unfocus();
+                m_currentNavigable = (T)nav;
+                m_currentNavigable.Focus();
+            }
+        }
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -32,7 +56,7 @@ namespace CustomArchitecture
         {
             foreach (var nav in m_navigables)
             {
-                nav.Init(m_navigables);
+                ((Navigable)nav).Init(m_navigables);
             }
         }
         #endregion

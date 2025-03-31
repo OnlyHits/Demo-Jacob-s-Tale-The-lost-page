@@ -6,7 +6,8 @@ namespace CustomArchitecture
 {
     public abstract class Navigable : BaseBehaviour
     {
-        Dictionary<NavigationDirection, Navigable> m_links = null;
+        private Dictionary<NavigationDirection, Navigable>  m_links = null;
+        [SerializeField] private bool                       m_isNavigable = false;
 
         // override this function to specify the bounds of your
         // navigable object (Have to be in world space).
@@ -16,6 +17,18 @@ namespace CustomArchitecture
         public abstract void Focus();
         public abstract void Unfocus();
 
+        public bool isNavigable() => m_isNavigable;
+        public Navigable GetLinkedNavigable(NavigationDirection direction) => m_links?[direction];
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
         public override void Init(params object[] parameters)
         {
             if (parameters.Count() != 1
@@ -35,6 +48,7 @@ namespace CustomArchitecture
 
             SetLinks((List<Navigable>)parameters[0]);
         }
+        #endregion
 
         // Todo : make a generalization of this method
         // First thought is that there is no ideal way to generalize
@@ -61,7 +75,8 @@ namespace CustomArchitecture
 
             foreach (var nav in navigables)
             {
-                if (nav == this)
+                // Skip if this object or the target is not navigable, or if the target is the same object
+                if (!nav.isNavigable() || nav == this)
                     continue;
 
                 Bounds target_bounds = nav.GetGlobalBounds();

@@ -3,6 +3,7 @@ using CustomArchitecture;
 using System.Collections.Generic;
 using UnityEditor.Rendering.Universal;
 using Sirenix.OdinInspector.Editor.Validation;
+using System.Runtime.InteropServices;
 //using UnityEditor.Rendering.Universal;
 
 namespace Comic
@@ -15,7 +16,10 @@ namespace Comic
         [SerializeField] private SpriteRenderer     m_pageSprite;
         [SerializeField] private Transform          m_panelContainer;
         [SerializeField] private GameObject         m_panelPrefab;
-        [SerializeField] private List<Panel>        m_currentPanels;
+        //[SerializeField] private List<Panel>        m_currentPanels;
+
+        [SerializeField] private AutomaticNavigationSystem<Panel>    m_navigables;
+
         private Dictionary<PropsType, List<AProps>> m_props;
 
         // Debug visual
@@ -37,8 +41,13 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
-            foreach (var panel in m_currentPanels)
-                panel.Init(m_margin);
+            m_navigables.Init();
+
+            foreach (var nav in m_navigables.GetNavigables())
+                nav.Init(m_margin);
+
+            //foreach (var panel in m_currentPanels)
+            //    panel.Init(m_margin);
 
             m_props = new()
             {
@@ -47,7 +56,7 @@ namespace Comic
                 { PropsType.Props_Candle, new List<AProps>() },
             };
 
-            foreach (var panel in m_currentPanels)
+            foreach (var panel in m_navigables.GetNavigables())
             {
                 foreach (var props in panel.GetProps())
                 {
@@ -57,12 +66,23 @@ namespace Comic
                     }
                 }
             }
+
+            //foreach (var panel in m_currentPanels)
+            //{
+            //    foreach (var props in panel.GetProps())
+            //    {
+            //        if (m_props.ContainsKey(props.GetPropsType()))
+            //        {
+            //            m_props[props.GetPropsType()].Add(props);
+            //        }
+            //    }
+            //}
         }
         #endregion
 
         public bool CanAccessPanel(Vector3 position)
         {
-            foreach (var panel in m_currentPanels)
+            foreach (var panel in m_navigables.GetNavigables())
             {
                 if (panel.ContainPosition(position))
                 {
@@ -116,15 +136,18 @@ namespace Comic
 
         public List<SpriteRenderer> GetPanelsSpriteRenderer()
         {
-            if (m_currentPanels == null || m_currentPanels.Count == 0)
+            if (m_navigables.GetNavigables() == null || m_navigables.GetNavigables().Count == 0)
                 return null;
+
+            //if (m_currentPanels == null || m_currentPanels.Count == 0)
+            //        return null;
 
             List<SpriteRenderer> sprites = new();
 
-            foreach (var panel in m_currentPanels)
+            foreach (var panel in m_navigables.GetNavigables())
                 sprites.Add(panel.GetPanelVisual().PanelReference());
 
-            return sprites;            
+            return sprites;
         }
 
         #region SPAWN POINT
@@ -138,7 +161,7 @@ namespace Comic
 
         public Panel GetCurrentPanel()
         {
-            foreach (Panel panel in m_currentPanels)
+            foreach (Panel panel in m_navigables.GetNavigables())
             {
                 if (panel.IsPlayerInCase())
                 {
