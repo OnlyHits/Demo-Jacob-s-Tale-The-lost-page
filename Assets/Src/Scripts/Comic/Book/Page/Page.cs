@@ -3,23 +3,19 @@ using CustomArchitecture;
 using System.Collections.Generic;
 using UnityEditor.Rendering.Universal;
 using Sirenix.OdinInspector.Editor.Validation;
-using System.Runtime.InteropServices;
+using System.Linq;
 //using UnityEditor.Rendering.Universal;
 
 namespace Comic
 {
 
     [ExecuteAlways]
-    public class Page : BaseBehaviour
+    public class Page : AutomaticNavigationSystem<Panel>
     {
         // Page content
         [SerializeField] private SpriteRenderer     m_pageSprite;
         [SerializeField] private Transform          m_panelContainer;
         [SerializeField] private GameObject         m_panelPrefab;
-        //[SerializeField] private List<Panel>        m_currentPanels;
-
-        [SerializeField] private AutomaticNavigationSystem<Panel>    m_navigables;
-
         private Dictionary<PropsType, List<AProps>> m_props;
 
         // Debug visual
@@ -41,13 +37,10 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
-            m_navigables.Init();
+            ComicGameCore.Instance.MainGameMode.GetNavigationManager().GetNavigationInput().SubscribeToNavigate(OnNavigate);
 
-            foreach (var nav in m_navigables.GetNavigables())
-                nav.Init(m_margin);
-
-            //foreach (var panel in m_currentPanels)
-            //    panel.Init(m_margin);
+            foreach (var panel in m_navigables)
+                panel.Init(m_navigables.Cast<Navigable>().ToList(), m_margin);
 
             m_props = new()
             {
@@ -56,7 +49,7 @@ namespace Comic
                 { PropsType.Props_Candle, new List<AProps>() },
             };
 
-            foreach (var panel in m_navigables.GetNavigables())
+            foreach (var panel in m_navigables)
             {
                 foreach (var props in panel.GetProps())
                 {
@@ -67,22 +60,13 @@ namespace Comic
                 }
             }
 
-            //foreach (var panel in m_currentPanels)
-            //{
-            //    foreach (var props in panel.GetProps())
-            //    {
-            //        if (m_props.ContainsKey(props.GetPropsType()))
-            //        {
-            //            m_props[props.GetPropsType()].Add(props);
-            //        }
-            //    }
-            //}
+            StartNavigate();
         }
         #endregion
 
         public bool CanAccessPanel(Vector3 position)
         {
-            foreach (var panel in m_navigables.GetNavigables())
+            foreach (var panel in m_navigables)
             {
                 if (panel.ContainPosition(position))
                 {
@@ -136,7 +120,7 @@ namespace Comic
 
         public List<SpriteRenderer> GetPanelsSpriteRenderer()
         {
-            if (m_navigables.GetNavigables() == null || m_navigables.GetNavigables().Count == 0)
+            if (m_navigables == null || m_navigables.Count == 0)
                 return null;
 
             //if (m_currentPanels == null || m_currentPanels.Count == 0)
@@ -144,7 +128,7 @@ namespace Comic
 
             List<SpriteRenderer> sprites = new();
 
-            foreach (var panel in m_navigables.GetNavigables())
+            foreach (var panel in m_navigables)
                 sprites.Add(panel.GetPanelVisual().PanelReference());
 
             return sprites;
@@ -161,7 +145,7 @@ namespace Comic
 
         public Panel GetCurrentPanel()
         {
-            foreach (Panel panel in m_navigables.GetNavigables())
+            foreach (Panel panel in m_navigables)
             {
                 if (panel.IsPlayerInCase())
                 {
@@ -180,14 +164,14 @@ namespace Comic
         // TODO : generalize and made static in utils
         public void RefreshList()
         {
-            m_currentPanels.Clear();
+            m_navigables.Clear();
 
             foreach (Transform child in m_panelContainer)
             {
                 Panel component = child.GetComponent<Panel>();
                 if (component != null)
                 {
-                    m_currentPanels.Add(component);
+                    m_navigables.Add(component);
                     component.Init(m_margin);
                 }
             }
@@ -199,7 +183,7 @@ namespace Comic
             Panel panel = panel_object.GetComponent<Panel>();
 
             panel.Init(m_margin);
-            m_currentPanels.Add(panel);
+            m_navigables.Add(panel);
         }
 #endif
 

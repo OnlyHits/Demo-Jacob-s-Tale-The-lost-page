@@ -20,6 +20,9 @@ namespace Comic
         public void LockPosition() => transform.localPosition = Vector3.zero;
         public void SetOutlineColor(bool focus) => m_outlineSprite.color = focus ? m_focusOutlineColor : m_unfocusOutlineColor;
 
+        public void Focus() => m_outlineSprite.color = Color.red;
+        public void Unfocus() => m_outlineSprite.color = Color.black;
+
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         { }

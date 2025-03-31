@@ -6,29 +6,25 @@ namespace CustomArchitecture
 {
     public abstract class Navigable : BaseBehaviour
     {
-        private Dictionary<NavigationDirection, Navigable>  m_links = null;
-        [SerializeField] private bool                       m_isNavigable = false;
+        private Dictionary<NavigationDirection, Navigable> m_links = null;
+        [SerializeField] private bool m_isNavigable = true;
+
+        public bool IsNavigable() => m_isNavigable;
 
         // override this function to specify the bounds of your
-        // navigable object (Have to be in world space).
+        // navigable object.
         // This bound determine which navigable object
         // is going to be linked to this object
+        // On a SpriteRenderer call sr.bounds()
+        // On a RectTransform construct bounds by calling GetWorldCorners()
+        // Todo : make an extension for rectTransform, or a wrapper class to make it generic
         public abstract Bounds GetGlobalBounds();
         public abstract void Focus();
         public abstract void Unfocus();
 
-        public bool isNavigable() => m_isNavigable;
+        // /!\ null check this function
         public Navigable GetLinkedNavigable(NavigationDirection direction) => m_links?[direction];
 
-        #region BaseBehaviour
-        protected override void OnFixedUpdate()
-        { }
-        protected override void OnLateUpdate()
-        { }
-        protected override void OnUpdate()
-        { }
-        public override void LateInit(params object[] parameters)
-        { }
         public override void Init(params object[] parameters)
         {
             if (parameters.Count() != 1
@@ -48,12 +44,14 @@ namespace CustomArchitecture
 
             SetLinks((List<Navigable>)parameters[0]);
         }
-        #endregion
 
         // Todo : make a generalization of this method
         // First thought is that there is no ideal way to generalize
         private void SetLinks(List<Navigable> navigables)
         {
+            if (!IsNavigable())
+                return;
+
             Bounds self_bounds = GetGlobalBounds();
             Vector3 self_center = self_bounds.center;
 
@@ -75,8 +73,7 @@ namespace CustomArchitecture
 
             foreach (var nav in navigables)
             {
-                // Skip if this object or the target is not navigable, or if the target is the same object
-                if (!nav.isNavigable() || nav == this)
+                if (nav == this || !nav.IsNavigable())
                     continue;
 
                 Bounds target_bounds = nav.GetGlobalBounds();
