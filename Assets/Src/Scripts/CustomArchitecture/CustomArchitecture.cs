@@ -1,3 +1,5 @@
+using System;
+
 namespace CustomArchitecture
 {
     public static class CustomArchitecture
@@ -16,5 +18,16 @@ namespace CustomArchitecture
             COMPUTED = 2,
             RELEASED = 3,
         }
+
+        [Flags]
+        public enum Direction : int
+        {
+            None = 0,
+            Left = 1 << 0,
+            Right = 1 << 1,
+            Up = 1 << 2,
+            Down = 1 << 3
+        }
+
     }
 }

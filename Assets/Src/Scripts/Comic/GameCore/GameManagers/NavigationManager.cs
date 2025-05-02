@@ -11,7 +11,8 @@ namespace Comic
         public enum NavigationFocus
         {
             Focus_Game,
-            Focus_Hud
+            Focus_Hud,
+            Focus_Panel,
         }
 
         public enum TurnSequenceType
@@ -27,6 +28,7 @@ namespace Comic
         private NavigationInput m_navigationInput;
         private GlobalInput m_globalInput;
         private PageInput m_pageInput;
+        private PanelInput m_panelInput;
 
         // Global managers
         private HudManager m_hudManager;
@@ -40,6 +42,8 @@ namespace Comic
         public NavigationInput GetNavigationInput() => m_navigationInput;
         public GlobalInput GetGlobalInput() => m_globalInput;
         public PageInput GetPageInput() => m_pageInput;
+        public PanelInput GetPanelInput() => m_panelInput;
+
         public bool IsRunning() => m_isRunning;
 
         #region BaseBehaviour
@@ -59,6 +63,9 @@ namespace Comic
 
             if (m_globalInput != null)
                 m_globalInput.LateInit();
+
+            if (m_panelInput != null)
+                m_panelInput.LateInit();
 
             // could be remove or on preprocessor call
             InitInputFocus();
@@ -95,10 +102,43 @@ namespace Comic
             else
                 m_navigationInput.Init();
 
+            if (!ComponentUtils.GetOrCreateComponent<PanelInput>(gameObject, out m_panelInput))
+                Debug.LogWarning("Unable to get or create PanelInput");
+            else
+                m_panelInput.Init(ComicGameCore.Instance.GetInputAsset());
+
             m_pageInput.SubscribeToNextPage(TryNextPage);
             m_pageInput.SubscribeToPreviousPage(TryPrevPage);
+            m_globalInput.SubscribeToActivatePanelNav(TryActivatePanelNavigation);
         }
         #endregion
+
+        #region Panel Navigations
+        public void TryActivatePanelNavigation(InputType input, bool b)
+        {
+            if (m_gameManager.GetPageManager().GetCurrentPage() == null)
+            {
+                Debug.LogWarning("You try to activate panel navigation on a null page");
+                return;
+            }
+
+            if (input == InputType.RELEASED)
+            {
+                if (m_gameManager.GetPageManager().GetCurrentPage().IsRunning())
+                {
+                    ChangeInputFocus(NavigationFocus.Focus_Game);
+                    m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
+                }
+                else
+                {
+                    ChangeInputFocus(NavigationFocus.Focus_Panel);
+                    m_gameManager.GetPageManager().GetCurrentPage().StartNavigate();
+                }
+            }
+        }
+
+
+        #endregion Panel Navigation
 
         #region Navigate Sequence
         public void TryNextPage(InputType input, bool b)
@@ -419,7 +459,7 @@ namespace Comic
         }
 
         /// <summary>
-        /// Called on turn pqge "OnlyhtiProduction" ended
+        /// Called on turn page "OnlyhitProduction" ended
         /// </summary>
         /// <param name="pause"></param>
         private void StopFirstPage()
@@ -452,13 +492,14 @@ namespace Comic
 
         /// <summary>
         /// Pause all input :
-        //  on trun page sequence or on game start for exemple
+        //  on turn page sequence or on game start for exemple
         /// </summary>
         public void PauseAllInputs()
         {
             m_navigationInput.Pause(true);
             m_pageInput.Pause(true);
             m_globalInput.Pause(true);
+            m_panelInput.Pause(true);
 
             if (m_gameManager != null)
                 m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
@@ -477,6 +518,7 @@ namespace Comic
                 m_globalInput.Pause(false);
                 m_pageInput.Pause(false);
                 m_navigationInput.Pause(true);
+                m_panelInput.Pause(true);
 
                 if (m_gameManager != null)
                     m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(false);
@@ -486,10 +528,22 @@ namespace Comic
                 m_navigationInput.Pause(false);
                 m_globalInput.Pause(false);
                 m_pageInput.Pause(true);
+                m_panelInput.Pause(true);
 
                 if (m_gameManager != null)
                     m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
             }
+            else if (m_navigationFocus == NavigationFocus.Focus_Panel)
+            {
+                m_globalInput.Pause(false);
+                m_panelInput.Pause(false);
+                m_navigationInput.Pause(true);
+                m_pageInput.Pause(true);
+
+                if (m_gameManager != null)
+                    m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
+            }
+
         }
         #endregion
     }

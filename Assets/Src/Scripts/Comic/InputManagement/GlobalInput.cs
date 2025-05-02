@@ -9,17 +9,25 @@ namespace CustomArchitecture
     public class GlobalInput : AInputManager
     {
 
-        #region ACTIONS
+        #region Actions
+        // for test purpose, it will be remove and replace by another input class later
+        private InputAction m_panelNavAction;
         private InputAction m_pauseAction;
         public InputAction GetPauseAction() => m_pauseAction;
+        public InputAction GetPanelActivationAction() => m_panelNavAction;
+        #endregion Actions
 
-        #endregion ACTIONS
-
-
-        #region CALLBACKS
+        #region Callbacks
         public Action<InputType, bool> onPause;
+        public Action<InputType, bool> onActivatePanelNav;
 
-        #endregion CALLBACKS
+        public void SubscribeToActivatePanelNav(Action<InputType, bool> function)
+        {
+            onActivatePanelNav -= function;
+            onActivatePanelNav += function;
+        }
+
+        #endregion Callbacks
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -51,16 +59,19 @@ namespace CustomArchitecture
         private void FindAction(InputActionAsset inputActionAsset)
         {
             m_pauseAction = inputActionAsset.FindAction("Pause");
+            m_panelNavAction = inputActionAsset.FindAction("PanelNavigation/ActiveNavigation");
         }
 
         private void InitInputActions()
         {
             InputActionStruct<bool> iPause = new(m_pauseAction, onPause, false);
+            InputActionStruct<bool> iActivePanelNav = new(m_panelNavAction, onActivatePanelNav, false);
 
             // in case of reloading the game
             m_inputActionStructsBool.Clear();
 
             m_inputActionStructsBool.Add(iPause);
+            m_inputActionStructsBool.Add(iActivePanelNav);
         }
     }
 }

@@ -3,16 +3,20 @@ using CustomArchitecture;
 using System;
 using DG.Tweening;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEngine.Jobs;
-using Unity.VisualScripting;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
+    public interface PanelInterface
+    {
+        public bool ContainPosition(Vector3 position);
+        public void Flip(Direction direction);
+    }
+
 #if UNITY_EDITOR
     [ExecuteAlways]
 #endif
-    public class Panel : Navigable
+    public class Panel : Navigable, PanelInterface
     {
         [SerializeField] private        PanelVisual m_panelVisual;
         [SerializeField] private        Transform m_propsContainer;
@@ -69,6 +73,70 @@ namespace Comic
             InitProps();
         }
         #endregion
+
+        #region PanelBehaviour
+        public void Flip(Direction direction)
+        {
+            if (m_isRotating || direction == Direction.None)
+                return;
+
+            Vector3 axis = Vector3.zero;
+            float angle = 180f;
+
+            switch (direction)
+            {
+                case Direction.Left:
+                case Direction.Right:
+                    axis = Vector3.up; // Y axis
+                    break;
+                case Direction.Up:
+                case Direction.Down:
+                    axis = Vector3.right; // X axis
+                    break;
+                default:
+                    Debug.LogWarning("Unsupported flip direction: " + direction);
+                    return;
+            }
+
+            m_isRotating = true;
+
+            Vector3 to = transform.eulerAngles + axis * angle;
+
+            m_rotateTween = transform.DORotate(to, 0.5f, RotateMode.FastBeyond360)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    m_isRotating = false;
+                    m_rotateTween = null;
+                });
+        }
+
+        public void RotateContinuously(Direction direction, float speed = 90f)
+        {
+            if (direction == Direction.None)
+                return;
+
+            Vector3 axis = Vector3.zero;
+
+            switch (direction)
+            {
+                case Direction.Left:
+                    axis = Vector3.up; speed = -Mathf.Abs(speed); break;
+                case Direction.Right:
+                    axis = Vector3.up; speed = Mathf.Abs(speed); break;
+                case Direction.Up:
+                    axis = Vector3.right; speed = -Mathf.Abs(speed); break;
+                case Direction.Down:
+                    axis = Vector3.right; speed = Mathf.Abs(speed); break;
+                default:
+                    Debug.LogWarning("Unsupported direction: " + direction);
+                    return;
+            }
+
+            transform.Rotate(axis, speed * Time.deltaTime, Space.World);
+        }
+
+        #endregion PanelBehaviour
 
         public bool ContainPosition(Vector3 position)
         {

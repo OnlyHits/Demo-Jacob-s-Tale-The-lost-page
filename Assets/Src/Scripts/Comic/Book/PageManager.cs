@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CustomArchitecture;
+using static CustomArchitecture.CustomArchitecture;
 using Sirenix.Utilities;
 using UnityEngine;
 

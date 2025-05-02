@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace CustomArchitecture
 {
     public abstract class Navigable : BaseBehaviour
     {
-        private Dictionary<NavigationDirection, Navigable> m_links = null;
+        private Dictionary<Direction, Navigable> m_links = null;
         [SerializeField] private bool m_isNavigable = true;
 
         public bool IsNavigable() => m_isNavigable;
@@ -23,7 +24,7 @@ namespace CustomArchitecture
         public abstract void Unfocus();
 
         // /!\ null check this function
-        public Navigable GetLinkedNavigable(NavigationDirection direction) => m_links?[direction];
+        public Navigable GetLinkedNavigable(Direction direction) => m_links?[direction];
 
         public override void Init(params object[] parameters)
         {
@@ -36,10 +37,10 @@ namespace CustomArchitecture
 
             m_links = new()
             {
-                { NavigationDirection.Left, null },
-                { NavigationDirection.Right, null },
-                { NavigationDirection.Up, null },
-                { NavigationDirection.Down, null }
+                { Direction.Left, null },
+                { Direction.Right, null },
+                { Direction.Up, null },
+                { Direction.Down, null }
             };
 
             SetLinks((List<Navigable>)parameters[0]);
@@ -55,20 +56,20 @@ namespace CustomArchitecture
             Bounds self_bounds = GetGlobalBounds();
             Vector3 self_center = self_bounds.center;
 
-            Dictionary<NavigationDirection, (Navigable navigable, float distance)> closest_navigables = new()
+            Dictionary<Direction, (Navigable navigable, float distance)> closest_navigables = new()
             {
-                { NavigationDirection.Left,  (null, float.MaxValue) },
-                { NavigationDirection.Right, (null, float.MaxValue) },
-                { NavigationDirection.Up,    (null, float.MaxValue) },
-                { NavigationDirection.Down,  (null, float.MaxValue) }
+                { Direction.Left,  (null, float.MaxValue) },
+                { Direction.Right, (null, float.MaxValue) },
+                { Direction.Up,    (null, float.MaxValue) },
+                { Direction.Down,  (null, float.MaxValue) }
             };
 
-            Dictionary<NavigationDirection, (Navigable navigable, float distance)> furthest_navigables = new()
+            Dictionary<Direction, (Navigable navigable, float distance)> furthest_navigables = new()
             {
-                { NavigationDirection.Left,  (null, float.MinValue) },
-                { NavigationDirection.Right, (null, float.MinValue) },
-                { NavigationDirection.Up,    (null, float.MinValue) },
-                { NavigationDirection.Down,  (null, float.MinValue) }
+                { Direction.Left,  (null, float.MinValue) },
+                { Direction.Right, (null, float.MinValue) },
+                { Direction.Up,    (null, float.MinValue) },
+                { Direction.Down,  (null, float.MinValue) }
             };
 
             foreach (var nav in navigables)
@@ -86,13 +87,13 @@ namespace CustomArchitecture
                 if (delta_x < 0 && OverlapsVertically(self_bounds, target_bounds))
                 {
                     float absDeltaX = Mathf.Abs(delta_x);
-                    if (absDeltaX < closest_navigables[NavigationDirection.Left].distance)
+                    if (absDeltaX < closest_navigables[Direction.Left].distance)
                     {
-                        closest_navigables[NavigationDirection.Left] = (nav, absDeltaX);
+                        closest_navigables[Direction.Left] = (nav, absDeltaX);
                     }
-                    if (absDeltaX > furthest_navigables[NavigationDirection.Left].distance)
+                    if (absDeltaX > furthest_navigables[Direction.Left].distance)
                     {
-                        furthest_navigables[NavigationDirection.Left] = (nav, absDeltaX);
+                        furthest_navigables[Direction.Left] = (nav, absDeltaX);
                     }
                 }
 
@@ -100,13 +101,13 @@ namespace CustomArchitecture
                 if (delta_x > 0 && OverlapsVertically(self_bounds, target_bounds))
                 {
                     float absDeltaX = Mathf.Abs(delta_x);
-                    if (absDeltaX < closest_navigables[NavigationDirection.Right].distance)
+                    if (absDeltaX < closest_navigables[Direction.Right].distance)
                     {
-                        closest_navigables[NavigationDirection.Right] = (nav, absDeltaX);
+                        closest_navigables[Direction.Right] = (nav, absDeltaX);
                     }
-                    if (absDeltaX > furthest_navigables[NavigationDirection.Right].distance)
+                    if (absDeltaX > furthest_navigables[Direction.Right].distance)
                     {
-                        furthest_navigables[NavigationDirection.Right] = (nav, absDeltaX);
+                        furthest_navigables[Direction.Right] = (nav, absDeltaX);
                     }
                 }
 
@@ -114,13 +115,13 @@ namespace CustomArchitecture
                 if (delta_y > 0 && OverlapsHorizontally(self_bounds, target_bounds))
                 {
                     float absDeltaY = Mathf.Abs(delta_y);
-                    if (absDeltaY < closest_navigables[NavigationDirection.Up].distance)
+                    if (absDeltaY < closest_navigables[Direction.Up].distance)
                     {
-                        closest_navigables[NavigationDirection.Up] = (nav, absDeltaY);
+                        closest_navigables[Direction.Up] = (nav, absDeltaY);
                     }
-                    if (absDeltaY > furthest_navigables[NavigationDirection.Up].distance)
+                    if (absDeltaY > furthest_navigables[Direction.Up].distance)
                     {
-                        furthest_navigables[NavigationDirection.Up] = (nav, absDeltaY);
+                        furthest_navigables[Direction.Up] = (nav, absDeltaY);
                     }
                 }
 
@@ -128,13 +129,13 @@ namespace CustomArchitecture
                 if (delta_y < 0 && OverlapsHorizontally(self_bounds, target_bounds))
                 {
                     float absDeltaY = Mathf.Abs(delta_y);
-                    if (absDeltaY < closest_navigables[NavigationDirection.Down].distance)
+                    if (absDeltaY < closest_navigables[Direction.Down].distance)
                     {
-                        closest_navigables[NavigationDirection.Down] = (nav, absDeltaY);
+                        closest_navigables[Direction.Down] = (nav, absDeltaY);
                     }
-                    if (absDeltaY > furthest_navigables[NavigationDirection.Down].distance)
+                    if (absDeltaY > furthest_navigables[Direction.Down].distance)
                     {
-                        furthest_navigables[NavigationDirection.Down] = (nav, absDeltaY);
+                        furthest_navigables[Direction.Down] = (nav, absDeltaY);
                     }
                 }
             }
@@ -149,21 +150,21 @@ namespace CustomArchitecture
                 else
                 {
                     // If no closest navigable, fallback to the inverse direction
-                    NavigationDirection inverseDirection = GetInverseDirection(kvp.Key);
+                    Direction inverseDirection = GetInverseDirection(kvp.Key);
                     m_links[kvp.Key] = furthest_navigables[inverseDirection].navigable;
                 }
             }
         }
 
-        private NavigationDirection GetInverseDirection(NavigationDirection direction)
+        private Direction GetInverseDirection(Direction direction)
         {
             switch (direction)
             {
-                case NavigationDirection.Left: return NavigationDirection.Right;
-                case NavigationDirection.Right: return NavigationDirection.Left;
-                case NavigationDirection.Up: return NavigationDirection.Down;
-                case NavigationDirection.Down: return NavigationDirection.Up;
-                default: return NavigationDirection.None;
+                case Direction.Left: return Direction.Right;
+                case Direction.Right: return Direction.Left;
+                case Direction.Up: return Direction.Down;
+                case Direction.Down: return Direction.Up;
+                default: return Direction.None;
             }
         }
 

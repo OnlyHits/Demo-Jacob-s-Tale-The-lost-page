@@ -1,14 +1,10 @@
 using UnityEngine;
 using CustomArchitecture;
 using System.Collections.Generic;
-using UnityEditor.Rendering.Universal;
-using Sirenix.OdinInspector.Editor.Validation;
 using System.Linq;
-//using UnityEditor.Rendering.Universal;
-
+using static CustomArchitecture.CustomArchitecture;
 namespace Comic
 {
-
     [ExecuteAlways]
     public class Page : AutomaticNavigationSystem<Panel>
     {
@@ -37,10 +33,15 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
-            ComicGameCore.Instance.MainGameMode.GetNavigationManager().GetNavigationInput().SubscribeToNavigate(OnNavigate);
+            ComicGameCore.Instance.MainGameMode.GetNavigationManager()
+                .GetPanelInput().SubscribeToNavigate(OnNavigate);
+            ComicGameCore.Instance.MainGameMode.GetNavigationManager()
+                .GetPanelInput().SubscribeToInteract(OnInteract);
+
+            var nav_list = m_navigables.Cast<Navigable>().ToList();
 
             foreach (var panel in m_navigables)
-                panel.Init(m_navigables.Cast<Navigable>().ToList(), m_margin);
+                panel.Init(nav_list, m_margin);
 
             m_props = new()
             {
@@ -59,10 +60,16 @@ namespace Comic
                     }
                 }
             }
-
-            StartNavigate();
         }
         #endregion
+
+        private void OnInteract(InputType input, bool b)
+        {
+            if (!IsRunning())
+                return;
+
+            m_focusedNavigable.Flip(Direction.Up);
+        }
 
         public bool CanAccessPanel(Vector3 position)
         {

@@ -1,48 +1,43 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static CustomArchitecture.CustomArchitecture;
 
 namespace CustomArchitecture
 {
-    [Flags]
-    public enum NavigationDirection : int
-    {
-        None = 0,
-        Left = 1 << 0,
-        Right = 1 << 1,
-        Up = 1 << 2,
-        Down = 1 << 3
-    }
-
     // This class doesn't control weither she is active or not.
     // Make sure to call Start/StopNavigate manually everytime it is needed
     public class AutomaticNavigationSystem<T> : BaseBehaviour where T : Navigable
     {
-        [SerializeField] protected bool         m_lockNavigation = true;
+        [SerializeField] protected bool         m_isRunning = false;
         [SerializeField] protected List<T>      m_navigables;
         [SerializeField] private T              m_startingNavigable = null;
         protected T                             m_focusedNavigable = null;
-        private float                           m_delayComputed = .2f;
+        private readonly float                  m_delayComputed = .2f;
         private float                           m_timer = 0f;
 
-        private NavigationDirection GetDirection(Vector2 input)
+        public bool IsRunning() => m_isRunning;
+
+        private Direction GetDirection(Vector2 input)
         {
             if (input == Vector2.zero)
-                return NavigationDirection.None;
+                return Direction.None;
 
             if (Mathf.Abs(input.x) > Mathf.Abs(input.y))
             {
-                return input.x > 0 ? NavigationDirection.Right : NavigationDirection.Left;
+                return input.x > 0 ? Direction.Right : Direction.Left;
             }
             else
             {
-                return input.y > 0 ? NavigationDirection.Up : NavigationDirection.Down;
+                return input.y > 0 ? Direction.Up : Direction.Down;
             }
         }
 
         protected void OnNavigate(InputType input, Vector2 v)
         {
+            if (!m_isRunning)
+                return;
 
             if (input == InputType.PRESSED)
             {
@@ -79,7 +74,7 @@ namespace CustomArchitecture
             m_focusedNavigable = m_startingNavigable;
 
             m_timer = 0f;
-            m_lockNavigation = false;
+            m_isRunning = true;
         }
 
         public void StopNavigate()
@@ -88,10 +83,10 @@ namespace CustomArchitecture
                 m_focusedNavigable.Unfocus();
 
             m_timer = 0f;
-            m_lockNavigation = true;
+            m_isRunning = false;
         }
 
-        public void ChangeFocus(NavigationDirection direction)
+        public void ChangeFocus(Direction direction)
         {
             if (m_focusedNavigable != null)
             {

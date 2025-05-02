@@ -140,6 +140,7 @@ namespace Comic
 
             // Update : is okay but should have a globally better handle of Init/LateInit 
             m_navigationManager.LateInit();
+
             m_cameraManager.LateInit(
                 m_gameManager.GetCoverSpriteRenderer(true),
                 m_gameManager.GetCoverSpriteRenderer(false),
