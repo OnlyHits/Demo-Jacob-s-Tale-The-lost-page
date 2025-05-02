@@ -4,6 +4,7 @@ using System.Linq;
 using CustomArchitecture;
 using static PageHole;
 
+// should use pooling instead of dynamic instantiation
 public class VisualEffectManager : BaseBehaviour
 {
     [Serializable]

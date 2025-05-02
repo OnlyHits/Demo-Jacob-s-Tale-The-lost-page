@@ -23,12 +23,10 @@ namespace Comic
         private Camera m_baseCamera;
 
         [SerializeField] private RenderTexture  m_screenshotRenderTexture;
-
-        // references for the textures size
-        [SerializeField] private SpriteRenderer m_pageLeftScreenshot;
-        [SerializeField] private SpriteRenderer m_pageRightScreenshot;
-        [SerializeField] private SpriteRenderer m_coverLeftScreenshot;
-        [SerializeField] private SpriteRenderer m_coverRightScreenshot;
+        private SpriteRenderer m_coverRightScreenshot;
+        private SpriteRenderer m_coverLeftScreenshot;
+        private SpriteRenderer m_pageRightScreenshot;
+        private SpriteRenderer m_pageLeftScreenshot;
 
         private Texture2D m_pageLeftTexture;
         private Texture2D m_pageRightTexture;
@@ -38,7 +36,7 @@ namespace Comic
         private Action<bool, Sprite> m_onScreenshotSprite;
 
         public void SubscribeToScreenshot(Action<bool, Sprite> function) { m_onScreenshotSprite -= function; m_onScreenshotSprite += function; }
-        public Bounds GetScreenshotBounds() => m_pageLeftScreenshot.bounds;
+        //public Bounds GetScreenshotBounds() => m_pageLeftScreenshot.bounds;
         public bool IsCameraRegister(URP_OverlayCameraType type) => m_overlayCameras != null && m_overlayCameras.ContainsKey(type);
         public Camera GetCameraBase() => m_baseCamera;
 
@@ -49,7 +47,7 @@ namespace Comic
         { }
         protected override void OnUpdate()
         {
-            // change that shit very quick
+            // c caca
             if (m_screenshotRenderTexture.width != Screen.width || m_screenshotRenderTexture.height != Screen.height)
             {
                 m_screenshotRenderTexture.Release();
@@ -282,15 +280,6 @@ namespace Comic
             File.WriteAllBytes(path, bytes);
         }
 
-        private Sprite ConvertTextureToSprite(Texture2D texture)
-        {
-            if (texture == null)
-                return null;
-
-            Rect spriteRect = new Rect(0, 0, texture.width, texture.height);
-            return Sprite.Create(texture, spriteRect, new Vector2(0.5f, 0.5f));
-        }
-
         private void CaptureScreenshot(Texture2D texture, SpriteRenderer render_area, bool front)
         {
             Bounds spriteBounds = render_area.bounds;
@@ -310,7 +299,7 @@ namespace Comic
 
 //            SaveTextureAsPNG(texture, front ? "Tests/front.png" : "Tests/back.png");
 
-            m_onScreenshotSprite?.Invoke(front, ConvertTextureToSprite(texture));
+            m_onScreenshotSprite?.Invoke(front, texture.ConvertTextureToSprite());
         }
 
         #endregion

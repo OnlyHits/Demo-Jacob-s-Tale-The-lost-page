@@ -9,8 +9,8 @@ public class ForceInitManager : MonoBehaviour
 
     [SerializeField] private ComicGameCore gameCore;
 
-    [SerializeField] private bool m_forceInitHUD = false;
-    [SerializeField] private bool m_forceInitGame = false;
+    //[SerializeField] private bool m_forceInitHUD = false;
+    //[SerializeField] private bool m_forceInitGame = false;
 
 
     private void Awake()

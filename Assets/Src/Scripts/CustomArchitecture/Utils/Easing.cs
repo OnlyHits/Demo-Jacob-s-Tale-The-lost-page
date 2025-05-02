@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace CustomArchitecture
 {
+    // todo : kinda need to check if all functions works
+    // need to make an enum, and function call handler
+
     public static class Easing
     {
         public static float EaseLinear(float t)

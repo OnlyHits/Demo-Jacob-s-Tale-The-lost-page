@@ -132,52 +132,6 @@ namespace CustomArchitecture
             Debug.Log(targetTextInfo.meshInfo.Length);
         }
 
-
-
-        //     Debug.Log(text.text);
-
-        //     m_textMeshPro = gameObject.GetComponent<TMP_Text>();
-        //     Debug.Log(m_textMeshPro == null);
-            
-        //     m_textMeshPro.text = text.text;
-        //     m_textMeshPro.ForceMeshUpdate();
-
-        //     m_mesh = m_textMeshPro.mesh;
-        //     m_vertices = m_mesh.vertices;
-        //     m_colors = m_mesh.colors32;
-
-        //     foreach (var info in text.textInfo.characterInfo)
-        //     {
-        //         int vertexIndex = info.vertexIndex;
-
-        //         if (info.character == ' '|| info.character == '\n')
-        //             continue;
-
-        //         m_vertices[vertexIndex] = info.bottomLeft;
-        //         m_vertices[vertexIndex + 1] = info.topLeft;
-        //         m_vertices[vertexIndex + 2] = info.topRight;
-        //         m_vertices[vertexIndex + 3] = info.bottomRight;
-        //     }
-                
-        //     m_mesh.colors32 = m_colors;
-        //     m_mesh.vertices = m_vertices;
-        // }
-
-        // protected void Update()
-        // {
-        //     if (m_textMeshPro.enabled && !m_isTmpEnabled)
-        //     {
-        //     m_textMeshPro.ForceMeshUpdate();
-        //     }
-            
-        //     m_isTmpEnabled = m_textMeshPro.enabled;
-
-        //     if (m_pause)
-        //         return;
-
-        //     OnUpdate(Time.deltaTime);
-        // }
-
         private void Awake()
         {
             m_textMeshPro = gameObject.GetComponent<TMP_Text>();
@@ -223,7 +177,6 @@ namespace CustomArchitecture
         {
             bool conditionMet = false;
 
-            // Start both coroutines in parallel
             StartCoroutine(WaitUntilInputPressed(() => conditionMet = true));
             StartCoroutine(WaitForSecondsCoroutine(() => conditionMet = true));
 

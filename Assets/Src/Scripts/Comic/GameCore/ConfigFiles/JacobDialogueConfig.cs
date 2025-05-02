@@ -82,13 +82,13 @@ namespace Comic
     [System.Serializable]
     public class JacobDialogueConfig : SerializedScriptableObject
     {
-        [NonSerialized] private readonly SaveUtilitary<Dictionary<DialogueName, List<PartOfDialogueConfig>>> m_saveUtilitary;
+        [NonSerialized] private readonly SaveUtils<Dictionary<DialogueName, List<PartOfDialogueConfig>>> m_saveUtilitary;
 
         [OdinSerialize, ShowInInspector] public Dictionary<DialogueName, List<PartOfDialogueConfig>> m_config;
 
         public JacobDialogueConfig()
         {
-            m_saveUtilitary = new SaveUtilitary<Dictionary<DialogueName, List<PartOfDialogueConfig>>>("JacobDialogueConfig", FileType.ConfigFile);
+            m_saveUtilitary = new SaveUtils<Dictionary<DialogueName, List<PartOfDialogueConfig>>>("JacobDialogueConfig", FileType.ConfigFile);
 
             Load();
         }

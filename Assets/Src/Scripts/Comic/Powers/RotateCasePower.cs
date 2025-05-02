@@ -6,11 +6,9 @@ namespace Comic
 {
     public class RotateCasePower : Power
     {
-        public override void Activate(bool activate = true)
+        public override void Activate(bool activate = true) 
         {
             base.Activate(activate);
-
-
         }
 
     }

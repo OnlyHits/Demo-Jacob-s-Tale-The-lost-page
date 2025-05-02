@@ -5,6 +5,7 @@ using System;
 using Sirenix.Serialization;
 using Sirenix.OdinInspector;
 using ExtensionMethods;
+using CustomArchitecture;
 
 namespace CustomArchitecture
 {
@@ -167,7 +168,7 @@ namespace CustomArchitecture
         public void Init(string save_name)
         {
             m_dynamicDatas = new();
-            m_saveUtilitary = new SaveUtilitary<Dictionary<DialogueType, DialogueConfig>>(save_name, FileType.ConfigFile);
+            m_saveUtilitary = new SaveUtils<Dictionary<DialogueType, DialogueConfig>>(save_name, FileType.ConfigFile);
             Load();
             SetupDialogue();
         }
@@ -194,12 +195,12 @@ namespace CustomArchitecture
 
         #region ScriptableObject
 
-        [NonSerialized] private SaveUtilitary<Dictionary<DialogueType, DialogueConfig>>   m_saveUtilitary;
+        [NonSerialized] private SaveUtils<Dictionary<DialogueType, DialogueConfig>>   m_saveUtilitary;
 
         [Button("Save")]
         private void SaveData()
         {
-            SaveUtilitary<Dictionary<DialogueType, DialogueConfig>> s = new SaveUtilitary<Dictionary<DialogueType, DialogueConfig>>(m_saveName, FileType.ConfigFile);
+            SaveUtils<Dictionary<DialogueType, DialogueConfig>> s = new SaveUtils<Dictionary<DialogueType, DialogueConfig>>(m_saveName, FileType.ConfigFile);
             s.Save(m_dialogues);
 
             Debug.Log("Data saved successfully!");
@@ -208,7 +209,7 @@ namespace CustomArchitecture
         [Button("Load")]
         private void LoadData()
         {
-            SaveUtilitary<Dictionary<DialogueType, DialogueConfig>> s = new SaveUtilitary<Dictionary<DialogueType, DialogueConfig>>(m_saveName, FileType.ConfigFile);
+            SaveUtils<Dictionary<DialogueType, DialogueConfig>> s = new SaveUtils<Dictionary<DialogueType, DialogueConfig>>(m_saveName, FileType.ConfigFile);
             m_dialogues = s.Load();
             Debug.Log("Data loaded successfully!");
         }
