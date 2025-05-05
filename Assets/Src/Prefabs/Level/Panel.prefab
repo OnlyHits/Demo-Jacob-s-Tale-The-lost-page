@@ -169,8 +169,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
+  m_isNavigable: 1
   m_panelVisual: {fileID: 1024220128611553332}
-  m_allElements: []
   m_propsContainer: {fileID: 695964106807076546}
   m_isLock: 0
 --- !u!1 &3675801474187650023
@@ -183,6 +183,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1573792992009911581}
   - component: {fileID: 7320831630948091419}
+  - component: {fileID: 8041297790370673256}
   m_Layer: 0
   m_Name: Panel-Outline
   m_TagString: Untagged
@@ -200,7 +201,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.40595984, y: 0.41059762, z: 1}
+  m_LocalScale: {x: 0.43049562, y: 0.44255388, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3434979825211138100}
@@ -228,7 +229,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 08859642fb866ca4d8a7a3d985367318, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -246,20 +247,36 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingLayerID: 798250207
+  m_SortingLayer: 1
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 7333fee03f0e1b4419492307145a6ae9, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.56, y: 2.56}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
+  m_SpriteTileMode: 1
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 2
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8041297790370673256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3675801474187650023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0bb3fea433a1f8459a680615df3b3d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineFrames:
+  - {fileID: 2800000, guid: 1eea219bde0cf304abe02d5af2a8416b, type: 3}
+  - {fileID: 2800000, guid: 4db5f89ec8b388b4a8c6468ffc7e8110, type: 3}
+  frameRate: 6
 --- !u!1 &4208572558866444341
 GameObject:
   m_ObjectHideFlags: 0
@@ -671,7 +688,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6238462267755465724}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17908bd37d8574cf5a46d559feb3a563, type: 3}
   m_Name: 
@@ -680,7 +697,9 @@ MonoBehaviour:
   m_referenceSprite: {fileID: 9210040899581806278}
   m_outlineSprite: {fileID: 7320831630948091419}
   m_hideSprite: {fileID: 7281798248957260560}
-  m_outlineThickness: 0.2
+  m_outlineThickness: 0.52
+  m_unfocusOutlineColor: {r: 0, g: 0, b: 0, a: 0}
+  m_focusOutlineColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &7320759251955750813
 MonoBehaviour:
   m_ObjectHideFlags: 0
