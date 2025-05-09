@@ -14,8 +14,8 @@ public class PageCurlController : MonoBehaviour
         if (mf != null && mf.mesh != null)
         {
             Bounds bounds = mf.mesh.bounds;
-            Vector3 leftCenterPivot = new Vector3(bounds.min.x, (bounds.min.y + bounds.max.y) / 2, 0);
-            pageCurlMaterial.SetVector("_Pivot", leftCenterPivot);
+            Vector3 leftcenterPivot = new Vector3(bounds.min.x, (bounds.min.y + bounds.max.y) / 2, 0);
+            pageCurlMaterial.SetVector("_Pivot", leftcenterPivot);
         }
 
         // Set shader parameters

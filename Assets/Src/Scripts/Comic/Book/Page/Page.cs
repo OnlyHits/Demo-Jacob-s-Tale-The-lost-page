@@ -13,6 +13,7 @@ namespace Comic
         [SerializeField] private Transform          m_panelContainer;
         [SerializeField] private GameObject         m_panelPrefab;
         private Dictionary<PropsType, List<AProps>> m_props;
+        private PanelShuffleSequence                m_shuffleSequence;
 
         // Debug visual
         [SerializeField] private SpriteRenderer m_margin;
@@ -26,7 +27,13 @@ namespace Comic
         protected override void OnFixedUpdate()
         { }
         protected override void OnLateUpdate()
-        { }
+        {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                var panels = m_navigables.Select(n => n.transform).ToList();
+                m_shuffleSequence?.Shuffle(panels, m_pageSprite.bounds.center);
+            }
+        }
         protected override void OnUpdate()
         { }
         public override void LateInit(params object[] parameters)
@@ -37,6 +44,8 @@ namespace Comic
                 .GetPanelInput().SubscribeToNavigate(OnNavigate);
             ComicGameCore.Instance.MainGameMode.GetNavigationManager()
                 .GetPanelInput().SubscribeToInteract(OnInteract);
+
+            m_shuffleSequence = new PanelShuffleSequence();
 
             var nav_list = m_navigables.Cast<Navigable>().ToList();
 

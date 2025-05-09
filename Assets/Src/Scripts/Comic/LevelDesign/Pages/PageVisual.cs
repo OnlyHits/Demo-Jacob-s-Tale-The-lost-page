@@ -12,7 +12,7 @@ namespace Comic
         [Header("Cases Visuals")]
         [SerializeField, ReadOnly] private List<CaseVisual> m_caseVisuals = new List<CaseVisual>();
         [SerializeField] private SpriteRenderer m_pageBackgroundSprite;
-        [SerializeField] private SpriteRenderer m_pageBackgroundSpriteCenter;
+        [SerializeField] private SpriteRenderer m_pageBackgroundSpritecenter;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -41,7 +41,7 @@ namespace Comic
                 caseVisual.PushFront();
             }
             m_pageBackgroundSprite.sortingLayerName = frontLayerName;
-            m_pageBackgroundSpriteCenter.sortingLayerName = frontLayerName;
+            m_pageBackgroundSpritecenter.sortingLayerName = frontLayerName;
         }
 
         public void PushBack()
@@ -51,7 +51,7 @@ namespace Comic
                 caseVisual.PushBack();
             }
             m_pageBackgroundSprite.sortingLayerName = backLayerName;
-            m_pageBackgroundSpriteCenter.sortingLayerName = backLayerName;
+            m_pageBackgroundSpritecenter.sortingLayerName = backLayerName;
         }
 
         public void ResetDefault()
@@ -61,7 +61,7 @@ namespace Comic
                 caseVisual.ResetDefault();
             }
             m_pageBackgroundSprite.sortingLayerName = defaultLayerName;
-            m_pageBackgroundSpriteCenter.sortingLayerName = defaultLayerName;
+            m_pageBackgroundSpritecenter.sortingLayerName = defaultLayerName;
         }
 
         public void AddOrderInLayer(int addValue)

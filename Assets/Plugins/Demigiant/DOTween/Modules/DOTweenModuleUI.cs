@@ -619,16 +619,16 @@ namespace DG.Tweening
         /// <param name="center">Circle-center/pivot around which to rotate (in UI anchoredPosition coordinates)</param>
         /// <param name="endValueDegrees">The end value degrees to reach (to rotate counter-clockwise pass a negative value)</param>
         /// <param name="duration">The duration of the tween</param>
-        /// <param name="relativeCenter">If TRUE the <see cref="center"/> coordinates will be considered as relative to the target's current anchoredPosition</param>
+        /// <param name="relativecenter">If TRUE the <see cref="center"/> coordinates will be considered as relative to the target's current anchoredPosition</param>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static TweenerCore<Vector2, Vector2, CircleOptions> DOShapeCircle(
-            this RectTransform target, Vector2 center, float endValueDegrees, float duration, bool relativeCenter = false, bool snapping = false
+            this RectTransform target, Vector2 center, float endValueDegrees, float duration, bool relativecenter = false, bool snapping = false
         )
         {
             TweenerCore<Vector2, Vector2, CircleOptions> t = DOTween.To(
                 CirclePlugin.Get(), () => target.anchoredPosition, x => target.anchoredPosition = x, center, duration
             );
-            t.SetOptions(endValueDegrees, relativeCenter, snapping).SetTarget(target);
+            t.SetOptions(endValueDegrees, relativecenter, snapping).SetTarget(target);
             return t;
         }
 

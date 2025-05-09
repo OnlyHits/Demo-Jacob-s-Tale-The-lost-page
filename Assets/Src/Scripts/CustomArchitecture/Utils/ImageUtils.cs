@@ -35,7 +35,7 @@ namespace CustomArchitecture
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, maxScreen, canvas.worldCamera, out maxLocal);
 
             rectTransform.sizeDelta = new Vector2(Mathf.Abs(maxLocal.x - minLocal.x), Mathf.Abs(maxLocal.y - minLocal.y));
-            //rectTransform.anchoredPosition = (minLocal + maxLocal) * 0.5f; // Center the image
+            //rectTransform.anchoredPosition = (minLocal + maxLocal) * 0.5f; // center the image
         }
     }
 }

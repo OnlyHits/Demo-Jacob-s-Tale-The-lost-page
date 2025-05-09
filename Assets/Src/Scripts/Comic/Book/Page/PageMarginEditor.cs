@@ -32,7 +32,7 @@ namespace Comic
         protected override void OnUpdate()
         {
 #if UNITY_EDITOR
-            MatchParentSizeAndCenter();
+            MatchParentSizeAndcenter();
 #endif
 
         }
@@ -43,7 +43,7 @@ namespace Comic
         }
         #endregion
 
-        public void MatchParentSizeAndCenter()
+        public void MatchParentSizeAndcenter()
         {
             if (parentSpriteRenderer == null) return;
 
@@ -73,7 +73,7 @@ namespace Comic
                 1f
             );
 
-            transform.position = GetCenteredPosition(true);
+            transform.position = GetcenteredPosition(true);
         }
 
         private Vector2 GetWorldSize(SpriteRenderer spriteRenderer)
@@ -82,7 +82,7 @@ namespace Comic
             return spriteRenderer.sprite.bounds.size * (Vector2)spriteRenderer.transform.lossyScale;
         }
 
-        private Vector3 GetCenteredPosition(bool adjust_position)
+        private Vector3 GetcenteredPosition(bool adjust_position)
         {
             Vector3 parentPos = parentSpriteRenderer.transform.position;
 
@@ -122,7 +122,7 @@ namespace Comic
             Vector2 parentSize = GetWorldSize(parentSpriteRenderer);
             Vector2 childSize = GetWorldSize(childSpriteRenderer);
 
-            Vector3 parentPosition = GetCenteredPosition(false);
+            Vector3 parentPosition = GetcenteredPosition(false);
             Vector3 childPosition = transform.position;
 
             float parentHalfWidth = parentSize.x / 2f;

@@ -224,12 +224,12 @@ namespace CustomArchitecture
             }
             else if (m_dialogueConfig.m_dialogueSentences[m_sentenceIndex].m_apparitionType == DialogueApparitionType.SIMULTANEOUS)
             {
-                SetVertexAtCenter();
+                SetVertexAtcenter();
                 yield return StartCoroutine(SimultaneousApparition());
             }
         }
 
-        protected void SetVertexAtCenter()
+        protected void SetVertexAtcenter()
         {
             m_textMeshPro.ForceMeshUpdate();
 
