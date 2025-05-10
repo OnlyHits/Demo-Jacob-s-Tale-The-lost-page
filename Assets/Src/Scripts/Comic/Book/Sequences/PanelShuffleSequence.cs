@@ -1,13 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
+using CustomArchitecture;
+using System.Linq;
+using static UnityEditor.PlayerSettings;
+using UnityEditor;
 
 namespace Comic
 {
-    public class PanelShuffleSequence
+    // this class should be instantiated once and pass to the page to get used
+    // ie : instantiate in game mode
+    public class PanelShuffleSequence : BaseBehaviour
     {
-        // this is not really convenient until i dont make it heritated from MonoBehaviour
-        // It may be preferable to make this a component but at least no editor setup is required 
         private readonly float  m_downDuration = 3f;
         private readonly float  m_upDuration = 2f;
         private readonly float  m_rotations = 2f;
@@ -16,10 +20,56 @@ namespace Comic
         private Sequence m_sequence;
         private Vector2 m_center;
 
+        [SerializeField] private GameObject m_vortexPrefab;
+        private GameObject m_vortex;
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        { }
+        protected override void OnLateUpdate()
+        { }
+        protected override void OnUpdate()
+        { }
+        public override void LateInit(params object[] parameters)
+        { }
+        public override void Init(params object[] parameters)
+        {
+            if (parameters.Count() < 1 || parameters[0] is not Transform)
+            {
+                Debug.LogError("Invalid parameters");
+                return;
+            }
+
+            m_vortex = Instantiate(m_vortexPrefab, (Transform)parameters[0]);
+            m_vortex.SetActive(false);
+        }
+        #endregion
+
         public void Shuffle(List<Transform> target, Vector2 center)
         {
-            m_sequence = DOTween.Sequence();
             m_center = center;
+            var vortex_scale = m_vortex.transform.localScale;
+
+            m_vortex.SetActive(true);
+            m_vortex.transform.position = center;
+            m_vortex.transform.localScale = Vector3.zero;
+            m_vortex.transform.rotation = Quaternion.identity;
+
+            float introDuration = 0.5f;
+            float rotationSpeed = 180f;
+            float introRotation = rotationSpeed * introDuration;
+
+            var vortexIntro = DOTween.Sequence()
+                .Append(m_vortex.transform.DOScale(vortex_scale, introDuration).SetEase(Ease.OutBack))
+                .Join(m_vortex.transform.DORotate(new Vector3(0, 0, introRotation), introDuration, RotateMode.FastBeyond360)
+                .SetEase(Ease.Linear));
+
+            var vortexLoop = m_vortex.transform
+                .DORotate(new Vector3(0, 0, 360f), 2f, RotateMode.FastBeyond360)
+                .SetEase(Ease.Linear)
+                .SetLoops(-1, LoopType.Restart);
+
+            m_sequence = DOTween.Sequence();
 
             int i = 0;
             foreach (var panel in target)
@@ -29,8 +79,20 @@ namespace Comic
                 ++i;
             }
 
-            m_sequence.Play();
+            // When the shuffle ends, stop the vortex spinning and hide it
+            m_sequence.OnComplete(() =>
+            {
+                vortexLoop.Kill();
+                m_vortex.SetActive(false);
+            });
+
+            // Combine intro and main sequence
+            DOTween.Sequence()
+                .Append(vortexIntro)
+                .Append(m_sequence)
+                .Play();
         }
+
 
         Tween CreateSpiralTween(Transform target, int index)
         {

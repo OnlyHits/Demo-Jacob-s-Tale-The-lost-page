@@ -31,7 +31,7 @@ namespace Comic
             if (Input.GetKeyDown(KeyCode.K))
             {
                 var panels = m_navigables.Select(n => n.transform).ToList();
-                m_shuffleSequence?.Shuffle(panels, m_pageSprite.bounds.center);
+                m_shuffleSequence.Shuffle(panels, m_pageSprite.bounds.center);
             }
         }
         protected override void OnUpdate()
@@ -45,7 +45,8 @@ namespace Comic
             ComicGameCore.Instance.MainGameMode.GetNavigationManager()
                 .GetPanelInput().SubscribeToInteract(OnInteract);
 
-            m_shuffleSequence = new PanelShuffleSequence();
+            m_shuffleSequence = GetComponent<PanelShuffleSequence>();
+            m_shuffleSequence.Init(gameObject.transform);
 
             var nav_list = m_navigables.Cast<Navigable>().ToList();
 
