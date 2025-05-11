@@ -22,6 +22,7 @@ namespace Comic
 
         [SerializeField] private GameObject m_vortexPrefab;
         private GameObject m_vortex;
+        private Vector3 m_vortexBaseScale;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -41,6 +42,7 @@ namespace Comic
             }
 
             m_vortex = Instantiate(m_vortexPrefab, (Transform)parameters[0]);
+            m_vortexBaseScale = m_vortex.transform.localScale;
             m_vortex.SetActive(false);
         }
         #endregion
@@ -48,7 +50,6 @@ namespace Comic
         public void Shuffle(List<Transform> target, Vector2 center)
         {
             m_center = center;
-            var vortex_scale = m_vortex.transform.localScale;
 
             m_vortex.SetActive(true);
             m_vortex.transform.position = center;
@@ -60,7 +61,7 @@ namespace Comic
             float introRotation = rotationSpeed * introDuration;
 
             var vortexIntro = DOTween.Sequence()
-                .Append(m_vortex.transform.DOScale(vortex_scale, introDuration).SetEase(Ease.OutBack))
+                .Append(m_vortex.transform.DOScale(m_vortexBaseScale, introDuration).SetEase(Ease.OutBack))
                 .Join(m_vortex.transform.DORotate(new Vector3(0, 0, introRotation), introDuration, RotateMode.FastBeyond360)
                 .SetEase(Ease.Linear));
 
@@ -79,14 +80,13 @@ namespace Comic
                 ++i;
             }
 
-            // When the shuffle ends, stop the vortex spinning and hide it
+            m_sequence.Append(m_vortex.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack));
             m_sequence.OnComplete(() =>
             {
                 vortexLoop.Kill();
                 m_vortex.SetActive(false);
             });
 
-            // Combine intro and main sequence
             DOTween.Sequence()
                 .Append(vortexIntro)
                 .Append(m_sequence)
@@ -128,10 +128,15 @@ namespace Comic
             var moveBack = target.DOMove(originalPosition, m_upDuration).SetEase(Ease.OutQuint);
             var scaleBack = target.DOScale(originalScale, m_upDuration).SetEase(Ease.OutQuint);
 
+            var spitScale = DOTween.Sequence()
+                .Append(m_vortex.transform.DOScale(m_vortexBaseScale * 1.2f, 0.1f).SetEase(Ease.OutQuad))
+                .Append(m_vortex.transform.DOScale(m_vortexBaseScale, 0.1f).SetEase(Ease.InQuad));
+
             var returnSequence = DOTween.Sequence()
                 .AppendInterval(index * .2f)
                 .Append(moveBack)
-                .Join(scaleBack);
+                .Join(scaleBack)
+                .Join(spitScale);
 
             return DOTween.Sequence()
                 .Append(forward)
