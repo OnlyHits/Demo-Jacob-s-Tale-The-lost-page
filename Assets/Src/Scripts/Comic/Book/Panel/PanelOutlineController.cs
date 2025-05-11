@@ -83,9 +83,6 @@ namespace Comic
             float width = max.x - min.x;
             float height = max.y - min.y;
 
-            Debug.Log(width);
-            Debug.Log(height);
-
             GameObject top = InstantiatePiece(m_topBotPrefab, new Vector2(center.x, max.y));
             SetTiledSize(top, new Vector2(m_targetPanel.transform.localScale.x, top.GetComponent<SpriteRenderer>().size.y), true);
 

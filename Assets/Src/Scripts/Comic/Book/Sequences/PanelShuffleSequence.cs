@@ -17,7 +17,7 @@ namespace Comic
         private readonly float  m_rotations = 2f;
         private readonly Ease   m_ease = Ease.OutSine;
 
-        private Sequence m_sequence;
+        private Sequence m_sequence = null;
         private Vector2 m_center;
 
         [SerializeField] private GameObject m_vortexPrefab;
@@ -49,6 +49,11 @@ namespace Comic
 
         public void Shuffle(List<Transform> target, Vector2 center)
         {
+            if (m_sequence != null && m_sequence.IsPlaying())
+            {
+                return;
+            }
+
             m_center = center;
 
             m_vortex.SetActive(true);
@@ -70,26 +75,27 @@ namespace Comic
                 .SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Restart);
 
-            m_sequence = DOTween.Sequence();
+            var loop_sequence = DOTween.Sequence();
+//            m_sequence = DOTween.Sequence();
 
             int i = 0;
             foreach (var panel in target)
             {
                 Tween t = CreateSpiralTween(panel, i);
-                m_sequence.Join(t);
+                loop_sequence.Join(t);
                 ++i;
             }
 
-            m_sequence.Append(m_vortex.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack));
-            m_sequence.OnComplete(() =>
+            loop_sequence.Append(m_vortex.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack));
+            loop_sequence.OnComplete(() =>
             {
                 vortexLoop.Kill();
                 m_vortex.SetActive(false);
             });
 
-            DOTween.Sequence()
+            m_sequence = DOTween.Sequence()
                 .Append(vortexIntro)
-                .Append(m_sequence)
+                .Append(loop_sequence)
                 .Play();
         }
 
