@@ -3,17 +3,26 @@ using CustomArchitecture;
 using System.Collections.Generic;
 using System.Linq;
 using static CustomArchitecture.CustomArchitecture;
+
 namespace Comic
 {
+    [System.Serializable]
+    public struct PageConfiguration
+    {
+        public List<Vector3> m_panelPositions;
+    }
+
     [ExecuteAlways]
     public class Page : AutomaticNavigationSystem<Panel>
     {
         // Page content
-        [SerializeField] private SpriteRenderer     m_pageSprite;
-        [SerializeField] private Transform          m_panelContainer;
-        [SerializeField] private GameObject         m_panelPrefab;
-        private Dictionary<PropsType, List<AProps>> m_props;
-        private PanelShuffleSequence                m_shuffleSequence;
+        [ReadOnly, SerializeField] protected List<PageConfiguration>    m_pageConfigurations;
+        [SerializeField] private SpriteRenderer                         m_pageSprite;
+        [SerializeField] private Transform                              m_panelContainer;
+        [SerializeField] private GameObject                             m_panelPrefab;
+        private Dictionary<PropsType, List<AProps>>                     m_props;
+        private PanelShuffleSequence                                    m_shuffleSequence;
+        private int                                                     m_configurationIndex;
 
         // Debug visual
         [SerializeField] private SpriteRenderer m_margin;
@@ -30,8 +39,12 @@ namespace Comic
         {
             if (Input.GetKeyDown(KeyCode.K))
             {
-                var panels = m_navigables.Select(n => n.transform).ToList();
-                m_shuffleSequence.Shuffle(panels, m_pageSprite.bounds.center);
+                var next_config = GetNextPageConfiguration();
+                if (next_config != null)
+                {
+                    var panels = m_navigables.Select(n => n.transform).ToList();
+                    m_shuffleSequence.Shuffle(panels, next_config.Value, m_pageSprite.bounds.center);
+                }
             }
         }
         protected override void OnUpdate()
@@ -72,6 +85,45 @@ namespace Comic
             }
         }
         #endregion
+
+        #region Page configuration
+        public PageConfiguration? GetCurrentPageConfiguration()
+        {
+            if (m_pageConfigurations == null || m_configurationIndex >= m_pageConfigurations.Count)
+            {
+                Debug.LogWarning("Page configuration doesn't exist");
+                return null;
+            }
+
+            return m_pageConfigurations[m_configurationIndex];
+        }
+
+        // kinda weird cause it set index.
+        // Maybe split set index from get configuration logic
+        public PageConfiguration? GetNextPageConfiguration()
+        {
+            if (m_pageConfigurations == null || m_pageConfigurations.Count() == 0)
+            {
+                Debug.LogWarning("Page configuration doesn't exist");
+                return null;
+            }
+
+            m_configurationIndex = m_configurationIndex + 1 >= m_pageConfigurations.Count() ? 0 : m_configurationIndex + 1;
+            return m_pageConfigurations[m_configurationIndex];
+        }
+
+        public PageConfiguration? GetPageConfigurationAt(int index)
+        {
+            if (m_pageConfigurations == null || index >= m_pageConfigurations.Count())
+            {
+                Debug.LogWarning("Page configuration doesn't exist");
+                return null;
+            }
+
+            return m_pageConfigurations[index];
+
+        }
+        #endregion Page configuration
 
         private void OnInteract(InputType input, bool b)
         {
@@ -150,16 +202,6 @@ namespace Comic
 
             return sprites;
         }
-
-        #region SPAWN POINT
-
-        public Transform TryGetSpawnPoint()
-        {
-            return m_spawnPoint;
-        }
-
-        #endregion SPAWN POINT
-
         public Panel GetCurrentPanel()
         {
             foreach (Panel panel in m_navigables)
@@ -174,9 +216,30 @@ namespace Comic
             return null;
         }
 
-        #region PageEdition
+        #region SPAWN POINT
 
+        public Transform TryGetSpawnPoint()
+        {
+            return m_spawnPoint;
+        }
+
+        #endregion SPAWN POINT
+
+        #region PageEdition
 #if UNITY_EDITOR
+
+        public void AddConfiguration()
+        {
+            var config = new PageConfiguration();
+            config.m_panelPositions = new List<Vector3>();
+
+            foreach (var panel in m_navigables)
+            {
+                config.m_panelPositions.Add(panel.transform.position);
+            }
+
+            m_pageConfigurations.Add(config);
+        }
 
         // TODO : generalize and made static in utils
         public void RefreshList()
@@ -203,7 +266,6 @@ namespace Comic
             m_navigables.Add(panel);
         }
 #endif
-
         #endregion
     }
 }

@@ -3,7 +3,6 @@ using CustomArchitecture;
 
 namespace Comic
 {
-    [ExecuteAlways]
     public class PanelVisual : BaseBehaviour
     {
         [SerializeField] private SpriteRenderer                     m_referenceSprite;

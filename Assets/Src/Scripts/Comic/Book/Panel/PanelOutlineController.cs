@@ -16,7 +16,7 @@ namespace Comic
 
         public Transform m_outlineContainer;
         [ReadOnly, SerializeField] private List<PanelOutline> m_currentOutlines;
-        private float m_delta = .3f;
+        private float m_delta = .6f;
         private float m_timer = 0f;
 
         [Header("Prefabs (Top/Bot - Left/Right)")]

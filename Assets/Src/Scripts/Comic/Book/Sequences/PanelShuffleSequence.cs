@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using CustomArchitecture;
 using System.Linq;
-using static UnityEditor.PlayerSettings;
-using UnityEditor;
 
 namespace Comic
 {
@@ -18,6 +16,7 @@ namespace Comic
         private readonly Ease   m_ease = Ease.OutSine;
 
         private Sequence m_sequence = null;
+        private Tween m_vortexRotation = null;
         private Vector2 m_center;
 
         [SerializeField] private GameObject m_vortexPrefab;
@@ -47,11 +46,17 @@ namespace Comic
         }
         #endregion
 
-        public void Shuffle(List<Transform> target, Vector2 center)
+        public void Shuffle(List<Transform> target, PageConfiguration config, Vector2 center)
         {
             if (m_sequence != null && m_sequence.IsPlaying())
             {
                 return;
+            }
+
+            if (m_vortexRotation != null)
+            {
+                m_vortexRotation.Kill();
+                m_vortexRotation = null;
             }
 
             m_center = center;
@@ -65,42 +70,56 @@ namespace Comic
             float rotationSpeed = 180f;
             float introRotation = rotationSpeed * introDuration;
 
-            var vortexIntro = DOTween.Sequence()
-                .Append(m_vortex.transform.DOScale(m_vortexBaseScale, introDuration).SetEase(Ease.OutBack))
-                .Join(m_vortex.transform.DORotate(new Vector3(0, 0, introRotation), introDuration, RotateMode.FastBeyond360)
-                .SetEase(Ease.Linear));
-
-            var vortexLoop = m_vortex.transform
+            m_vortexRotation = m_vortex.transform
                 .DORotate(new Vector3(0, 0, 360f), 2f, RotateMode.FastBeyond360)
                 .SetEase(Ease.Linear)
-                .SetLoops(-1, LoopType.Restart);
+                .SetLoops(-1, LoopType.Restart)
+                .SetAutoKill(false);
 
+            var vortex_sequence = DOTween.Sequence()
+                .Append(m_vortex.transform.DOScale(m_vortexBaseScale, introDuration).SetEase(Ease.OutBack))
+                .Append(StartPanelAnimation(target, config))
+                .OnComplete(() =>
+                {
+                    if (m_sequence != null && m_sequence.IsPlaying())
+                    {
+                        m_sequence.Kill();
+                        m_sequence = null;
+                    }
+
+                    if (m_vortexRotation != null)
+                    {
+                        m_vortexRotation.Kill();
+                        m_vortexRotation = null;
+                    }
+
+                    m_vortex.SetActive(false);
+                });
+
+            m_sequence = DOTween.Sequence()
+                .Join(vortex_sequence)
+                //.Join(m_vortexRotation)
+                .Play();
+        }
+
+        Sequence StartPanelAnimation(List<Transform> target, PageConfiguration config)
+        {
             var loop_sequence = DOTween.Sequence();
-//            m_sequence = DOTween.Sequence();
+            float interval = .2f;
 
             int i = 0;
             foreach (var panel in target)
             {
-                Tween t = CreateSpiralTween(panel, i);
+                Tween t = CreateSpiralTween(panel, config, i, interval, i == target.Count - 1);
                 loop_sequence.Join(t);
+
                 ++i;
             }
 
-            loop_sequence.Append(m_vortex.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack));
-            loop_sequence.OnComplete(() =>
-            {
-                vortexLoop.Kill();
-                m_vortex.SetActive(false);
-            });
-
-            m_sequence = DOTween.Sequence()
-                .Append(vortexIntro)
-                .Append(loop_sequence)
-                .Play();
+            return loop_sequence;
         }
 
-
-        Tween CreateSpiralTween(Transform target, int index)
+        Tween CreateSpiralTween(Transform target, PageConfiguration config, int index, float interval, bool last_panel)
         {
             Vector3 originalPosition = target.position;
             Vector3 originalScale = target.localScale;
@@ -131,18 +150,24 @@ namespace Comic
                 .Join(spiralIn)
                 .Join(shrink);
 
-            var moveBack = target.DOMove(originalPosition, m_upDuration).SetEase(Ease.OutQuint);
+            var moveBack = target.DOMove(config.m_panelPositions[index], m_upDuration).SetEase(Ease.OutQuint);
             var scaleBack = target.DOScale(originalScale, m_upDuration).SetEase(Ease.OutQuint);
 
-            var spitScale = DOTween.Sequence()
-                .Append(m_vortex.transform.DOScale(m_vortexBaseScale * 1.2f, 0.1f).SetEase(Ease.OutQuad))
-                .Append(m_vortex.transform.DOScale(m_vortexBaseScale, 0.1f).SetEase(Ease.InQuad));
+            var spit_scale = DOTween.Sequence()
+                .Append(m_vortex.transform.DOScale(m_vortexBaseScale * 1.2f, interval / 2).SetEase(Ease.OutSine))
+                .Append(m_vortex.transform.DOScale(m_vortexBaseScale, interval / 2).SetEase(Ease.InSine));
+
+            if (last_panel)
+            {
+                spit_scale.AppendInterval(interval);
+                spit_scale.Append(m_vortex.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack));
+            }
 
             var returnSequence = DOTween.Sequence()
-                .AppendInterval(index * .2f)
+                .AppendInterval(index * interval)
                 .Append(moveBack)
                 .Join(scaleBack)
-                .Join(spitScale);
+                .Join(spit_scale);
 
             return DOTween.Sequence()
                 .Append(forward)
