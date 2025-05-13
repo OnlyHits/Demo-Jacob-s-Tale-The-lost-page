@@ -15,6 +15,7 @@ namespace Comic
         {
             base.OnFixedUpdate();
         }
+        
         protected override void OnLateUpdate()
         {
             base.OnLateUpdate();

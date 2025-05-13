@@ -20,11 +20,11 @@ namespace Comic
 
         [Header("Move")]
         [SerializeField, ReadOnly] private bool m_isMoving = false;
-        [SerializeField] private float m_speed = 10f;
+        [SerializeField] private float m_speed = 10f; // replaced by config
 
         [Header("Jump")]
         [SerializeField, ReadOnly] private bool m_isJumping = false;
-        [SerializeField] private float m_jumpForce = 10f;
+        [SerializeField] private float m_jumpForce = 10f; // replaced by config
 
         [Header("Fall")]
         [SerializeField, ReadOnly] private bool m_isFalling = false;
@@ -87,45 +87,7 @@ namespace Comic
             base.Pause(pause);
         }
 
-        // private void OnCollisionEnter2D(Collision2D collision)
-        // {
-        //     if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
-        //     {
-        //         Debug.Log(">>> IN");
-        //         m_isInWall = true;
-        //     }
-        // }
-
-        // private void OnCollisionExit2D(Collision2D collision)
-        // {
-        //     if (collision.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
-        //     {
-        //         Debug.Log(">>> OUT");
-        //         m_isInWall = false;
-        //     }
-        // }
-        /*
-        private void OnTriggerEnter2D(Collider2D collider)
-        {
-            if (collider.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
-            {
-                Debug.Log(">>> IN");
-                m_isInWall = true;
-            }
-        }
-
-        private void OnTriggerExit2D(Collider2D collider)
-        {
-            if (collider.gameObject.layer == LayerMask.NameToLayer(caseColliderLayerName))
-            {
-                Debug.Log(">>> OUT");
-                m_isInWall = false;
-            }
-        }
-        */
-
         #region VISUAL
-
         public void EnableVisual(bool enable)
         {
             m_spriteHead.enabled = enable;
@@ -145,16 +107,14 @@ namespace Comic
                 m_spriteBody.color = m_baseColor;
             }
         }
-
         #endregion VISUAL
 
         #region GROUNDED
-
+        // pas mal les bzez
         private bool IsGrounded()
         {
             return true;
         }
-
         #endregion GROUNDED
 
         #region MOVE
@@ -166,7 +126,6 @@ namespace Comic
             Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
             m_rb.linearVelocity = newVel;
         }
-
         private void Move(Vector2 v)
         {
             SetSprireFaceDirection(v);
@@ -175,6 +134,7 @@ namespace Comic
             {
                 return;
             }
+
             Vector2 newVel = v * m_speed;
             Vector2 currentVel = new Vector2(m_rb.linearVelocity.x, m_isJumping ? 0 : m_rb.linearVelocity.y);
             Vector2 expectedVel = (newVel - currentVel) * Time.fixedDeltaTime;
