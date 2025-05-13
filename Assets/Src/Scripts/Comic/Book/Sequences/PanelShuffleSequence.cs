@@ -78,7 +78,7 @@ namespace Comic
 
             var vortex_sequence = DOTween.Sequence()
                 .Append(m_vortex.transform.DOScale(m_vortexBaseScale, introDuration).SetEase(Ease.OutBack))
-                .Append(StartPanelAnimation(target, config))
+                .Join(StartPanelAnimation(target, config))
                 .OnComplete(() =>
                 {
                     if (m_sequence != null && m_sequence.IsPlaying())
