@@ -1,3 +1,4 @@
+using System.Collections;
 using CustomArchitecture;
 using UnityEngine;
 using static PageHole;
@@ -13,13 +14,14 @@ namespace Comic
 
         [SerializeField] private GameObject m_gameBackground;
         private PageManager m_pageManager;
-        private CharacterManager m_characterManager;
+//        [System.Obsolete] private CharacterManager m_characterManager;
+        private NewCharacterManager m_characterManager;
         private PowerManager m_powerManager;
         private GameCameraRegister m_cameras;
         private DialogueManager m_dialogueManager;
 
         public PageManager GetPageManager() => m_pageManager;
-        public CharacterManager GetCharacterManager() => m_characterManager;
+        public NewCharacterManager GetCharacterManager() => m_characterManager;
         public PowerManager GetPowerManager() => m_powerManager;
         public GameCameraRegister GetRegisteredCameras() => m_cameras;
         public DialogueManager GetDialogueManager() => m_dialogueManager;
@@ -53,6 +55,13 @@ namespace Comic
             m_gameBackground.SetActive(enable);
         }
 
+        public IEnumerator Load()
+        {
+            m_characterManager = gameObject.GetComponent<NewCharacterManager>();
+
+            yield return StartCoroutine(m_characterManager.Load());
+        }
+
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         { }
@@ -80,7 +89,6 @@ namespace Comic
         public override void Init(params object[] parameters)
         {
             m_pageManager = gameObject.GetComponent<PageManager>();
-            m_characterManager = gameObject.GetComponent<CharacterManager>();
             m_powerManager = gameObject.GetComponent<PowerManager>();
             m_dialogueManager = gameObject.GetComponent<DialogueManager>();
             m_cameras = gameObject.GetComponent<GameCameraRegister>();

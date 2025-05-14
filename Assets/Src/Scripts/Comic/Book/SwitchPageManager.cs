@@ -28,7 +28,7 @@ namespace Comic
             if ((!m_forceSwitchPageDebug && m_unlockedPageList[idxNewPage].CanAccessPanel(corrected_position))
                 || m_forceSwitchPageDebug)
             {
-                Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+                NewCharacter player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
                 player.transform.position = corrected_position;
 
                 SwitchPageByIndex(idxNewPage);
@@ -59,7 +59,7 @@ namespace Comic
         #region Screenshot Management
         public void OnBeforeScreenshot(bool is_next_page)
         {
-            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            NewCharacter player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
 
             m_correctionData.m_indexNewPage = is_next_page ? m_currentPageIndex + 1 : m_currentPageIndex - 1;
             m_correctionData.m_correctedPosition = GetCorrectedPlayerPosition(m_unlockedPageList[m_correctionData.m_indexNewPage]);
@@ -80,7 +80,7 @@ namespace Comic
 
         public void OnAfterScreenshot(bool is_next_page)
         {
-            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            NewCharacter player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
 
             Page current_page = m_unlockedPageList[m_currentPageIndex];
             Page new_page = m_unlockedPageList[m_correctionData.m_indexNewPage];
@@ -96,7 +96,7 @@ namespace Comic
 
         public void OnTurnSequenceFinish(bool is_next, bool is_error)
         {
-            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            NewCharacter player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
 
             Page current_page = m_unlockedPageList[m_currentPageIndex];
             Page new_page = m_unlockedPageList[m_correctionData.m_indexNewPage];
@@ -119,28 +119,6 @@ namespace Comic
         }
         #endregion
 
-        // Todo : make it a Utility function
-        // We never use this one
-        //public static void DisableAllMonoBehaviours(GameObject parent)
-        //{
-        //    if (parent == null)
-        //    {
-        //        Debug.LogWarning("Parent GameObject is null. Cannot disable MonoBehaviours.");
-        //        return;
-        //    }
-
-        //    BaseBehaviour[] monoBehaviours = parent.GetComponents<BaseBehaviour>();
-        //    foreach (BaseBehaviour mb in monoBehaviours)
-        //    {
-        //        mb.enabled = false;
-        //    }
-
-        //    foreach (Transform child in parent.transform)
-        //    {
-        //        DisableAllMonoBehaviours(child.gameObject);
-        //    }
-        //}
-
         private void SwitchPageByIndex(int index)
         {
             if (m_currentPageIndex >= m_unlockedPageList.Count)
@@ -159,7 +137,7 @@ namespace Comic
         #region Player Position Correction
         private Vector3 GetCorrectedPlayerPosition(Page evaluated_page)
         {
-            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            NewCharacter player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
 
             Vector2 playerPosition = player.transform.position;
             Bounds colliderBounds = player.GetCollider().bounds;

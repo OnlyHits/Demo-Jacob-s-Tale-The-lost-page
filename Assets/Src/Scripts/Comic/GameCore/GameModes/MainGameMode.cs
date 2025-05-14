@@ -3,9 +3,7 @@ using Sirenix.OdinInspector;
 using CustomArchitecture;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
 using static CustomArchitecture.CustomArchitecture;
-using System.Security.Cryptography;
 using System.Collections;
 
 namespace Comic
@@ -15,7 +13,7 @@ namespace Comic
         public List<ChapterSavedData> GetUnlockChaptersData();
         public GameConfig GetGameConfig();
         public PageManager GetPageManager();
-        public CharacterManager GetCharacterManager();
+        public NewCharacterManager GetCharacterManager();
 
         public void UnlockVoice(VoiceType type, bool force_unlock);
         public void UnlockPower(PowerType type, bool force_unlock);
@@ -66,20 +64,17 @@ namespace Comic
         private Action m_onEndGame;
 
         // ---- really necessary? ----
-
         public List<ChapterSavedData> GetUnlockChaptersData() => m_gameProgression.GetUnlockedChaptersDatas();
 
         // ---- MainGameCore dependencies ----
-
         public GameProgression GetGameProgression() => m_gameProgression;
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
         public NavigationManager GetNavigationManager() => m_navigationManager;
 
         // ---- Sub managers ----
-
         public PageManager GetPageManager() => m_gameManager?.GetPageManager();
-        public CharacterManager GetCharacterManager() => m_gameManager?.GetCharacterManager();
+        public NewCharacterManager GetCharacterManager() => m_gameManager?.GetCharacterManager();
         public PowerManager GetPowerManager() => m_gameManager?.GetPowerManager();
         public DialogueManager GetDialogueManager() => m_gameManager?.GetDialogueManager();
         public ViewManager GetViewManager() => m_hudManager?.GetViewManager();
@@ -104,6 +99,7 @@ namespace Comic
         }
 
         // todo : check if resources.Load is done on one frame or multiple
+        // Resource.Load is obsolete, now pass by AddressableFactory
         public override IEnumerator LoadGameMode()
         {
             m_hudManager = ComponentUtils.FindObjectAcrossScenes<HudManager>();
@@ -118,6 +114,8 @@ namespace Comic
 
             if (m_gameManager != null)
             {
+                yield return StartCoroutine(m_gameManager.Load());
+
                 m_gameManager.Init();
                 m_cameraManager.RegisterCameras(m_gameManager.GetRegisteredCameras());
             }
@@ -349,7 +347,7 @@ namespace Comic
                 return;
             }
 
-            GetCharacterManager().GetPlayer().SubscribeToNextPower(function);
+//            GetCharacterManager().GetCurrentCharacter().SubscribeToNextPower(function);
         }
 
         public void SubscribeToPrevPower(Action function)
@@ -360,7 +358,7 @@ namespace Comic
                 return;
             }
 
-            GetCharacterManager().GetPlayer().SubscribeToPrevPower(function);
+//            GetCharacterManager().GetCurrentCharacter().SubscribeToPrevPower(function);
         }
 
         public void SubscribeToLockChapter(Action<Chapters> function)

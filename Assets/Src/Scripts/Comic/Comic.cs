@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Comic
 {
@@ -18,12 +19,22 @@ namespace Comic
         public static int backLayerId => SortingLayer.NameToID(backLayerName);
         public static int defaultLayerId => SortingLayer.NameToID(defaultLayerName);
     
-        public static List<string> characterPath = {
-            "Player/Player",
-            "NPC/BestFriend",
-            "NPC/Beloved",
-            "NPC/Bully",
-            "NPC/Boss"
-        },
+        public static List<string> characterPath = new()
+        {
+            "Characters/Jacob",
+            "Characters/BestFriend",
+            "Characters/Beloved",
+            "Characters/Bully",
+            "Characters/Boss"
+        };
+
+        public enum CharacterType
+        {
+            Character_Jacob,
+            Character_BestFriend,
+            Character_Bully,
+            Character_Beloved,
+            Character_Boss
+        }
     }
 }

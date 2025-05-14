@@ -506,7 +506,7 @@ namespace Comic
             m_panelInput.Pause(true);
 
             if (m_gameManager != null)
-                m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
+                m_gameManager.GetCharacterManager().GetInputController().Pause(true);
         }
 
         /// <summary>
@@ -525,7 +525,7 @@ namespace Comic
                 m_panelInput.Pause(true);
 
                 if (m_gameManager != null)
-                    m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(false);
+                    m_gameManager.GetCharacterManager().GetInputController().Pause(false);
             }
             else if (m_navigationFocus == NavigationFocus.Focus_Hud)
             {
@@ -535,7 +535,7 @@ namespace Comic
                 m_panelInput.Pause(true);
 
                 if (m_gameManager != null)
-                    m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
+                    m_gameManager.GetCharacterManager().GetInputController().Pause(true);
             }
             else if (m_navigationFocus == NavigationFocus.Focus_Panel)
             {
@@ -545,7 +545,7 @@ namespace Comic
                 m_pageInput.Pause(true);
 
                 if (m_gameManager != null)
-                    m_gameManager.GetCharacterManager().GetPlayer().GetInputController().Pause(true);
+                    m_gameManager.GetCharacterManager().GetInputController().Pause(true);
             }
 
         }

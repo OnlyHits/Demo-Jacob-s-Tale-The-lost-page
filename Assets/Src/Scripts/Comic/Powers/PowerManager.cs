@@ -41,7 +41,7 @@ namespace Comic
             {
                 if (pow.GetPowerType() == powerType)
                 {
-                    ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().AddPower(pow);
+//                    ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().AddPower(pow);
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace Comic
             {
                 if (pow.GetPowerType() == powerType)
                 {
-                    ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer().RemovePower(pow);
+//                    ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().RemovePower(pow);
                 }
             }
         }

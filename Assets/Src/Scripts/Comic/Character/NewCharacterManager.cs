@@ -1,24 +1,32 @@
 using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
-using static Comic.Comics;
+using System.Collections;
+using static Comic.Comic;
 
 namespace Comic
 {
-    public enum CharacterType
-    {
-        Character_Jacob,
-        Character_BestFriend,
-        Character_Bully,
-        Character_Beloved,
-        Character_Boss
-    }
-
-    public class CharacterManager : BaseBehaviour
+    public class NewCharacterManager : BaseBehaviour
     {
         // to think about
         [SerializeField] private Transform              m_characterContainer;
         private Dictionary<CharacterType, GameObject>   m_characters;
+        private NewCharacter                            m_currentCharacter;
+        // all characters are going to use this input controller
+        private PlayerInputsController                  m_inputsController;
+
+        public NewCharacter GetCurrentCharacter() => m_currentCharacter;
+        public PlayerInputsController GetInputController() => m_inputsController;
+
+        static int i = 0;
+        private void TestSwitch()
+        {
+            ++i;
+            if (i > 4)
+                i = 0;
+            
+            SwitchCharacter((CharacterType)i);
+        }
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -26,51 +34,81 @@ namespace Comic
         protected override void OnLateUpdate()
         { }
         protected override void OnUpdate()
-        { }
+        {
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                TestSwitch();
+            }
+        }
         public override void LateInit(params object[] parameters)
-        { }
+        {
+            if (m_inputsController != null)
+                m_inputsController.LateInit();
+
+            foreach (var character in m_characters.Values)
+                character.GetComponent<NewCharacter>().LateInit();
+
+            SwitchCharacter(CharacterType.Character_Jacob);
+        }
+
         public override void Init(params object[] parameters)
-        { }
+        {
+            if (!ComponentUtils.GetOrCreateComponent<PlayerInputsController>(gameObject, out m_inputsController))
+                Debug.LogWarning("Unable to get or create PanelInput");
+            else
+                m_inputsController.Init(ComicGameCore.Instance.GetInputAsset());
+
+            // init characters after input controller
+            foreach (var character in m_characters.Values)
+                character.GetComponent<NewCharacter>().Init(m_inputsController);
+        }
 
         #endregion
 
+        public void SwitchCharacter(CharacterType type)
+        {
+            if (!m_characters.ContainsKey(type))
+            {
+                return;
+            }
+
+            if (m_currentCharacter != null)
+                m_currentCharacter.gameObject.SetActive(false);
+    
+            m_currentCharacter = m_characters[type].GetComponent<NewCharacter>();
+            m_currentCharacter.gameObject.SetActive(true);
+        }
+
         public IEnumerator Load()
         {
+            m_characters = new();
             int completedCount = 0;
 
-            for (int i = 0; i < addresses.Count; i++)
+            for (int i = 0; i < characterPath.Count; i++)
             {
                 int index = i;
-                StartCoroutine(AddressableFactory.Create(
-                    Comics.characterPath[index],
+                StartCoroutine(AddressableFactory.CreateAsync(
+                    characterPath[index],
                     m_characterContainer,
                     (obj) =>
                     {
-                        m_characters.Add(Character_Jacob, obj);
+                        m_characters.Add(obj.GetComponent<NewCharacter>().GetConfiguration().type, obj);
+                        obj.SetActive(false);
+                        ++completedCount;
                     }));
             }
 
-            while (completedCount < addresses.Count)
+            while (completedCount < characterPath.Count)
                 yield return null;
         }
-
-        private void LoadCharacters()
+        
+        public void PauseAllCharacters(bool pause = true)
         {
-            Player playerPrefab = Resources.Load<Player>("Player/Player", m_characterContainer);
-            Character bestFriend = Resources.Load<Character>("NPC/BestFriend", m_characterContainer);
-            Character beloved = Resources.Load<Character>("NPC/Beloved");
-            Character bully = Resources.Load<Character>("NPC/Bully");
-            Character boss = Resources.Load<Character>("NPC/Boss");
-            //Character mom = Resources.Load<Character>("NPC/Mom");
-
-            m_player = Instantiate(playerPrefab);
-            m_npcs = new()
+            foreach (var character in m_characters.Values)
             {
-                { VoiceType.Voice_BestFriend,    Instantiate(bestFriend)},
-                { VoiceType.Voice_Beloved,       Instantiate(beloved)},
-                { VoiceType.Voice_Bully,         Instantiate(bully)},
-                { VoiceType.Voice_Boss,          Instantiate(boss)},
-                //{ VoiceType.Voice_Mom,           Instantiate(mom)},
-            };
+                character.GetComponent<NewCharacter>().Pause(pause);
+            }
         }
+
+    }
 }
