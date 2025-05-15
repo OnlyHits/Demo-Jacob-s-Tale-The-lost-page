@@ -62,7 +62,6 @@ namespace Comic
             foreach (var character in m_characters.Values)
                 character.GetComponent<NewCharacter>().Init(m_inputsController);
         }
-
         #endregion
 
         public void SwitchCharacter(CharacterType type)
@@ -72,10 +71,23 @@ namespace Comic
                 return;
             }
 
+            Vector2 velocity = Vector2.zero;
+            float angular_velocity = 0f;
+            Vector3 position = Vector3.zero;
+
             if (m_currentCharacter != null)
+            {
+                velocity = m_currentCharacter.GetRigidbody().linearVelocity;
+                angular_velocity = m_currentCharacter.GetRigidbody().angularVelocity;
+                position = m_currentCharacter.transform.position;
                 m_currentCharacter.gameObject.SetActive(false);
+            }
     
             m_currentCharacter = m_characters[type].GetComponent<NewCharacter>();
+            m_currentCharacter.GetRigidbody().linearVelocity = velocity;
+            m_currentCharacter.GetRigidbody().angularVelocity = angular_velocity;
+            m_currentCharacter.transform.position = position;
+
             m_currentCharacter.gameObject.SetActive(true);
         }
 
