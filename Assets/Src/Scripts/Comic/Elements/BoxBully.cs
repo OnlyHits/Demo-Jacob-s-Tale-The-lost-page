@@ -17,7 +17,7 @@ namespace Comic
         [SerializeField, ReadOnly] private Collider2D m_collider;
         [SerializeField, ReadOnly] private bool m_isMovable = false;
         private bool m_isPlayerTriggerZone = false;
-        private Player m_playerInstance = null;
+        private NewCharacter m_playerInstance = null;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -27,15 +27,15 @@ namespace Comic
                 return;
             }
 
-            m_playerInstance = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            m_playerInstance = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
 
-            if (!m_playerInstance.IsPushingBox())
-            {
-                m_rigidbody.linearVelocity = Vector2.zero;
-                m_rigidbody.bodyType = RigidbodyType2D.Kinematic;
-                m_outlineSprite.color = m_colorInteractible;
-                return;
-            }
+            // if (!m_playerInstance.IsPushingBox())
+            // {
+            //     m_rigidbody.linearVelocity = Vector2.zero;
+            //     m_rigidbody.bodyType = RigidbodyType2D.Kinematic;
+            //     m_outlineSprite.color = m_colorInteractible;
+            //     return;
+            // }
 
             Rigidbody2D playerRb = m_playerInstance.GetComponent<Rigidbody2D>();
 
@@ -136,13 +136,13 @@ namespace Comic
 
             m_isPlayerTriggerZone = true;
 
-            Player player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetPlayer();
+            NewCharacter player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
 
-            if (!player.CanPushBoxes())
-            {
-                EnableCubeInteraction(false);
-                return;
-            }
+            // if (!player.CanPushBoxes())
+            // {
+            //     EnableCubeInteraction(false);
+            //     return;
+            // }
 
             EnableCubeInteraction(true);
         }
