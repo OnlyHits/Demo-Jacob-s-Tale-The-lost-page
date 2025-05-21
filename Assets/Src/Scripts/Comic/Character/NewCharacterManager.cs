@@ -3,7 +3,6 @@ using CustomArchitecture;
 using UnityEngine;
 using System.Collections;
 using static Comic.Comic;
-using Sirenix.OdinInspector;
 
 namespace Comic
 {
@@ -95,9 +94,7 @@ namespace Comic
                 yield return null;
         }
 
-
         #region Vfx
-
         public void AllocateFootStep(Vector2 position, bool flip_x, float speed)
         {
             if (m_footStepVfx == null)
@@ -107,7 +104,6 @@ namespace Comic
 
             m_footStepVfx.AllocateElement(position, flip_x, speed);
         }
-
         #endregion Vfx
 
         #region Manager behaviour

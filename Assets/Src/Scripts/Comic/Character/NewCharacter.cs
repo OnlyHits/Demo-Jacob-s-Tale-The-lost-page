@@ -12,6 +12,7 @@ namespace Comic
     {
         public float speed;
         public float jumpSpeed;
+        public bool allowDoubleJump;
         public CharacterType type;
     }
 
@@ -37,9 +38,6 @@ namespace Comic
         [SerializeField] protected Rigidbody2D m_rb;
         [SerializeField] protected Collider2D m_collider;
 
-        // remove later
-        private float m_vfxTimer;
-
         // Reference to CharacterManager which contain vfx
         // Todo : make a vfx manager singleton or GameCore dependency
         private NewCharacterManager m_manager;
@@ -59,10 +57,13 @@ namespace Comic
         public Rigidbody2D GetRigidbody() => m_rb;
         public Animator GetAnimator() => m_animator;
         public CharacterConfiguration GetConfiguration() => m_configuration;
+        public bool IsGrounded() => m_isGrounded;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
-        { }
+        {
+            m_isGrounded = CheckGround();
+        }
         protected override void OnLateUpdate()
         { }
         protected override void OnUpdate()
@@ -160,9 +161,15 @@ namespace Comic
         #endregion
 
         #region Physics
+        public bool CheckGround() // cost efficient way to check ground
+        {
+            RaycastHit2D hit = Physics2D.BoxCast(m_collider.bounds.center, m_collider.bounds.size, 0f, Vector2.down, 0.1f, LayerMask.GetMask("Ground"));
+            return hit.collider != null;
+        }
+    
         public virtual void StartMove(Vector2 v)
         {
-            PlayRun(true);
+            //            PlayRun(true);
             m_isMoving = true;
 
             Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
@@ -170,44 +177,30 @@ namespace Comic
 
             SetSpriteFaceDirection(v);
 
-            Bounds bounds = m_collider.bounds;
-
-            Vector2 pos = new Vector2(bounds.center.x, bounds.min.y);
-//            Vector2 pos = new Vector2(m_faceRight ? bounds.min.x : bounds.max.x, bounds.min.y);
-
-            m_manager.AllocateFootStep(pos, m_faceRight, Mathf.Abs(v.x));
-
-
-//            SpawnFootStepVfx(Mathf.Abs(v.x));
+            SpawnFootStepVfx();
         }
+
         public virtual void Move(Vector2 v)
         {
-            SetSpriteFaceDirection(v);
-
             if (!m_isGrounded)
             {
                 return;
             }
 
+            SetSpriteFaceDirection(v);
             Vector2 newVel = v * m_configuration.speed;
             Vector2 currentVel = new Vector2(m_rb.linearVelocity.x, m_isJumping ? 0 : m_rb.linearVelocity.y);
             Vector2 expectedVel = (newVel - currentVel) * Time.fixedDeltaTime;
             m_rb.linearVelocityX = expectedVel.x;
         }
 
-        private void SpawnFootStepVfx(float speed)
+        private void SpawnFootStepVfx()
         {
-            if (m_vfxTimer >= 1f)
-            {
-                Bounds bounds = m_collider.bounds;
+            Bounds bounds = m_collider.bounds;
 
-                Vector2 pos = new Vector2(m_faceRight ? bounds.min.x : bounds.max.x, bounds.min.y);
+            Vector2 pos = new Vector2(bounds.center.x, bounds.min.y);
 
-                m_manager.AllocateFootStep(pos, m_faceRight, speed);
-                m_vfxTimer = 0;
-            }
-            else
-                m_vfxTimer += Time.deltaTime;
+            m_manager.AllocateFootStep(pos, m_faceRight, Mathf.Abs(v.x));
         }
 
         public virtual void StopMove(Vector2 v)
