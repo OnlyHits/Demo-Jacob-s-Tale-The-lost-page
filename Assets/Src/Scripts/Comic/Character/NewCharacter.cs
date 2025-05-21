@@ -37,10 +37,17 @@ namespace Comic
         [SerializeField] protected Rigidbody2D m_rb;
         [SerializeField] protected Collider2D m_collider;
 
+        // remove later
+        private float m_vfxTimer;
+
+        // Reference to CharacterManager which contain vfx
+        // Todo : make a vfx manager singleton or GameCore dependency
+        private NewCharacterManager m_manager;
+
         // States
         private bool m_isMoving = false;
         private bool m_isJumping = false;
-        private bool m_isGrounded = false;
+        private bool m_isGrounded = true;
 
         // Animations
         private readonly string ANIM_IDLE = "Idle";
@@ -64,13 +71,19 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
-            if (parameters.Count() != 1 || parameters[0] is not PlayerInputsController)
+            if (parameters.Count() < 1 || parameters[0] is not NewCharacterManager)
+            {
+                Debug.Log("Wrong parameters");
+            }
+
+            if (parameters.Count() < 2 || parameters[1] is not PlayerInputsController)
             {
                 Debug.LogWarning("Wrong parameters");
                 return;
             }
 
-            var input_controller = (PlayerInputsController)parameters[0];
+            m_manager = (NewCharacterManager)parameters[0];
+            var input_controller = (PlayerInputsController)parameters[1];
 
             input_controller.onMoveAction += OnMove;
             input_controller.onLookAction += OnLook;
@@ -79,12 +92,17 @@ namespace Comic
             m_sprites = new();
             var sprites = GetComponentsInChildren<SpriteRenderer>();
             m_sprites.AddRange(sprites);
+
+            m_baseHeadLocalPos = m_head.localPosition;
         }
         #endregion
 
         #region Input callbacks
         private void OnMove(InputType input, Vector2 v)
         {
+            if (!gameObject.activeSelf)
+                return;
+
             if (input == InputType.PRESSED)
             {
                 StartMove(v);
@@ -100,12 +118,18 @@ namespace Comic
         }
         private void OnLook(InputType input, Vector2 v)
         {
+            if (!gameObject.activeSelf)
+                return;
+
             if (input == InputType.PRESSED)
             {
             }
         }
         private void OnJump(InputType input, bool b)
         {
+            if (!gameObject.activeSelf)
+                return;
+
             if (input == InputType.PRESSED)
             {
                 TryJump();
@@ -143,10 +167,22 @@ namespace Comic
 
             Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
             m_rb.linearVelocity = newVel;
+
+            SetSpriteFaceDirection(v);
+
+            Bounds bounds = m_collider.bounds;
+
+            Vector2 pos = new Vector2(bounds.center.x, bounds.min.y);
+//            Vector2 pos = new Vector2(m_faceRight ? bounds.min.x : bounds.max.x, bounds.min.y);
+
+            m_manager.AllocateFootStep(pos, m_faceRight, Mathf.Abs(v.x));
+
+
+//            SpawnFootStepVfx(Mathf.Abs(v.x));
         }
         public virtual void Move(Vector2 v)
         {
-            SetSprireFaceDirection(v);
+            SetSpriteFaceDirection(v);
 
             if (!m_isGrounded)
             {
@@ -158,6 +194,22 @@ namespace Comic
             Vector2 expectedVel = (newVel - currentVel) * Time.fixedDeltaTime;
             m_rb.linearVelocityX = expectedVel.x;
         }
+
+        private void SpawnFootStepVfx(float speed)
+        {
+            if (m_vfxTimer >= 1f)
+            {
+                Bounds bounds = m_collider.bounds;
+
+                Vector2 pos = new Vector2(m_faceRight ? bounds.min.x : bounds.max.x, bounds.min.y);
+
+                m_manager.AllocateFootStep(pos, m_faceRight, speed);
+                m_vfxTimer = 0;
+            }
+            else
+                m_vfxTimer += Time.deltaTime;
+        }
+
         public virtual void StopMove(Vector2 v)
         {
             PlayRun(false);
@@ -183,7 +235,7 @@ namespace Comic
         #endregion
 
         #region Sprites
-        protected void SetSprireFaceDirection(Vector2 direction)
+        protected void SetSpriteFaceDirection(Vector2 direction)
         {
             bool wasFacingRight = m_faceRight;
 

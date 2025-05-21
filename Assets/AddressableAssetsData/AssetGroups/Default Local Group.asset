@@ -15,35 +15,41 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: d3acf7704c2fc1b4faa90ec72f41671a
   m_SerializeEntries:
+  - m_GUID: 0764c4fc17198c4499445d94fc73ac9e
+    m_Address: Assets/Src/Resources_moved/Vfx/Vfx_FootStepSmoke.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Vfx_Jacob
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 15c48f9bd0c66cc29b15ad434fc8ba34
     m_Address: Characters/Boss
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Jacob_Character
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 486ce7300236a987ebc32b797adf3bf4
     m_Address: Characters/BestFriend
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Jacob_Character
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52306b19101c91ae690b6f2c7fa2c4ea
     m_Address: Characters/Jacob
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Jacob_Character
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9ce1e5a40931f6e2db68002e0d130329
     m_Address: Characters/Beloved
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Jacob_Character
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bce59e0cf4d0a50318cb392d55cff272
     m_Address: Characters/Bully
     m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c7b751af674ac39d2b6e7180a50e44ca
-    m_Address: Assets/Src/Animations/BestFriend/BestFriend Animator.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Jacob_Character
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 7fc581ca975a44f448c62dc1d2c4d595, type: 2}

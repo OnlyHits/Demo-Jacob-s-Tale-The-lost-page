@@ -5,7 +5,7 @@ using TMPro;
 using System;
 using ExtensionMethods;
 
-
+// wrong place + shit
 public class TMPDialogue : MonoBehaviour
 {
     public enum TextColor

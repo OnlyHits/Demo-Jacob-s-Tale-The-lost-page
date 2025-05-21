@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace CustomArchitecture
 {
+    // after reflection, make it heritate from BaseBehaviour
+    // is not a bad idea, for pause purpose
     public abstract class APoolElement : MonoBehaviour
     {
         private bool m_isCompute;
@@ -12,7 +14,6 @@ namespace CustomArchitecture
             set { m_isCompute = value; }
         }
 
-        // Call after on allocate
         public abstract void OnAllocate(params object[] parameter);
         public abstract void OnDeallocate();
     }

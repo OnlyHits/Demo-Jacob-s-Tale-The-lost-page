@@ -4,6 +4,7 @@ using System.Linq;
 using CustomArchitecture;
 using static PageHole;
 
+// have to be replace by vfx manager in custom architecture
 // should use pooling instead of dynamic instantiation
 public class VisualEffectManager : BaseBehaviour
 {

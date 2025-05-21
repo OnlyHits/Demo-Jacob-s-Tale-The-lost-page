@@ -5,6 +5,8 @@ using UnityEngine;
 namespace CustomArchitecture
 {
     // TODO : sort by z, or by callback
+    // Come back after month, sort order is kinda bullshit
+    // too precise and made for only one purpose
     public enum SortOrderMethod
     {
         // if enable, user need to call manually SortElements(false)
@@ -60,8 +62,8 @@ namespace CustomArchitecture
             {
                 T obj = m_objectPool.Dequeue();
                 m_currentObjects.Add(obj);
-                obj.OnAllocate(parameters);
                 obj.gameObject.SetActive(true);
+                obj.OnAllocate(parameters);
 
                 SortElements(true);
 
@@ -77,8 +79,8 @@ namespace CustomArchitecture
                 }
 
                 m_currentObjects.Add(obj.GetComponent<T>());
-                obj.GetComponent<T>().OnAllocate(parameters);
                 obj.SetActive(true);
+                obj.GetComponent<T>().OnAllocate(parameters);
 
                 SortElements(true);
 

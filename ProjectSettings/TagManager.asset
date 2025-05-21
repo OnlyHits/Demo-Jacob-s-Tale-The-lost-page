@@ -11,7 +11,7 @@ TagManager:
   - IgnoreLight
   - Water
   - UI
-  - 
+  - Ground
   - 
   - 
   - 
@@ -46,6 +46,9 @@ TagManager:
     locked: 0
   - name: LocalUnlit
     uniqueID: 798250207
+    locked: 0
+  - name: Vfx
+    uniqueID: 1898714581
     locked: 0
   m_RenderingLayers:
   - Default

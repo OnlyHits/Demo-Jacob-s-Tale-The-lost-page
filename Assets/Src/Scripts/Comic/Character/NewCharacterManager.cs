@@ -3,6 +3,7 @@ using CustomArchitecture;
 using UnityEngine;
 using System.Collections;
 using static Comic.Comic;
+using Sirenix.OdinInspector;
 
 namespace Comic
 {
@@ -14,6 +15,12 @@ namespace Comic
         private NewCharacter                            m_currentCharacter;
         // all characters are going to use this input controller
         private PlayerInputsController                  m_inputsController;
+
+        // these are going to be in a vfx manager later accesible via Singleton probably
+        [Header("Vfx prefab")] public GameObject        m_footStepPrefab;
+        [Header("Vfx container")] public Transform      m_footStepContainer;
+
+        public AllocationPool<FootStepVfx>              m_footStepVfx;
 
         public NewCharacter GetCurrentCharacter() => m_currentCharacter;
         public PlayerInputsController GetInputController() => m_inputsController;
@@ -53,6 +60,8 @@ namespace Comic
 
         public override void Init(params object[] parameters)
         {
+            m_footStepVfx = new AllocationPool<FootStepVfx>(m_footStepPrefab, m_footStepContainer);
+
             if (!ComponentUtils.GetOrCreateComponent<PlayerInputsController>(gameObject, out m_inputsController))
                 Debug.LogWarning("Unable to get or create PanelInput");
             else
@@ -60,37 +69,9 @@ namespace Comic
 
             // init characters after input controller
             foreach (var character in m_characters.Values)
-                character.GetComponent<NewCharacter>().Init(m_inputsController);
+                character.GetComponent<NewCharacter>().Init(this, m_inputsController);
         }
         #endregion
-
-        public void SwitchCharacter(CharacterType type)
-        {
-            if (!m_characters.ContainsKey(type))
-            {
-                return;
-            }
-
-            Vector2 velocity = Vector2.zero;
-            float angular_velocity = 0f;
-            Vector3 position = Vector3.zero;
-
-            if (m_currentCharacter != null)
-            {
-                velocity = m_currentCharacter.GetRigidbody().linearVelocity;
-                angular_velocity = m_currentCharacter.GetRigidbody().angularVelocity;
-                position = m_currentCharacter.transform.position;
-                m_currentCharacter.gameObject.SetActive(false);
-            }
-    
-            m_currentCharacter = m_characters[type].GetComponent<NewCharacter>();
-            m_currentCharacter.GetRigidbody().linearVelocity = velocity;
-            m_currentCharacter.GetRigidbody().angularVelocity = angular_velocity;
-            m_currentCharacter.transform.position = position;
-
-            m_currentCharacter.gameObject.SetActive(true);
-        }
-
         public IEnumerator Load()
         {
             m_characters = new();
@@ -113,7 +94,52 @@ namespace Comic
             while (completedCount < characterPath.Count)
                 yield return null;
         }
-        
+
+
+        #region Vfx
+
+        public void AllocateFootStep(Vector2 position, bool flip_x, float speed)
+        {
+            if (m_footStepVfx == null)
+            {
+                return;
+            }
+
+            m_footStepVfx.AllocateElement(position, flip_x, speed);
+        }
+
+        #endregion Vfx
+
+        #region Manager behaviour
+        public void SwitchCharacter(CharacterType type)
+        {
+            if (!m_characters.ContainsKey(type))
+            {
+                return;
+            }
+
+            Vector2 velocity = Vector2.zero;
+            float angular_velocity = 0f;
+            Vector3 position = Vector3.zero;
+
+            if (m_currentCharacter != null)
+            {
+                velocity = m_currentCharacter.GetRigidbody().linearVelocity;
+                angular_velocity = m_currentCharacter.GetRigidbody().angularVelocity;
+                position = m_currentCharacter.transform.position;
+                m_currentCharacter.gameObject.SetActive(false);
+            }
+            else
+                position = m_characterContainer.transform.position; // small fix to control the first instantiation. need to remake the spawn position logic
+
+            m_currentCharacter = m_characters[type].GetComponent<NewCharacter>();
+            m_currentCharacter.GetRigidbody().linearVelocity = velocity;
+            m_currentCharacter.GetRigidbody().angularVelocity = angular_velocity;
+            m_currentCharacter.transform.position = position;
+
+            m_currentCharacter.gameObject.SetActive(true);
+        }
+
         public void PauseAllCharacters(bool pause = true)
         {
             foreach (var character in m_characters.Values)
@@ -121,6 +147,6 @@ namespace Comic
                 character.GetComponent<NewCharacter>().Pause(pause);
             }
         }
-
+        #endregion Manager behaviour
     }
 }

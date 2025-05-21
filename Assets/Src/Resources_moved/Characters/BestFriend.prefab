@@ -178,8 +178,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_pause: 0
   m_configuration:
-    speed: 1
-    jumpSpeed: 1
+    speed: 250
+    jumpSpeed: 6.5
     type: 1
   m_faceRight: 1
   m_animator: {fileID: 1109015457403891670}

@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: d3acf7704c2fc1b4faa90ec72f41671a
   m_currentHash:
     serializedVersion: 2
-    Hash: 4fd138aac92210a8e55f4f2bc8d5ecd7
+    Hash: 454f795b0a442b03f233f8170d1aa132
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -59,6 +59,7 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: 8820a4b627ee5284da871cebdfd6dbe3, type: 2}
   - {fileID: 11400000, guid: 77c549a7d75a07f47b34895b292a2b8b, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
@@ -99,6 +100,8 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - Jacob_Character
+    - Vfx_Jacob
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 941b92033005ed5498227d45d03bba20, type: 2}
