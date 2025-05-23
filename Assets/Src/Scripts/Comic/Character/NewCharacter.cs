@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using static CustomArchitecture.CustomArchitecture;
 using static Comic.Comic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Comic
 {
@@ -16,11 +17,8 @@ namespace Comic
         public CharacterType type;
     }
 
-    public class NewCharacter : BaseBehaviour
+    public class NewCharacter : ACharacterController
     {
-        [Header("Configuration")]
-        [SerializeField] private CharacterConfiguration m_configuration;
-
         [Header("Facing")]
         [SerializeField, ReadOnly] protected bool m_faceRight = true;
 
@@ -34,18 +32,9 @@ namespace Comic
         protected Vector2 m_baseHeadLocalPos;
         [HideInInspector] protected List<SpriteRenderer> m_sprites;
 
-        [Header("Others")]
-        [SerializeField] protected Rigidbody2D m_rb;
-        [SerializeField] protected Collider2D m_collider;
-
         // Reference to CharacterManager which contain vfx
         // Todo : make a vfx manager singleton or GameCore dependency
         private NewCharacterManager m_manager;
-
-        // States
-        private bool m_isMoving = false;
-        private bool m_isJumping = false;
-        private bool m_isGrounded = true;
 
         // Animations
         private readonly string ANIM_IDLE = "Idle";
@@ -53,21 +42,35 @@ namespace Comic
         private readonly string ANIM_JUMP = "Jump";
         private readonly string ANIM_FALL = "Fall";
 
-        public Collider2D GetCollider() => m_collider;
-        public Rigidbody2D GetRigidbody() => m_rb;
         public Animator GetAnimator() => m_animator;
         public CharacterConfiguration GetConfiguration() => m_configuration;
-        public bool IsGrounded() => m_isGrounded;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
-        {
-            m_isGrounded = CheckGround();
-        }
+        { }
         protected override void OnLateUpdate()
         { }
         protected override void OnUpdate()
-        { }
+        {
+            base.OnUpdate();
+
+            if (IsJumpingUp() && !IsPlaying(ANIM_JUMP))
+            {
+                PlayAnimation(ANIM_JUMP);
+            }
+            else if (IsFalling() && !IsPlaying(ANIM_FALL))
+            {
+                PlayAnimation(ANIM_FALL);
+            }
+            else if (IsRunning() && !IsPlaying(ANIM_RUN))
+            {
+                PlayAnimation(ANIM_RUN);
+            }
+            else if (!IsPlaying(ANIM_IDLE))
+            {
+                PlayAnimation(ANIM_IDLE);
+            }
+        }
         public override void LateInit(params object[] parameters)
         { }
         public override void Init(params object[] parameters)
@@ -117,6 +120,7 @@ namespace Comic
                 StopMove(v);
             }
         }
+        // Is it use somewhere? Remove if not
         private void OnLook(InputType input, Vector2 v)
         {
             if (!gameObject.activeSelf)
@@ -133,97 +137,77 @@ namespace Comic
 
             if (input == InputType.PRESSED)
             {
-                TryJump();
+                TryJumpInternal();
             }
         }
         #endregion
 
         #region Animation
-        private void PlayRun(bool play = true)
-        {
-            m_animator.SetBool(ANIM_RUN, play);
-        }
 
-        private void PlayJump(bool play = true)
+        private void PlayAnimation(string animation)
         {
-            m_animator.SetTrigger(ANIM_JUMP);
+            m_animator.Play(animation);
         }
+        private bool IsPlaying(string state)
+        {
+            return m_animator.GetCurrentAnimatorStateInfo(0).IsName(state);
+        }
+        //private void PlayRun(bool play = true)
+        //{
+        //    m_animator.SetBool(ANIM_RUN, play);
+        //}
 
-        private void PlayFall(bool play = true)
-        {
-            m_animator.SetBool(ANIM_FALL, play);
-        }
+        //protected override void PlayJumpAnimation()
+        //{
+        //    m_animator.SetTrigger(ANIM_JUMP);
+        //}
 
-        private void TryResetIdle()
-        {
-            m_animator.SetTrigger(ANIM_IDLE);
-        }
+        //private void PlayFall(bool play = true)
+        //{
+        //    m_animator.SetBool(ANIM_FALL, play);
+        //}
         #endregion
 
         #region Physics
-        public bool CheckGround() // cost efficient way to check ground
-        {
-            RaycastHit2D hit = Physics2D.BoxCast(m_collider.bounds.center, m_collider.bounds.size, 0f, Vector2.down, 0.1f, LayerMask.GetMask("Ground"));
-            return hit.collider != null;
-        }
-    
         public virtual void StartMove(Vector2 v)
         {
-            //            PlayRun(true);
-            m_isMoving = true;
-
             Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
             m_rb.linearVelocity = newVel;
 
             SetSpriteFaceDirection(v);
 
-            SpawnFootStepVfx();
+            SpawnFootStepVfx(v);
         }
 
         public virtual void Move(Vector2 v)
         {
-            if (!m_isGrounded)
+            if (!IsGrounded())
             {
                 return;
             }
 
             SetSpriteFaceDirection(v);
             Vector2 newVel = v * m_configuration.speed;
-            Vector2 currentVel = new Vector2(m_rb.linearVelocity.x, m_isJumping ? 0 : m_rb.linearVelocity.y);
+            Vector2 currentVel = new Vector2(m_rb.linearVelocity.x, IsJumpingUp() || IsFalling() ? 0 : m_rb.linearVelocity.y);
             Vector2 expectedVel = (newVel - currentVel) * Time.fixedDeltaTime;
             m_rb.linearVelocityX = expectedVel.x;
         }
 
-        private void SpawnFootStepVfx()
+        private void SpawnFootStepVfx(Vector2 v)
         {
             Bounds bounds = m_collider.bounds;
 
-            Vector2 pos = new Vector2(bounds.center.x, bounds.min.y);
+            Vector2 pos = new(bounds.center.x, bounds.min.y);
 
             m_manager.AllocateFootStep(pos, m_faceRight, Mathf.Abs(v.x));
         }
 
         public virtual void StopMove(Vector2 v)
         {
-            PlayRun(false);
-            m_isMoving = false;
+            //PlayRun(false);
 
-            Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
+            Vector2 newVel = new(0, m_rb.linearVelocity.y);
             m_rb.linearVelocity = newVel;
-        }
-        public virtual void TryJump()
-        {
-            if (!m_isGrounded)
-            {
-                return;
-            }
-
-            PlayJump(true);
-            m_isJumping = true;
-
-            Vector2 direction = Vector2.up;
-            m_rb.AddForce(m_configuration.jumpSpeed * direction, ForceMode2D.Impulse);
-
         }
         #endregion
 

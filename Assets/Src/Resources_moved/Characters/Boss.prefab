@@ -181,14 +181,21 @@ MonoBehaviour:
   m_configuration:
     speed: 250
     jumpSpeed: 6.5
+    allowDoubleJump: 0
     type: 4
+  m_rb: {fileID: 1089435790461630909}
+  m_collider: {fileID: 2809568326133322152}
+  m_groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  m_groundCheckDistance: 0.1
+  m_coyoteTime: 0.15
+  m_jumpBufferTime: 0.15
   m_faceRight: 1
   m_animator: {fileID: 7404490483222237105}
   m_headPositionGoRight: {fileID: 6525957635290434101}
   m_headPositionGoLeft: {fileID: 6695931034195751365}
   m_head: {fileID: 5591331321696432146}
-  m_rb: {fileID: 1089435790461630909}
-  m_collider: {fileID: 2809568326133322152}
 --- !u!1 &4335567361580604348
 GameObject:
   m_ObjectHideFlags: 0
