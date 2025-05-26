@@ -179,10 +179,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_pause: 0
   m_configuration:
-    speed: 250
-    jumpSpeed: 6.5
-    allowDoubleJump: 0
-    type: 4
+    factor: 0.75
+    speedRange: {x: 100, y: 600}
+    speed: 225
+    jumpForceRange: {x: 0, y: 13}
+    jumpForce: 3.25
+    allowDoubleJump: 1
   m_rb: {fileID: 1089435790461630909}
   m_collider: {fileID: 2809568326133322152}
   m_groundLayer:
@@ -191,6 +193,7 @@ MonoBehaviour:
   m_groundCheckDistance: 0.1
   m_coyoteTime: 0.15
   m_jumpBufferTime: 0.15
+  m_type: 4
   m_faceRight: 1
   m_animator: {fileID: 7404490483222237105}
   m_headPositionGoRight: {fileID: 6525957635290434101}
@@ -300,9 +303,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingLayerID: 1379922323
+  m_SortingLayer: 3
+  m_SortingOrder: 0
   m_Sprite: {fileID: -7518654210422930428, guid: 23858ea5912b6734cbbdb7847e34db38, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -387,9 +390,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingLayerID: 1379922323
+  m_SortingLayer: 3
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: db29d730016e7b6aca70f33f84cdfe5b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

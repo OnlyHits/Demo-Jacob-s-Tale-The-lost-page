@@ -31,10 +31,16 @@ namespace Comic
                 return;
             }
 
+            if (parameter.Length < 4 || parameter[3] is not bool)
+            {
+                Debug.Log("Wrong parameter");
+                return;
+            }
+
             float scale = 1f * (float)parameter[2]; // ;)
             Vector3 pos = new Vector3(((Vector2)parameter[0]).x, ((Vector2)parameter[0]).y, Random.Range(0, 10));
 
-            transform.localScale = new Vector3(scale, scale, 1f);
+            transform.localScale = (bool)parameter[3] ? Vector3.one : new Vector3(scale, scale, 1f);
             transform.position = pos;
             GetComponent<SpriteRenderer>().flipX = (bool)parameter[1];
         }

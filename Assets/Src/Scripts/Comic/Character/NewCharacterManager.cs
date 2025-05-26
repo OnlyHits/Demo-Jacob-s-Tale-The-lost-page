@@ -45,6 +45,9 @@ namespace Comic
             {
                 TestSwitch();
             }
+
+            if (m_footStepVfx != null)
+                m_footStepVfx.Update(Time.deltaTime);
         }
         public override void LateInit(params object[] parameters)
         {
@@ -71,6 +74,7 @@ namespace Comic
                 character.GetComponent<NewCharacter>().Init(this, m_inputsController);
         }
         #endregion
+
         public IEnumerator Load()
         {
             m_characters = new();
@@ -84,7 +88,7 @@ namespace Comic
                     m_characterContainer,
                     (obj) =>
                     {
-                        m_characters.Add(obj.GetComponent<NewCharacter>().GetConfiguration().type, obj);
+                        m_characters.Add(obj.GetComponent<NewCharacter>().GetCharacterType(), obj);
                         obj.SetActive(false);
                         ++completedCount;
                     }));
@@ -95,14 +99,14 @@ namespace Comic
         }
 
         #region Vfx
-        public void AllocateFootStep(Vector2 position, bool flip_x, float speed)
+        public void AllocateFootStep(Vector2 position, bool flip_x, float speed, bool ignoreSpeed = false)
         {
             if (m_footStepVfx == null)
             {
                 return;
             }
 
-            m_footStepVfx.AllocateElement(position, flip_x, speed);
+            m_footStepVfx.AllocateElement(position, flip_x, speed, ignoreSpeed);
         }
         #endregion Vfx
 

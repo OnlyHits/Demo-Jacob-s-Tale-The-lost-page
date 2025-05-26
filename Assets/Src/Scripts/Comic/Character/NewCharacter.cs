@@ -8,17 +8,20 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Comic
 {
-    [System.Serializable]
-    public struct CharacterConfiguration
-    {
-        public float speed;
-        public float jumpSpeed;
-        public bool allowDoubleJump;
-        public CharacterType type;
-    }
+    //[System.Serializable]
+    //public struct CharacterConfiguration
+    //{
+    //    public float speed;
+    //    public float jumpSpeed;
+    //    public bool allowDoubleJump;
+    //    public CharacterType type;
+    //}
 
     public class NewCharacter : ACharacterController
     {
+        [Header("Type")]
+        [SerializeField] private CharacterType m_type;
+
         [Header("Facing")]
         [SerializeField, ReadOnly] protected bool m_faceRight = true;
 
@@ -26,11 +29,13 @@ namespace Comic
         [SerializeField] protected Animator m_animator;
 
         [Header("Sprites")]
-        [SerializeField] protected Transform m_headPositionGoRight;
-        [SerializeField] protected Transform m_headPositionGoLeft;
-        [SerializeField] protected Transform m_head;
-        protected Vector2 m_baseHeadLocalPos;
+        [SerializeField] protected Transform    m_headPositionGoRight;
+        [SerializeField] protected Transform    m_headPositionGoLeft;
+        [SerializeField] protected Transform    m_head;
+        protected Vector2                       m_baseHeadLocalPos;
         [HideInInspector] protected List<SpriteRenderer> m_sprites;
+
+        private Vector2 m_moveInputStrength;
 
         // Reference to CharacterManager which contain vfx
         // Todo : make a vfx manager singleton or GameCore dependency
@@ -42,42 +47,30 @@ namespace Comic
         private readonly string ANIM_JUMP = "Jump";
         private readonly string ANIM_FALL = "Fall";
 
+        public CharacterType GetCharacterType() => m_type;
         public Animator GetAnimator() => m_animator;
-        public CharacterConfiguration GetConfiguration() => m_configuration;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         { }
         protected override void OnLateUpdate()
-        { }
+        {
+            base.OnLateUpdate();
+        }
         protected override void OnUpdate()
         {
             base.OnUpdate();
-
-            if (IsJumpingUp() && !IsPlaying(ANIM_JUMP))
-            {
-                PlayAnimation(ANIM_JUMP);
-            }
-            else if (IsFalling() && !IsPlaying(ANIM_FALL))
-            {
-                PlayAnimation(ANIM_FALL);
-            }
-            else if (IsRunning() && !IsPlaying(ANIM_RUN))
-            {
-                PlayAnimation(ANIM_RUN);
-            }
-            else if (!IsPlaying(ANIM_IDLE))
-            {
-                PlayAnimation(ANIM_IDLE);
-            }
         }
         public override void LateInit(params object[] parameters)
         { }
         public override void Init(params object[] parameters)
         {
+            base.Init();
+
             if (parameters.Count() < 1 || parameters[0] is not NewCharacterManager)
             {
                 Debug.Log("Wrong parameters");
+                return;
             }
 
             if (parameters.Count() < 2 || parameters[1] is not PlayerInputsController)
@@ -90,7 +83,6 @@ namespace Comic
             var input_controller = (PlayerInputsController)parameters[1];
 
             input_controller.onMoveAction += OnMove;
-            input_controller.onLookAction += OnLook;
             input_controller.onJumpAction += OnJump;
 
             m_sprites = new();
@@ -120,16 +112,6 @@ namespace Comic
                 StopMove(v);
             }
         }
-        // Is it use somewhere? Remove if not
-        private void OnLook(InputType input, Vector2 v)
-        {
-            if (!gameObject.activeSelf)
-                return;
-
-            if (input == InputType.PRESSED)
-            {
-            }
-        }
         private void OnJump(InputType input, bool b)
         {
             if (!gameObject.activeSelf)
@@ -143,7 +125,29 @@ namespace Comic
         #endregion
 
         #region Animation
-
+        protected override void OnFallStarted()
+        {
+            PlayAnimation(ANIM_FALL);
+        }
+        protected override void OnJumpStarted()
+        {
+            PlayAnimation(ANIM_JUMP);
+        }
+        protected override void OnGroundedStarted()
+        {
+            SpawnFootStepVfx(true, true);
+            SpawnFootStepVfx(false, true);
+            PlayAnimation(ANIM_IDLE);
+        }
+        protected override void OnIdleStarted()
+        {
+            PlayAnimation(ANIM_IDLE);
+        }
+        protected override void OnRunStarted()
+        {
+            SpawnFootStepVfx(m_faceRight, false);
+            PlayAnimation(ANIM_RUN);
+        }
         private void PlayAnimation(string animation)
         {
             m_animator.Play(animation);
@@ -152,62 +156,43 @@ namespace Comic
         {
             return m_animator.GetCurrentAnimatorStateInfo(0).IsName(state);
         }
-        //private void PlayRun(bool play = true)
-        //{
-        //    m_animator.SetBool(ANIM_RUN, play);
-        //}
-
-        //protected override void PlayJumpAnimation()
-        //{
-        //    m_animator.SetTrigger(ANIM_JUMP);
-        //}
-
-        //private void PlayFall(bool play = true)
-        //{
-        //    m_animator.SetBool(ANIM_FALL, play);
-        //}
         #endregion
 
-        #region Physics
-        public virtual void StartMove(Vector2 v)
+        #region Move override
+        public override void StartMove(Vector2 v)
         {
-            Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
-            m_rb.linearVelocity = newVel;
+            base.StartMove(v);
 
             SetSpriteFaceDirection(v);
 
-            SpawnFootStepVfx(v);
+            m_moveInputStrength = v;
         }
 
-        public virtual void Move(Vector2 v)
+        public override void Move(Vector2 v)
         {
-            if (!IsGrounded())
-            {
-                return;
-            }
+            base.Move(v);
 
             SetSpriteFaceDirection(v);
-            Vector2 newVel = v * m_configuration.speed;
-            Vector2 currentVel = new Vector2(m_rb.linearVelocity.x, IsJumpingUp() || IsFalling() ? 0 : m_rb.linearVelocity.y);
-            Vector2 expectedVel = (newVel - currentVel) * Time.fixedDeltaTime;
-            m_rb.linearVelocityX = expectedVel.x;
+
+            m_moveInputStrength = v;
         }
 
-        private void SpawnFootStepVfx(Vector2 v)
+        public override void StopMove(Vector2 v)
+        {
+            base.StopMove(v);
+
+            m_moveInputStrength = v;
+        }
+        #endregion Move override
+
+        #region Vfx
+        private void SpawnFootStepVfx(bool faceRight, bool ignoreSpeed)
         {
             Bounds bounds = m_collider.bounds;
 
             Vector2 pos = new(bounds.center.x, bounds.min.y);
 
-            m_manager.AllocateFootStep(pos, m_faceRight, Mathf.Abs(v.x));
-        }
-
-        public virtual void StopMove(Vector2 v)
-        {
-            //PlayRun(false);
-
-            Vector2 newVel = new(0, m_rb.linearVelocity.y);
-            m_rb.linearVelocity = newVel;
+            m_manager.AllocateFootStep(pos, faceRight, Mathf.Abs(m_moveInputStrength.x), ignoreSpeed);
         }
         #endregion
 
