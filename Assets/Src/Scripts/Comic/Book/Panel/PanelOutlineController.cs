@@ -16,8 +16,8 @@ namespace Comic
 
         public Transform m_outlineContainer;
         [ReadOnly, SerializeField] private List<PanelOutline> m_currentOutlines;
-        private float m_delta = .6f;
-        private float m_timer = 0f;
+        private readonly float      m_delta = .6f;
+        private float               m_timer = 0f;
 
         [Header("Prefabs (Top/Bot - Left/Right)")]
         [SerializeField] private GameObject m_leftRightPrefab;
@@ -151,10 +151,7 @@ namespace Comic
         {
             var sr = obj.GetComponent<SpriteRenderer>();
             var sprite = sr.sprite;
-            // is already setup in prefab
-//            sr.drawMode = SpriteDrawMode.Tiled;
 
-            Vector3 scale = obj.transform.lossyScale;
             sr.size = new Vector2(horizontal ? worldSize.x : 1f / sprite.GetPPUPerPixelSize().x, horizontal ? 1f / sprite.GetPPUPerPixelSize().y : worldSize.y);
         }
 

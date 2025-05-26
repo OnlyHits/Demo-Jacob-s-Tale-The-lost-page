@@ -25,7 +25,6 @@ namespace CustomArchitecture
     /// <typeparam name="T"></typeparam>
     public class AllocationPool<T> where T : APoolElement
     {
-
         private Queue<T>            m_objectPool = new();
         private GameObject          m_prefab;
         private Transform           m_parentTransform;
@@ -33,6 +32,7 @@ namespace CustomArchitecture
         private SortOrderMethod     m_sortMethod;
         private Action<List<T>>     m_customSort;
         public bool IsCompute() => m_currentObjects.Count > 0;
+        public List<T> GetComputedElements() => m_currentObjects;
 
         public AllocationPool(GameObject prefab, Transform parentTransform, int initialPoolSize = 10, SortOrderMethod sort_method = SortOrderMethod.Sort_None, Action<List<T>> callback = null)
         {

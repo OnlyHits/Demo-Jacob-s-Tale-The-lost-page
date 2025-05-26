@@ -14,11 +14,11 @@ namespace Comic
         [SerializeField] private float factor = 0.5f;
 
         [Header("Speed")]
-        [SerializeField, HideInInspector] private Vector2 speedRange = new(100f, 600f);
+        [SerializeField, HideInInspector] private Vector2 speedRange = new(0f, 600f);
         [SerializeField, ReadOnly] private float speed;
 
         [Header("Jump force")]
-        [SerializeField, HideInInspector] private Vector2 jumpForceRange = new(0f, 13f);
+        [SerializeField, HideInInspector] private Vector2 jumpForceRange = new(0f, 12f);
         [SerializeField, ReadOnly] private float jumpForce;
 
         [Header("Double jump")]
@@ -27,7 +27,6 @@ namespace Comic
         public float GetSpeed() => speed;
         public float GetJumpForce() => jumpForce;
         public bool AllowDoubleJump() => allowDoubleJump;
-
 
         public void Recalculate()
         {
@@ -138,12 +137,15 @@ namespace Comic
                 OnJumpStarted();
             if (!m_wasFalling && isFallingNow)
                 OnFallStarted();
-            if (!m_wasGrounded && isGroundedNow)
-                OnGroundedStarted();
             if (!m_wasIdle && isIdleNow)
                 OnIdleStarted();
+
+            // that make logic not accurate
+            // nevertheless it fit well with the animation logic
             if (!m_wasRunning && isRunningNow)
                 OnRunStarted();
+            else if (!m_wasGrounded && isGroundedNow)
+                OnGroundedStarted();
 
             m_wasGrounded = isGroundedNow;
             m_wasJumping = isJumpingNow;
@@ -156,8 +158,8 @@ namespace Comic
         #region Move
         public virtual void StartMove(Vector2 v)
         {
-            Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
-            m_rb.linearVelocity = newVel;
+            //Vector2 newVel = new Vector2(0, m_rb.linearVelocity.y);
+            //m_rb.linearVelocity = newVel;
         }
 
         public virtual void Move(Vector2 v)
@@ -185,6 +187,7 @@ namespace Comic
         private void Jump()
         {
             Vector2 direction = Vector2.up;
+            m_rb.linearVelocityY = 0f;
             m_rb.AddForce(m_configuration.GetJumpForce() * direction, ForceMode2D.Impulse);
         }
         #endregion Jump

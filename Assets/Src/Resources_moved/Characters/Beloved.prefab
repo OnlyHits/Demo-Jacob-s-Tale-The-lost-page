@@ -270,6 +270,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2686518597238794531}
   - {fileID: 7766407177508747988}
   - {fileID: 9136693426636694775}
   - {fileID: 3866577750335060483}
@@ -313,7 +314,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 9a3c8af23bca2a9ce98a9c396913c372, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -404,3 +405,36 @@ MonoBehaviour:
   m_headPositionGoRight: {fileID: 9136693426636694775}
   m_headPositionGoLeft: {fileID: 3866577750335060483}
   m_head: {fileID: 1587613265310330864}
+  m_footStepParticlePrefab: {fileID: 4134737242844262538, guid: e305cd0f067167a408dc859ef4f66376, type: 3}
+  m_footStepParticleContainer: {fileID: 2686518597238794531}
+--- !u!1 &7882604633733351429
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2686518597238794531}
+  m_Layer: 0
+  m_Name: Vfx-Container
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2686518597238794531
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7882604633733351429}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.049, y: -0.79, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6011183187497250552}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

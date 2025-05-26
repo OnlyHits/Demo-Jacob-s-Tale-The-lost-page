@@ -1,8 +1,11 @@
 //#if UNITY_EDITOR
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace Comic
 {
@@ -23,18 +26,15 @@ namespace Comic
     }
     public class CaseDecorEditor : MonoBehaviour
     {
-        public Transform m_caseSprite;
-        public Transform m_decorTransform;
+        public PanelVisual      m_visualReference;
+        public Transform        m_decorTransform;
+
         [SerializeField, ReadOnly] private CaseEditor.DecorType m_decorType;
 
         [Space]
         public SpriteRenderer m_wall;
         public SpriteRenderer m_floor;
         public SpriteRenderer m_ceiling;
-
-        [Space]
-        public Transform m_floorPivot;
-        public Transform m_ceilingPivot;
 
         public void Setup(CaseDecorProvider provider)
         {
@@ -77,21 +77,46 @@ namespace Comic
             UpdateElements();
         }
 
-        private float formualHeight(float x) => x * (m_caseSprite.transform.localScale.y / 2f);
+        private void PositionAt(SpriteRenderer parent, SpriteRenderer child, Vector2 anchor)
+        {
+            Vector3 parentMin = parent.bounds.min;
+            Vector3 parentSize = parent.bounds.size;
+
+            Vector3 worldAnchor = parentMin + new Vector3(anchor.x * parentSize.x, anchor.y * parentSize.y, 1.0f);
+
+            child.transform.position = worldAnchor;
+        }
+
+        private void UpdateFloor(Vector2 worldSize)
+        {
+            m_floor.size = new Vector2(worldSize.x, m_floor.size.y);
+            PositionAt(m_visualReference.PanelReference(), m_floor, new Vector2(0.5f, 0.0f));
+        }
+
+        private void UpdateCeil(Vector2 worldSize)
+        {
+            m_ceiling.size = new Vector2(worldSize.x, m_ceiling.size.y);
+            PositionAt(m_visualReference.PanelReference(), m_ceiling, new Vector2(0.5f, 1.0f));
+        }
+
+        private void UpdateWall(Vector2 worldSize)
+        {
+            m_wall.transform.localPosition = Vector3.zero;
+            m_wall.size = worldSize;
+            PositionAt(m_visualReference.PanelReference(), m_wall, new Vector2(0.5f, 0.5f));
+        }
 
         private void UpdateElements()
         {
-            m_decorTransform.position = m_caseSprite.position;
+            m_decorTransform.position = m_visualReference.transform.position;
 
-            float w = m_caseSprite.localScale.x;
-            float h = m_caseSprite.localScale.y;
-            m_wall.size = new Vector2(w, h);
+            var worldSize = (Vector2)m_visualReference.transform.localScale;
 
-            m_floor.size = new Vector2(w, m_floor.size.y);
-            m_ceiling.size = new Vector2(w, m_ceiling.size.y);
+            UpdateWall(worldSize);
+            UpdateCeil(worldSize);
+            UpdateFloor(worldSize);
 
-            m_floorPivot.localPosition = new Vector3(0, formualHeight(-1), 0);
-            m_ceilingPivot.localPosition = new Vector3(0, formualHeight(1), 0);
+            m_floor.GetComponent<HalfHeightCollider>().Setup();
         }
     }
 }

@@ -3,13 +3,27 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using static CustomArchitecture.CustomArchitecture;
+using UnityEngine.Rendering;
 
 namespace CustomArchitecture
 {
     public abstract class AInputManager : BaseBehaviour
     {
-        [HideInInspector] public List<InputActionStruct<Vector2>> m_inputActionStructsV2 = new List<InputActionStruct<Vector2>>();
-        [HideInInspector] public List<InputActionStruct<bool>> m_inputActionStructsBool = new List<InputActionStruct<bool>>();
+        [HideInInspector] public List<InputActionStruct<Vector2>> m_inputActionStructsV2 = new();
+        [HideInInspector] public List<InputActionStruct<bool>> m_inputActionStructsBool = new();
+        private UpdateType m_updateType = UpdateType.LateUpdate;
+
+        public void SetUpdateType(UpdateType type)
+        {
+            m_updateType = type;
+        }
+
+        public enum UpdateType
+        {
+            Update,
+            FixedUpdate,
+            LateUpdate
+        };
 
         [Serializable]
         public class InputActionStruct<T>
@@ -74,7 +88,7 @@ namespace CustomArchitecture
             }
         }
 
-        protected override void OnLateUpdate()
+        private void TryRegisteredAction()
         {
             foreach (var ias in m_inputActionStructsV2)
             {
@@ -85,6 +99,25 @@ namespace CustomArchitecture
                 TryGetAction<bool>(ias);
             }
         }
+
+        #region BaseBehaviour
+        protected override void OnFixedUpdate()
+        {
+            if (m_updateType == UpdateType.FixedUpdate)
+                TryRegisteredAction();
+        }
+        protected override void OnUpdate()
+        {
+            if (m_updateType == UpdateType.Update)
+                TryRegisteredAction();
+        }
+        protected override void OnLateUpdate()
+        {
+            if (m_updateType == UpdateType.LateUpdate)
+                TryRegisteredAction();
+        }
+        #endregion BaseBehaviour
+
 
         private void TryGetAction<T>(InputActionStruct<T> inputActStruct)
         {

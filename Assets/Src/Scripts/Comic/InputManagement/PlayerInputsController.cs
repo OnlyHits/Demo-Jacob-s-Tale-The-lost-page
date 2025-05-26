@@ -35,13 +35,17 @@ namespace Comic
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
-        { }
+        {
+            base.OnFixedUpdate();
+        }
         protected override void OnLateUpdate()
         {
             base.OnLateUpdate();
         }
         protected override void OnUpdate()
-        { }
+        {
+            base.OnUpdate();
+        }
         public override void LateInit(params object[] parameters)
         {
             InitInputActions();
@@ -49,6 +53,7 @@ namespace Comic
         public override void Init(params object[] parameters)
         {
             FindAction();
+//            SetUpdateType(UpdateType.FixedUpdate);
         }
         #endregion
 

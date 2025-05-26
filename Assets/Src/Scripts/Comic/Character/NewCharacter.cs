@@ -8,15 +8,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Comic
 {
-    //[System.Serializable]
-    //public struct CharacterConfiguration
-    //{
-    //    public float speed;
-    //    public float jumpSpeed;
-    //    public bool allowDoubleJump;
-    //    public CharacterType type;
-    //}
-
     public class NewCharacter : ACharacterController
     {
         [Header("Type")]
@@ -34,6 +25,11 @@ namespace Comic
         [SerializeField] protected Transform    m_head;
         protected Vector2                       m_baseHeadLocalPos;
         [HideInInspector] protected List<SpriteRenderer> m_sprites;
+
+        [Header("Vfx")]
+        [SerializeField] private GameObject         m_footStepParticlePrefab;
+        [SerializeField] private Transform          m_footStepParticleContainer;
+        private AllocationPool<FootStepParticle>    m_footStepParticlePool;
 
         private Vector2 m_moveInputStrength;
 
@@ -60,6 +56,9 @@ namespace Comic
         protected override void OnUpdate()
         {
             base.OnUpdate();
+
+            if (m_footStepParticlePool != null)
+                m_footStepParticlePool.Update(Time.deltaTime);
         }
         public override void LateInit(params object[] parameters)
         { }
@@ -90,6 +89,8 @@ namespace Comic
             m_sprites.AddRange(sprites);
 
             m_baseHeadLocalPos = m_head.localPosition;
+
+            m_footStepParticlePool = new AllocationPool<FootStepParticle>(m_footStepParticlePrefab, m_footStepParticleContainer, 2);
         }
         #endregion
 
@@ -127,24 +128,30 @@ namespace Comic
         #region Animation
         protected override void OnFallStarted()
         {
+            PlayFootStepParticle(false);
             PlayAnimation(ANIM_FALL);
         }
         protected override void OnJumpStarted()
         {
+            PlayFootStepParticle(false);
             PlayAnimation(ANIM_JUMP);
         }
         protected override void OnGroundedStarted()
         {
+            PlayFootStepParticle(false);
             SpawnFootStepVfx(true, true);
             SpawnFootStepVfx(false, true);
             PlayAnimation(ANIM_IDLE);
         }
+
         protected override void OnIdleStarted()
         {
+            PlayFootStepParticle(false);
             PlayAnimation(ANIM_IDLE);
         }
         protected override void OnRunStarted()
         {
+            PlayFootStepParticle(true);
             SpawnFootStepVfx(m_faceRight, false);
             PlayAnimation(ANIM_RUN);
         }
@@ -193,6 +200,20 @@ namespace Comic
             Vector2 pos = new(bounds.center.x, bounds.min.y);
 
             m_manager.AllocateFootStep(pos, faceRight, Mathf.Abs(m_moveInputStrength.x), ignoreSpeed);
+        }
+        private void PlayFootStepParticle(bool play)
+        {
+            if (play)
+            {
+                m_footStepParticlePool.AllocateElement();
+            }
+            else if (!play)
+            {
+                foreach (var particle in m_footStepParticlePool.GetComputedElements())
+                {
+                    particle.StopParticleSystem();
+                }
+            }
         }
         #endregion
 
