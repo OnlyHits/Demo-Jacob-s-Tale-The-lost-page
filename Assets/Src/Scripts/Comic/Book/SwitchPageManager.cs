@@ -69,7 +69,10 @@ namespace Comic
             Page new_page = m_unlockedPageList[m_correctionData.m_indexNewPage];
 
             if (is_next_page)
+            {
+                player.GetRigidbody().simulated = false;
                 player.transform.position = m_correctionData.m_correctedPosition;
+            }
 
             current_page.Pause(true);
             new_page.Pause(true);
@@ -89,6 +92,8 @@ namespace Comic
                 player.transform.position = m_correctionData.m_originalPosition;
             else
                 player.transform.position = m_correctionData.m_correctedPosition;
+
+            player.GetRigidbody().simulated = true;
 
             new_page.Enable(!is_next_page);
             current_page.Enable(is_next_page);
@@ -141,20 +146,18 @@ namespace Comic
 
             Vector2 playerPosition = player.transform.position;
             Bounds colliderBounds = player.GetCollider().bounds;
-            List<SpriteRenderer> sprites = evaluated_page.GetPanelsSpriteRenderer();
+            var bounds = evaluated_page.GetPanelsInnerBound();
 
-            if (sprites == null || player == null)
+            if (bounds == null || player == null)
                 return Vector3.zero;
 
-            SpriteRenderer closestSprite = sprites
-                .OrderBy(sprite => DistanceToBounds(sprite.bounds, colliderBounds))
+            Bounds innerBound = bounds
+                .OrderBy(b => DistanceToBounds(b, colliderBounds))
                 .FirstOrDefault();
 
-            Bounds spriteBounds = closestSprite.bounds;
-
             Vector2 newPosition = playerPosition;
-            newPosition.x = Mathf.Clamp(newPosition.x, spriteBounds.min.x + colliderBounds.extents.x, spriteBounds.max.x - colliderBounds.extents.x);
-            newPosition.y = Mathf.Clamp(newPosition.y, spriteBounds.min.y + colliderBounds.extents.y, spriteBounds.max.y - colliderBounds.extents.y);
+            newPosition.x = Mathf.Clamp(newPosition.x, innerBound.min.x + colliderBounds.extents.x, innerBound.max.x - colliderBounds.extents.x);
+            newPosition.y = Mathf.Clamp(newPosition.y, innerBound.min.y + colliderBounds.extents.y, innerBound.max.y - colliderBounds.extents.y);
 
             return newPosition;
         }
@@ -167,6 +170,13 @@ namespace Comic
 
             return dx * dx + dy * dy;
         }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(m_correctionData.m_correctedPosition, ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().GetCollider().bounds.size);
+        }
+
         #endregion
     }
 }

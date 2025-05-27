@@ -202,6 +202,20 @@ namespace Comic
 
             return sprites;
         }
+
+        public List<Bounds> GetPanelsInnerBound()
+        {
+            if (m_navigables == null || m_navigables.Count == 0)
+                return null;
+
+            List<Bounds> bounds = new();
+
+            foreach (var panel in m_navigables)
+                bounds.Add(panel.GetInnerPanelBounds());
+
+            return bounds;
+        }
+
         public Panel GetCurrentPanel()
         {
             foreach (Panel panel in m_navigables)

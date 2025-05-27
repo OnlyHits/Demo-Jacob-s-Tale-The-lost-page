@@ -6,9 +6,6 @@ using UnityEditor;
 
 namespace Comic
 {
-#if UNITY_EDITOR
-    [ExecuteInEditMode]
-#endif
     [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
     public class HalfHeightCollider : MonoBehaviour
     {

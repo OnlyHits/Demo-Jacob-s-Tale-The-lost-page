@@ -148,11 +148,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_pause: 0
   m_configuration:
-    factor: 0.45
+    factor: 0.53
     speedRange: {x: 100, y: 600}
-    speed: 375
+    speed: 335
     jumpForceRange: {x: 0, y: 13}
-    jumpForce: 7.15
+    jumpForce: 6.1100006
     allowDoubleJump: 0
   m_rb: {fileID: 1141544891393073915}
   m_collider: {fileID: 1952538670905112991}
@@ -255,7 +255,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2869591667291440841
 GameObject:
@@ -342,7 +342,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &3697266330499355254
 GameObject:

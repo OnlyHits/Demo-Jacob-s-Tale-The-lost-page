@@ -139,6 +139,7 @@ MonoBehaviour:
   m_isNavigable: 1
   m_panelVisual: {fileID: 1024220128611553332}
   m_propsContainer: {fileID: 695964106807076546}
+  m_backroundMgr: {fileID: 7319042934714054921}
   m_isLock: 0
 --- !u!1 &3805420277662355726
 GameObject:
@@ -651,7 +652,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4605565784638878860, guid: 6252f62dee458564bab8d5df532b72ad, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.2
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 4605565784638878860, guid: 6252f62dee458564bab8d5df532b72ad, type: 3}
       propertyPath: m_LocalRotation.w
@@ -722,7 +723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6033080675573449602, guid: ed27e7fb49527334a9e8779da923032c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.2
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6033080675573449602, guid: ed27e7fb49527334a9e8779da923032c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -793,7 +794,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7863198250270470967, guid: 65b3b99a7509b9f4eb0426ad5d5e56bf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.2
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 7863198250270470967, guid: 65b3b99a7509b9f4eb0426ad5d5e56bf, type: 3}
       propertyPath: m_LocalRotation.w

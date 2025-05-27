@@ -20,6 +20,7 @@ namespace Comic
     {
         [SerializeField] private        PanelVisual m_panelVisual;
         [SerializeField] private        Transform m_propsContainer;
+        [SerializeField] private        CaseDecorEditor m_backroundMgr;
         // this value must be save
         [SerializeField] private bool   m_isLock = false;
 
@@ -31,7 +32,6 @@ namespace Comic
         public bool IsLock() => m_isLock;
         public PanelVisual GetPanelVisual() => m_panelVisual;
         public List<AProps> GetProps() => m_props;
-
 
         #region Navigable
         public override Bounds GetGlobalBounds() => m_panelVisual.PanelReference().bounds;
@@ -137,6 +137,36 @@ namespace Comic
         }
 
         #endregion PanelBehaviour
+
+        public Bounds GetInnerPanelBounds()
+        {
+            Bounds panelBounds = m_panelVisual.PanelReference().bounds;
+            Bounds floorBounds = m_backroundMgr.m_floor.bounds;
+
+            float minX = panelBounds.min.x;
+            float maxX = panelBounds.max.x; 
+
+            float maxY = panelBounds.max.y;
+            float minY = floorBounds.max.y;
+
+            if (minY > maxY)
+                minY = maxY;
+
+            Vector3 center = new Vector3(
+                (minX + maxX) / 2f,
+                (minY + maxY) / 2f,
+                panelBounds.center.z // assume same Z
+            );
+
+            Vector3 size = new Vector3(
+                maxX - minX,
+                maxY - minY,
+                panelBounds.size.z // assume same Z
+            );
+
+            return new Bounds(center, size);
+        }
+
 
         public bool ContainPosition(Vector3 position)
         {

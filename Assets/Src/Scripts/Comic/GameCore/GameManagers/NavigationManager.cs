@@ -191,7 +191,7 @@ namespace Comic
                 OnBeforeScreenshot(is_next, TurnSequenceType.Sequence_TurnPage);
 
                 yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
-
+                    
                 OnAfterScreenshot(is_next, TurnSequenceType.Sequence_TurnPage);
 
                 bool can_change_page = m_gameManager.GetPageManager().IsAbleToAccessPage();

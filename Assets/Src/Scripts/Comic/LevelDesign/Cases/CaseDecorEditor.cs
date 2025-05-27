@@ -36,6 +36,8 @@ namespace Comic
         public SpriteRenderer m_floor;
         public SpriteRenderer m_ceiling;
 
+
+
         public void Setup(CaseDecorProvider provider)
         {
             m_decorType = provider.decorType;
