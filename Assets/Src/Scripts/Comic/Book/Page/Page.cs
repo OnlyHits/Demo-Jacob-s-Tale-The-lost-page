@@ -50,7 +50,10 @@ namespace Comic
         protected override void OnUpdate()
         { }
         public override void LateInit(params object[] parameters)
-        { }
+        {
+            foreach (var panel in m_navigables)
+                panel.LateInit();
+        }
         public override void Init(params object[] parameters)
         {
             ComicGameCore.Instance.MainGameMode.GetNavigationManager()
@@ -83,6 +86,8 @@ namespace Comic
                     }
                 }
             }
+
+            m_onChangeFocus += OnFocusPanel;
         }
         #endregion
 
@@ -124,6 +129,17 @@ namespace Comic
 
         }
         #endregion Page configuration
+
+        private void OnFocusPanel(Panel panel)
+        {
+            foreach (var nav in m_navigables)
+            {
+                if (nav == panel)
+                    nav.GetCinemachineCamera().Camera.Priority = 1;
+                else
+                    nav.GetCinemachineCamera().Camera.Priority = 0;
+            }
+        }
 
         private void OnInteract(InputType input, bool b)
         {
@@ -191,9 +207,6 @@ namespace Comic
         {
             if (m_navigables == null || m_navigables.Count == 0)
                 return null;
-
-            //if (m_currentPanels == null || m_currentPanels.Count == 0)
-            //        return null;
 
             List<SpriteRenderer> sprites = new();
 

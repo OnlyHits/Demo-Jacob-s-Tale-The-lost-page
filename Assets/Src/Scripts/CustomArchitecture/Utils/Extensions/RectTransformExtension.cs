@@ -54,5 +54,26 @@ namespace CustomArchitecture
             source.pivot = pivot2;
             source.position = worldPos;
         }
+
+        /// <summary>
+        /// Get world bounds
+        /// </returns>
+        public static Bounds GetWorldBounds(this RectTransform rectTransform)
+        {
+            if (rectTransform == null) return new Bounds();
+
+            Vector3[] corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+
+            Vector3 min = corners[0];
+            Vector3 max = corners[0];
+            for (int i = 1; i < 4; i++)
+            {
+                min = Vector3.Min(min, corners[i]);
+                max = Vector3.Max(max, corners[i]);
+            }
+
+            return new Bounds((min + max) / 2f, max - min);
+        }
     }
 }

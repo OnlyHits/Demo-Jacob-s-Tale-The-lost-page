@@ -4,7 +4,9 @@ using CustomArchitecture;
 using UnityEngine;
 using System.Collections.Generic;
 using static CustomArchitecture.CustomArchitecture;
+using static Comic.Comic;
 using System.Collections;
+using Unity.Cinemachine;
 
 namespace Comic
 {
@@ -47,6 +49,7 @@ namespace Comic
         private GameConfig m_gameConfig;
         private GameProgression m_gameProgression;
         private URP_CameraManager m_cameraManager;
+        private Comic_CinemachineCamera m_cinemachineCamera;
 
         // local datas
         private HudManager m_hudManager;
@@ -71,6 +74,7 @@ namespace Comic
         public GameConfig GetGameConfig() => m_gameConfig;
         public URP_CameraManager GetCameraManager() => m_cameraManager;
         public NavigationManager GetNavigationManager() => m_navigationManager;
+        public Comic_CinemachineCamera GetCinemachineCamera() => m_cinemachineCamera;
 
         // ---- Sub managers ----
         public PageManager GetPageManager() => m_gameManager?.GetPageManager();
@@ -84,8 +88,8 @@ namespace Comic
         {
             base.InitGameMode(parameters);
 
-            m_gameSceneName = "GameScene";
-            m_uiSceneName = "HudScene";
+            m_gameSceneName = GAME_SCENE_NAME;
+            m_uiSceneName = HUD_SCENE_NAME;
 
             m_gameConfig = SerializedScriptableObject.CreateInstance<GameConfig>();
             m_gameProgression = new GameProgression();
@@ -95,17 +99,22 @@ namespace Comic
             m_cameraManager = GetComponentInChildren<URP_CameraManager>(); // should be in AGameCore
             m_cameraManager.Init(); // AGameCore too
 
+            m_cinemachineCamera = GetComponentInChildren<Comic_CinemachineCamera>();
+            m_cinemachineCamera.Init();
+
             m_gameCore.GetGlobalInput().onPause += OnPause;
         }
 
         // todo : check if resources.Load is done on one frame or multiple
         // Resource.Load is obsolete, now pass by AddressableFactory
+        // Add Load function to ABehaviour, or make a inheritance
         public override IEnumerator LoadGameMode()
         {
+
             m_hudManager = ComponentUtils.FindObjectAcrossScenes<HudManager>();
             m_gameManager = ComponentUtils.FindObjectAcrossScenes<GameManager>();
 
-            m_navigationManager.Init(m_gameManager, m_hudManager, m_gameCore.GetGlobalInput(), m_cameraManager);
+            m_navigationManager.Init(m_gameManager, m_hudManager, m_gameCore.GetGlobalInput(), m_cameraManager, m_cinemachineCamera);
 
             if (GetUnlockChaptersData().Count == 0)
             {
@@ -144,6 +153,8 @@ namespace Comic
                 m_gameManager.GetCoverSpriteRenderer(false),
                 m_gameManager.GetPageSpriteRenderer(true),
                 m_gameManager.GetPageSpriteRenderer(false));
+
+            m_cinemachineCamera.LateInit();
 
             Compute = true;
 
@@ -210,7 +221,6 @@ namespace Comic
         #endregion END GAME
 
         #region Progression
-
         public void UnlockVoice(VoiceType type, bool force_unlock = false)
         {
             Chapters target_chapter = m_gameConfig.GetChapterByVoice(type);

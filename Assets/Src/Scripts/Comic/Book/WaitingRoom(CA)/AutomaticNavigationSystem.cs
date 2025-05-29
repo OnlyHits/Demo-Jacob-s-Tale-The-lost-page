@@ -14,8 +14,12 @@ namespace CustomArchitecture
         [SerializeField] protected List<T>      m_navigables;
         [SerializeField] private T              m_startingNavigable = null;
         protected T                             m_focusedNavigable = null;
-        private readonly float                  m_delayComputed = .2f;
+
+        [SerializeField] private float          m_delayComputed = .2f;
         private float                           m_timer = 0f;
+
+        // make a setter
+        protected Action<T>                     m_onChangeFocus;
 
         public bool IsRunning() => m_isRunning;
 
@@ -73,6 +77,8 @@ namespace CustomArchitecture
 
             m_focusedNavigable = m_startingNavigable;
 
+            m_onChangeFocus(m_focusedNavigable);
+
             m_timer = 0f;
             m_isRunning = true;
         }
@@ -97,6 +103,8 @@ namespace CustomArchitecture
                     m_focusedNavigable.Unfocus();
                     m_focusedNavigable = n_focus;
                     m_focusedNavigable.Focus();
+
+                    m_onChangeFocus(m_focusedNavigable);
                 }
             }
         }

@@ -4,6 +4,7 @@ using System;
 using DG.Tweening;
 using System.Collections.Generic;
 using static CustomArchitecture.CustomArchitecture;
+using Unity.Cinemachine;
 
 namespace Comic
 {
@@ -29,9 +30,12 @@ namespace Comic
         private Tween                   m_rotateTween;
         private bool                    m_isRotating = false;
 
+        private CinemachineCameraExtended m_cinemachineCamera = null;
+
         public bool IsLock() => m_isLock;
         public PanelVisual GetPanelVisual() => m_panelVisual;
         public List<AProps> GetProps() => m_props;
+        public CinemachineCameraExtended GetCinemachineCamera() => m_cinemachineCamera;
 
         #region Navigable
         public override Bounds GetGlobalBounds() => m_panelVisual.PanelReference().bounds;
@@ -54,7 +58,11 @@ namespace Comic
             m_panelVisual.GetHideSprite().enabled = m_isLock;
         }
         public override void LateInit(params object[] parameters)
-        { }
+        {
+            m_cinemachineCamera.LateInit();
+            m_cinemachineCamera.FitBounds(m_panelVisual.PanelReference().bounds);
+            m_cinemachineCamera.Camera.Lens.NearClipPlane = -1f;
+        }
         public override void Init(params object[] parameters)
         {
             if (parameters.Length != 2
@@ -67,6 +75,8 @@ namespace Comic
 
             base.Init(parameters[0]);
 
+            m_cinemachineCamera = GetComponent<CinemachineCameraExtended>();
+            m_cinemachineCamera.Init();
             m_margin = (SpriteRenderer)parameters[1];
             m_panelVisual.Init();
 

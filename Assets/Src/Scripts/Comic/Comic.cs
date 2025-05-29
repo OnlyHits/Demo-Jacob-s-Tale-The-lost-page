@@ -5,6 +5,10 @@ namespace Comic
 {
     public static class Comic
     {
+        // Main game mode scene names
+        public static readonly string HUD_SCENE_NAME = "HudScene";
+        public static readonly string GAME_SCENE_NAME = "GameScene";
+
         // Layers
         public static readonly string playerLayerName = "Player";
         public static readonly string caseColliderLayerName = "CaseCollider";

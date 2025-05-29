@@ -3,6 +3,8 @@ using CustomArchitecture;
 using UnityEngine;
 using static CustomArchitecture.CustomArchitecture;
 using static Comic.NavigationManager.NavigationFocus;
+using Unity.Cinemachine;
+using Unity.VisualScripting;
 
 namespace Comic
 {
@@ -34,6 +36,7 @@ namespace Comic
         private HudManager m_hudManager;
         private GameManager m_gameManager;
         private URP_CameraManager m_cameraManager;
+        private Comic_CinemachineCamera m_cinemachineCamera;
 
         //private bool m_isInitialized;
         private bool m_isRunning = false;
@@ -43,7 +46,6 @@ namespace Comic
         public GlobalInput GetGlobalInput() => m_globalInput;
         public PageInput GetPageInput() => m_pageInput;
         public PanelInput GetPanelInput() => m_panelInput;
-
         public bool IsRunning() => m_isRunning;
 
         #region BaseBehaviour
@@ -92,6 +94,11 @@ namespace Comic
             else
                 m_cameraManager = (URP_CameraManager)parameters[3];
 
+            if (parameters.Length < 5 || parameters[4] is not Comic_CinemachineCamera)
+                Debug.LogWarning("Unable to get CinemachineBrain");
+            else
+                m_cinemachineCamera = (Comic_CinemachineCamera)parameters[4];
+
             if (!ComponentUtils.GetOrCreateComponent<PageInput>(gameObject, out m_pageInput))
                 Debug.LogWarning("Unable to get or create PageInput");
             else
@@ -114,6 +121,46 @@ namespace Comic
         #endregion
 
         #region Panel Navigations
+        private IEnumerator ActivePanelCameraTransition()
+        {
+            m_isRunning = true;
+
+            // switch between main camera and transition camera
+            m_cameraManager.GetCameraBase().gameObject.SetActive(false);
+            m_cinemachineCamera.gameObject.SetActive(true);
+            m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
+            m_gameManager.GetPageManager().GetCurrentPage().StartNavigate();
+
+            yield return new WaitForEndOfFrame();
+
+            yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
+
+            ChangeInputFocus(NavigationFocus.Focus_Panel);
+
+            m_isRunning = false;
+        }
+
+        private IEnumerator UnactivePanelCameraTransition()
+        {
+            m_isRunning = true;
+
+            m_cinemachineCamera.UseSmoothBlend();
+            m_gameManager.GetCinemachineCamera().Camera.Priority = 10;
+
+            yield return new WaitForEndOfFrame();
+
+            yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
+
+            m_cameraManager.GetCameraBase().gameObject.SetActive(true);
+            m_cinemachineCamera.gameObject.SetActive(false);
+            m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
+
+            ChangeInputFocus(NavigationFocus.Focus_Game);
+            m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
+
+            m_isRunning = false;
+        }
+
         public void TryActivatePanelNavigation(InputType input, bool b)
         {
             if (m_gameManager.GetPageManager().GetCurrentPage() == null)
@@ -124,15 +171,16 @@ namespace Comic
 
             if (input == InputType.RELEASED)
             {
+                if (m_isRunning)
+                    return;
+
                 if (m_gameManager.GetPageManager().GetCurrentPage().IsRunning())
                 {
-                    ChangeInputFocus(NavigationFocus.Focus_Game);
-                    m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
+                    StartCoroutine(UnactivePanelCameraTransition());
                 }
                 else
                 {
-                    ChangeInputFocus(NavigationFocus.Focus_Panel);
-                    m_gameManager.GetPageManager().GetCurrentPage().StartNavigate();
+                    StartCoroutine(ActivePanelCameraTransition());
                 }
             }
         }

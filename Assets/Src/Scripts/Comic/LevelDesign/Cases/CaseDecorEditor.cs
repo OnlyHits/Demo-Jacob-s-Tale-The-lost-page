@@ -118,7 +118,10 @@ namespace Comic
             UpdateCeil(worldSize);
             UpdateFloor(worldSize);
 
-            m_floor.GetComponent<HalfHeightCollider>().Setup();
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                m_floor.GetComponent<HalfHeightCollider>().Setup();
+#endif
         }
     }
 }

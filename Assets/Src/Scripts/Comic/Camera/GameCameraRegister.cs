@@ -11,8 +11,6 @@ namespace Comic
 {
     public class GameCameraRegister : ACameraRegister
     {
-        public SpriteRenderer m_screenshotSpr;
-
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         { }
@@ -23,7 +21,13 @@ namespace Comic
         public override void LateInit(params object[] parameters)
         { }
         public override void Init(params object[] parameters)
-        { }
+        {
+            //foreach (var camera in m_cameras)
+            //{
+            //    camera.nearClipPlane = -10f;
+            //    camera.farClipPlane = 5000f;
+            //}
+        }
         #endregion
     }
 }
