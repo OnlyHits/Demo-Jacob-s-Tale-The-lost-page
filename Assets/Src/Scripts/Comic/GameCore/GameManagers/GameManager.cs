@@ -12,9 +12,10 @@ namespace Comic
         [SerializeField] private SpriteRenderer m_coverRightSR;
         [SerializeField] private SpriteRenderer m_coverLeftSR;
 
+        [SerializeField] private GameBackground m_gameBackground;
         // todo : should be wrap in a class
-        [SerializeField] private GameObject m_gameBackground;
-        [SerializeField] private CinemachineCameraExtended m_backgroundCMCamera = null;
+        //[SerializeField] private GameObject m_gameBackground;
+        //[SerializeField] private CinemachineCameraExtended m_backgroundCMCamera = null;
 
         private PageManager m_pageManager;
         private NewCharacterManager m_characterManager;
@@ -27,7 +28,7 @@ namespace Comic
         public PowerManager GetPowerManager() => m_powerManager;
         public GameCameraRegister GetRegisteredCameras() => m_cameras;
         public DialogueManager GetDialogueManager() => m_dialogueManager;
-        public CinemachineCameraExtended GetCinemachineCamera() => m_backgroundCMCamera;
+        public CinemachineCameraExtended GetCinemachineCamera() => m_gameBackground.GetCinemachineCamera();
 
         public SpriteRenderer GetPageSpriteRenderer(bool right)
         {
@@ -55,7 +56,7 @@ namespace Comic
 
         public void EnableGameBackground(bool enable)
         {
-            m_gameBackground.SetActive(enable);
+            m_gameBackground.EnableVisual(enable);
         }
 
         public IEnumerator Load()
@@ -103,7 +104,7 @@ namespace Comic
             if (m_powerManager != null) m_powerManager.Init(parameters);
             if (m_dialogueManager != null) m_dialogueManager.Init(parameters);
             if (m_cameras != null) m_cameras.Init(parameters);
-            if (m_backgroundCMCamera != null) m_backgroundCMCamera.Init();
+            //if (m_backgroundCMCamera != null) m_backgroundCMCamera.Init();
         }
         #endregion
     }

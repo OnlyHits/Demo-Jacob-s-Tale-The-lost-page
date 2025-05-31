@@ -1,6 +1,8 @@
 using CustomArchitecture;
 using UnityEngine;
 using System.Collections;
+using static Comic.Comic;
+using Comc;
 
 namespace Comic
 {
@@ -9,7 +11,7 @@ namespace Comic
         [SerializeField] private HudTurnPageManager m_hudPageMgr;
         private HudCameraRegister m_cameras;
         private ViewManager m_viewManager;
-        private URP_CameraManager m_cameraManager;
+//        private URP_CameraManager m_cameraManager;
         private bool m_requestScreenshotDebug;
         private bool m_turnPageErrorDebug;
 
@@ -22,22 +24,22 @@ namespace Comic
 
         public IEnumerator TurnMultiplePages(bool is_next, Bounds page_bounds, int page_number, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnMultiplePagesCoroutine(is_next, page_bounds, m_cameraManager.GetCameraBase(), page_number, duration));
+            yield return StartCoroutine(m_hudPageMgr.TurnMultiplePagesCoroutine(is_next, page_bounds, ComicCinemachineMgr.Instance.MainCamera, page_number, duration));
         }
 
         public IEnumerator TurnCover(Bounds page_bounds, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnCoverCoroutine(true, page_bounds, m_cameraManager.GetCameraBase(), duration));
+            yield return StartCoroutine(m_hudPageMgr.TurnCoverCoroutine(true, page_bounds, ComicCinemachineMgr.Instance.MainCamera, duration));
         }
 
         public IEnumerator TurnPage(bool next_page, Bounds page_bounds, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnPageCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase(), duration));
+            yield return StartCoroutine(m_hudPageMgr.TurnPageCoroutine(next_page, page_bounds, ComicCinemachineMgr.Instance.MainCamera, duration));
         }
 
         public IEnumerator TurnPageError(bool next_page, Bounds page_bounds, float duration)
         {
-            yield return StartCoroutine(m_hudPageMgr.TurnPageErrorCoroutine(next_page, page_bounds, m_cameraManager.GetCameraBase(), duration));
+            yield return StartCoroutine(m_hudPageMgr.TurnPageErrorCoroutine(next_page, page_bounds, ComicCinemachineMgr.Instance.MainCamera, duration));
         }
 
 
@@ -66,11 +68,11 @@ namespace Comic
 
         public override void Init(params object[] parameters)
         {
-            if (parameters.Length != 1 || parameters[0] is not URP_CameraManager)
-            {
-                Debug.LogWarning("Unable to get URP_CameraManager");
-                return;
-            }
+            //if (parameters.Length != 1 || parameters[0] is not URP_CameraManager)
+            //{
+            //    Debug.LogWarning("Unable to get URP_CameraManager");
+            //    return;
+            //}
 
             m_viewManager = gameObject.GetComponent<ViewManager>();
             m_cameras = gameObject.GetComponent<HudCameraRegister>();
@@ -79,9 +81,9 @@ namespace Comic
             m_viewManager.Init();
             m_hudPageMgr.Init();
 
-            m_cameraManager = (URP_CameraManager)parameters[0];
+            //m_cameraManager = (URP_CameraManager)parameters[0];
 
-            m_cameraManager.SubscribeToScreenshot(OnScreenshot);
+            ComicCinemachineMgr.Instance.Screenshoter.SubscribeToScreenshot(OnScreenshot);
         }
         #endregion
 
@@ -91,8 +93,8 @@ namespace Comic
             Vector3 maxWorld = sprite_bounds.max;
 
             m_viewManager.GetView<BookCoverView>().MatchBounds(
-                m_cameraManager.GetCameraBase().WorldToScreenPoint(minWorld),
-                m_cameraManager.GetCameraBase().WorldToScreenPoint(maxWorld));
+                ComicCinemachineMgr.Instance.MainCamera.WorldToScreenPoint(minWorld),
+                ComicCinemachineMgr.Instance.MainCamera.WorldToScreenPoint(maxWorld));
         }
 
         public void SetupPageForScreenshot(bool pause)
@@ -136,13 +138,13 @@ namespace Comic
             return false;
         }
 
-        private void OnScreenshot(bool front, Sprite sprite)
+        private void OnScreenshot(ComicScreenshot type, Sprite sprite)
         {
-            if (front)
+            if (type == ComicScreenshot.Screenshot_Page_Right || type == ComicScreenshot.Screenshot_Cover_Right)
             {
                 m_hudPageMgr.SetFrontSprite(sprite);
             }
-            else
+            else if (type == ComicScreenshot.Screenshot_Page_Left || type == ComicScreenshot.Screenshot_Cover_Left)
             {
                 m_hudPageMgr.SetBackSprite(sprite);
             }
@@ -163,7 +165,7 @@ namespace Comic
         private IEnumerator DirtyTurnPage(bool next_page)
         {
             if (m_requestScreenshotDebug)
-                yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+                yield return StartCoroutine(ComicCinemachineMgr.Instance.Screenshoter.TakeScreenshot(next_page ? ComicScreenshot.Screenshot_Page_Right : ComicScreenshot.Screenshot_Page_Left));
 
             if (m_turnPageErrorDebug)
                 yield return StartCoroutine(TurnPageError(next_page, new Bounds(), 0.8f));

@@ -9,9 +9,15 @@ using static UnityEngine.Rendering.DebugUI;
 
 namespace Comic
 {
-    public struct CaseDecorProvider
+    public enum BackgroundType
     {
-        public CaseDecorProvider(CaseEditor.DecorType dt, Sprite sB = null, Sprite sF = null, Sprite sC = null)
+        Room,
+        Outside
+    }
+
+    public struct PanelBackgroundProvider
+    {
+        public PanelBackgroundProvider(BackgroundType dt, Sprite sB = null, Sprite sF = null, Sprite sC = null)
         {
             decorType = dt;
             sBackground = sB;
@@ -19,26 +25,24 @@ namespace Comic
             sCeiling = sC;
         }
 
-        public CaseEditor.DecorType decorType;
+        public BackgroundType decorType;
         public Sprite sBackground;
         public Sprite sFloor;
         public Sprite sCeiling;
     }
-    public class CaseDecorEditor : MonoBehaviour
+    public class PanelBackgroundManager : MonoBehaviour
     {
         public PanelVisual      m_visualReference;
         public Transform        m_decorTransform;
 
-        [SerializeField, ReadOnly] private CaseEditor.DecorType m_decorType;
+        [SerializeField, ReadOnly] private BackgroundType m_decorType;
 
         [Space]
         public SpriteRenderer m_wall;
         public SpriteRenderer m_floor;
         public SpriteRenderer m_ceiling;
 
-
-
-        public void Setup(CaseDecorProvider provider)
+        public void Setup(PanelBackgroundProvider provider)
         {
             m_decorType = provider.decorType;
 
@@ -48,12 +52,12 @@ namespace Comic
 
             switch (m_decorType)
             {
-                case CaseEditor.DecorType.Room:
+                case BackgroundType.Room:
                     m_wall.gameObject.SetActive(true);
                     m_floor.gameObject.SetActive(true);
                     m_ceiling.gameObject.SetActive(true);
                     break;
-                case CaseEditor.DecorType.Outside:
+                case BackgroundType.Outside:
                     m_wall.gameObject.SetActive(true);
                     m_floor.gameObject.SetActive(true);
                     m_ceiling.gameObject.SetActive(false);
@@ -61,32 +65,18 @@ namespace Comic
             }
         }
 
-        [Button("Force Refresh")]
-        public void Refresh()
-        {
-            if (m_decorTransform == null)
-            {
-                Debug.LogWarning("Decor parent transform not set on [" + gameObject.name + "]");
-                return;
-            }
-
-            if (m_wall == null || m_floor == null || m_ceiling == null)
-            {
-                Debug.LogWarning("Decor childrens (wall, floor, etc) not set on [" + gameObject.name + "]");
-                return;
-            }
-
-            UpdateElements();
-        }
-
         private void PositionAt(SpriteRenderer parent, SpriteRenderer child, Vector2 anchor)
         {
             Vector3 parentMin = parent.bounds.min;
             Vector3 parentSize = parent.bounds.size;
 
-            Vector3 worldAnchor = parentMin + new Vector3(anchor.x * parentSize.x, anchor.y * parentSize.y, 1.0f);
+            Vector3 worldAnchor = parentMin + new Vector3(anchor.x * parentSize.x, anchor.y * parentSize.y, 0.0f);
 
             child.transform.position = worldAnchor;
+
+            Vector3 local_pos = child.transform.localPosition;
+            local_pos.z = 0f;
+            child.transform.localPosition = local_pos;
         }
 
         private void UpdateFloor(Vector2 worldSize)
@@ -108,7 +98,7 @@ namespace Comic
             PositionAt(m_visualReference.PanelReference(), m_wall, new Vector2(0.5f, 0.5f));
         }
 
-        private void UpdateElements()
+        public void UpdateElements()
         {
             m_decorTransform.position = m_visualReference.transform.position;
 
@@ -118,10 +108,7 @@ namespace Comic
             UpdateCeil(worldSize);
             UpdateFloor(worldSize);
 
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-                m_floor.GetComponent<HalfHeightCollider>().Setup();
-#endif
+            m_floor.GetComponent<HalfHeightCollider>().Setup();
         }
     }
 }

@@ -144,6 +144,10 @@ namespace Comic
 #endif
             obj.transform.position = pos;
             m_currentOutlines.Add(obj.GetComponent<PanelOutline>());
+
+            var l_pos = obj.transform.localPosition;
+            l_pos.z = 0f;
+            obj.transform.localPosition = l_pos;
             return obj;
         }
 

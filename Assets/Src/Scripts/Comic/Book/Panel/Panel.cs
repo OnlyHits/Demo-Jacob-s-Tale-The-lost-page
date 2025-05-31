@@ -19,9 +19,9 @@ namespace Comic
 #endif
     public class Panel : Navigable, PanelInterface
     {
-        [SerializeField] private        PanelVisual m_panelVisual;
-        [SerializeField] private        Transform m_propsContainer;
-        [SerializeField] private        CaseDecorEditor m_backroundMgr;
+        [SerializeField] private        PanelVisual             m_panelVisual;
+        [SerializeField] private        Transform               m_propsContainer;
+        [SerializeField] private        PanelBackgroundManager  m_backroundMgr;
         // this value must be save
         [SerializeField] private bool   m_isLock = false;
 
@@ -36,6 +36,7 @@ namespace Comic
         public PanelVisual GetPanelVisual() => m_panelVisual;
         public List<AProps> GetProps() => m_props;
         public CinemachineCameraExtended GetCinemachineCamera() => m_cinemachineCamera;
+        public PanelBackgroundManager GetBackgroundEditor() => m_backroundMgr;
 
         #region Navigable
         public override Bounds GetGlobalBounds() => m_panelVisual.PanelReference().bounds;

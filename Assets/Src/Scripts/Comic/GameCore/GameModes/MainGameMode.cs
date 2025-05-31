@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using static CustomArchitecture.CustomArchitecture;
 using static Comic.Comic;
 using System.Collections;
-using Unity.Cinemachine;
+using Comc;
 
 namespace Comic
 {
@@ -48,8 +48,8 @@ namespace Comic
         // globals datas
         private GameConfig m_gameConfig;
         private GameProgression m_gameProgression;
-        private URP_CameraManager m_cameraManager;
-        private Comic_CinemachineCamera m_cinemachineCamera;
+        //private URP_CameraManager m_cameraManager;
+        //private CinemachineBrainExtended m_cinemachineCamera;
 
         // local datas
         private HudManager m_hudManager;
@@ -72,9 +72,9 @@ namespace Comic
         // ---- MainGameCore dependencies ----
         public GameProgression GetGameProgression() => m_gameProgression;
         public GameConfig GetGameConfig() => m_gameConfig;
-        public URP_CameraManager GetCameraManager() => m_cameraManager;
+//        public URP_CameraManager GetCameraManager() => m_cameraManager;
         public NavigationManager GetNavigationManager() => m_navigationManager;
-        public Comic_CinemachineCamera GetCinemachineCamera() => m_cinemachineCamera;
+        //public CinemachineBrainExtended GetCinemachineCamera() => m_cinemachineCamera;
 
         // ---- Sub managers ----
         public PageManager GetPageManager() => m_gameManager?.GetPageManager();
@@ -96,11 +96,11 @@ namespace Comic
 
             ComponentUtils.GetOrCreateComponent<NavigationManager>(gameObject, out m_navigationManager);
 
-            m_cameraManager = GetComponentInChildren<URP_CameraManager>(); // should be in AGameCore
-            m_cameraManager.Init(); // AGameCore too
+            //m_cameraManager = GetComponentInChildren<URP_CameraManager>(); // should be in AGameCore
+            //m_cameraManager.Init(); // AGameCore too
 
-            m_cinemachineCamera = GetComponentInChildren<Comic_CinemachineCamera>();
-            m_cinemachineCamera.Init();
+            //m_cinemachineCamera = GetComponentInChildren<CinemachineBrainExtended>();
+            //m_cinemachineCamera.Init();
 
             m_gameCore.GetGlobalInput().onPause += OnPause;
         }
@@ -114,7 +114,7 @@ namespace Comic
             m_hudManager = ComponentUtils.FindObjectAcrossScenes<HudManager>();
             m_gameManager = ComponentUtils.FindObjectAcrossScenes<GameManager>();
 
-            m_navigationManager.Init(m_gameManager, m_hudManager, m_gameCore.GetGlobalInput(), m_cameraManager, m_cinemachineCamera);
+            m_navigationManager.Init(m_gameManager, m_hudManager, m_gameCore.GetGlobalInput());//, m_cinemachineCamera);
 
             if (GetUnlockChaptersData().Count == 0)
             {
@@ -126,12 +126,12 @@ namespace Comic
                 yield return StartCoroutine(m_gameManager.Load());
 
                 m_gameManager.Init();
-                m_cameraManager.RegisterCameras(m_gameManager.GetRegisteredCameras());
+//                m_cameraManager.RegisterCameras(m_gameManager.GetRegisteredCameras());
             }
             if (m_hudManager != null)
             {
-                m_hudManager.Init(GetCameraManager());
-                m_cameraManager.RegisterCameras(m_hudManager.GetRegisteredCameras());
+                m_hudManager.Init();
+//                m_cameraManager.RegisterCameras(m_hudManager.GetRegisteredCameras());
             }
 
             if (m_gameManager != null)
@@ -148,13 +148,27 @@ namespace Comic
             // Update : is okay but should have a globally better handle of Init/LateInit 
             m_navigationManager.LateInit();
 
-            m_cameraManager.LateInit(
-                m_gameManager.GetCoverSpriteRenderer(true),
-                m_gameManager.GetCoverSpriteRenderer(false),
-                m_gameManager.GetPageSpriteRenderer(true),
-                m_gameManager.GetPageSpriteRenderer(false));
+            // screenshot setup
+            var page_left_adapter = new SpriteRendererScreenshotAdapter(m_gameManager.GetPageSpriteRenderer(false));
+            var page_right_adapter = new SpriteRendererScreenshotAdapter(m_gameManager.GetPageSpriteRenderer(true));
+            var cover_left_adapter = new SpriteRendererScreenshotAdapter(m_gameManager.GetCoverSpriteRenderer(false));
+            var cover_right_adapter = new SpriteRendererScreenshotAdapter(m_gameManager.GetCoverSpriteRenderer(true));
 
-            m_cinemachineCamera.LateInit();
+            var camera = ComicCinemachineMgr.Instance.MainCamera;
+
+            ComicCinemachineMgr.Instance.Screenshoter.RegisterScreenData(ComicScreenshot.Screenshot_Page_Left, new ScreenshotData<ScreenshotBounded>(page_left_adapter, camera, ComicScreenshot.Screenshot_Page_Left));
+            ComicCinemachineMgr.Instance.Screenshoter.RegisterScreenData(ComicScreenshot.Screenshot_Page_Right, new ScreenshotData<ScreenshotBounded>(page_right_adapter, camera, ComicScreenshot.Screenshot_Page_Right));
+            ComicCinemachineMgr.Instance.Screenshoter.RegisterScreenData(ComicScreenshot.Screenshot_Cover_Left, new ScreenshotData<ScreenshotBounded>(cover_left_adapter, camera, ComicScreenshot.Screenshot_Cover_Left));
+            ComicCinemachineMgr.Instance.Screenshoter.RegisterScreenData(ComicScreenshot.Screenshot_Cover_Right, new ScreenshotData<ScreenshotBounded>(cover_right_adapter, camera, ComicScreenshot.Screenshot_Cover_Right));
+
+
+            //m_cameraManager.LateInit(
+            //    m_gameManager.GetCoverSpriteRenderer(true),
+            //    m_gameManager.GetCoverSpriteRenderer(false),
+            //    m_gameManager.GetPageSpriteRenderer(true),
+            //    m_gameManager.GetPageSpriteRenderer(false));
+
+            //m_cinemachineCamera.LateInit();
 
             Compute = true;
 

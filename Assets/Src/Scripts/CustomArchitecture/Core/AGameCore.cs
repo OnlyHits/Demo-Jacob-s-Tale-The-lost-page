@@ -8,6 +8,7 @@ namespace CustomArchitecture
 {
     // this class heritate from MonoBehaviour and not BaseBehaviour
     // to ensure that there is no confusion with Init/Update functions
+    [DefaultExecutionOrder(-2)]
     public abstract class AGameCore<T> : MonoBehaviour where T : AGameCore<T>
     {
         private static T m_instance;

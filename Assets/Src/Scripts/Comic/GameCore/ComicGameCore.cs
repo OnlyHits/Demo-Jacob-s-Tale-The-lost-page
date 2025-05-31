@@ -3,7 +3,6 @@ using CustomArchitecture;
 
 namespace Comic
 {
-    [DefaultExecutionOrder(-2)]
     public class ComicGameCore : AGameCore<ComicGameCore>
     {
 

@@ -5,6 +5,7 @@ using static CustomArchitecture.CustomArchitecture;
 using static Comic.NavigationManager.NavigationFocus;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
+using Comc;
 
 namespace Comic
 {
@@ -35,8 +36,8 @@ namespace Comic
         // Global managers
         private HudManager m_hudManager;
         private GameManager m_gameManager;
-        private URP_CameraManager m_cameraManager;
-        private Comic_CinemachineCamera m_cinemachineCamera;
+        //private URP_CameraManager m_cameraManager;
+        //private CinemachineBrainExtended m_cinemachineCamera;
 
         //private bool m_isInitialized;
         private bool m_isRunning = false;
@@ -89,15 +90,15 @@ namespace Comic
             else
                 m_globalInput = (GlobalInput)parameters[2];
 
-            if (parameters.Length < 4 || parameters[3] is not URP_CameraManager)
-                Debug.LogWarning("Unable to get URP_CameraManager");
-            else
-                m_cameraManager = (URP_CameraManager)parameters[3];
+            //if (parameters.Length < 4 || parameters[3] is not URP_CameraManager)
+            //    Debug.LogWarning("Unable to get URP_CameraManager");
+            //else
+            //    m_cameraManager = (URP_CameraManager)parameters[3];
 
-            if (parameters.Length < 5 || parameters[4] is not Comic_CinemachineCamera)
-                Debug.LogWarning("Unable to get CinemachineBrain");
-            else
-                m_cinemachineCamera = (Comic_CinemachineCamera)parameters[4];
+            //if (parameters.Length < 5 || parameters[4] is not CinemachineBrainExtended)
+            //    Debug.LogWarning("Unable to get CinemachineBrain");
+            //else
+            //    m_cinemachineCamera = (CinemachineBrainExtended)parameters[4];
 
             if (!ComponentUtils.GetOrCreateComponent<PageInput>(gameObject, out m_pageInput))
                 Debug.LogWarning("Unable to get or create PageInput");
@@ -123,40 +124,41 @@ namespace Comic
         #region Panel Navigations
         private IEnumerator ActivePanelCameraTransition()
         {
-            m_isRunning = true;
+            yield return null;
 
-            // switch between main camera and transition camera
-            m_cameraManager.GetCameraBase().gameObject.SetActive(false);
-            m_cinemachineCamera.gameObject.SetActive(true);
-            m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
-            m_gameManager.GetPageManager().GetCurrentPage().StartNavigate();
+            //m_isRunning = true;
 
-            yield return new WaitForEndOfFrame();
+            //// switch between main camera and transition camera
+            //m_cameraManager.GetCameraBase().gameObject.SetActive(false);
+            //m_cinemachineCamera.gameObject.SetActive(true);
+            //m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
+            //m_gameManager.GetPageManager().GetCurrentPage().StartNavigate();
 
-            yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
+            //yield return new WaitForEndOfFrame();
 
-            ChangeInputFocus(NavigationFocus.Focus_Panel);
+            //yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
 
-            m_isRunning = false;
+            //ChangeInputFocus(NavigationFocus.Focus_Panel);
         }
 
         private IEnumerator UnactivePanelCameraTransition()
         {
-            m_isRunning = true;
+            yield return null;
+//            m_isRunning = true;
 
-            m_cinemachineCamera.UseSmoothBlend();
-            m_gameManager.GetCinemachineCamera().Camera.Priority = 10;
+            //m_cinemachineCamera.UseSmoothBlend();
+            //m_gameManager.GetCinemachineCamera().Camera.Priority = 10;
 
-            yield return new WaitForEndOfFrame();
+            //yield return new WaitForEndOfFrame();
 
-            yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
+            //yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
 
-            m_cameraManager.GetCameraBase().gameObject.SetActive(true);
-            m_cinemachineCamera.gameObject.SetActive(false);
-            m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
+            //m_cameraManager.GetCameraBase().gameObject.SetActive(true);
+            //m_cinemachineCamera.gameObject.SetActive(false);
+            //m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
 
-            ChangeInputFocus(NavigationFocus.Focus_Game);
-            m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
+            //ChangeInputFocus(NavigationFocus.Focus_Game);
+            //m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
 
             m_isRunning = false;
         }
@@ -238,7 +240,7 @@ namespace Comic
 
                 OnBeforeScreenshot(is_next, TurnSequenceType.Sequence_TurnPage);
 
-                yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+                yield return StartCoroutine(ComicCinemachineMgr.Instance.Screenshoter.TakePageScreenshot());
                     
                 OnAfterScreenshot(is_next, TurnSequenceType.Sequence_TurnPage);
 
@@ -282,7 +284,7 @@ namespace Comic
 
             OnBeforeScreenshot(true, TurnSequenceType.Sequence_OpenBook);
 
-            yield return StartCoroutine(m_cameraManager.TakeScreenshot(true));
+            yield return StartCoroutine(ComicCinemachineMgr.Instance.Screenshoter.TakeCoverScreenshot());
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_OpenBook);
 
@@ -294,7 +296,7 @@ namespace Comic
 
             OnBeforeScreenshot(true, TurnSequenceType.Sequence_Production);
 
-            yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+            yield return StartCoroutine(ComicCinemachineMgr.Instance.Screenshoter.TakePageScreenshot());
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_Production);
 
@@ -336,7 +338,7 @@ namespace Comic
 
             OnBeforeScreenshot(pause, TurnSequenceType.Sequence_Pause);
 
-            yield return StartCoroutine(m_cameraManager.TakeScreenshot(false));
+            yield return StartCoroutine(ComicCinemachineMgr.Instance.Screenshoter.TakePageScreenshot());
 
             OnAfterScreenshot(pause, TurnSequenceType.Sequence_Pause);
 

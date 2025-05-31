@@ -17,8 +17,6 @@ namespace Comic
             SpawnPanel(page);
             RefreshPanelList(page);
             AddConfiguration(page);
-
-            EditorUtility.SetDirty(page);
         }
 
         private void SpawnPanel(Page page)
@@ -26,8 +24,8 @@ namespace Comic
             if (GUILayout.Button("Spawn panel"))
             {
                 page.InstantiatePanel();
+                EditorUtility.SetDirty(page);
             }
-
         }
 
         private void RefreshPanelList(Page page)
@@ -35,6 +33,7 @@ namespace Comic
             if (GUILayout.Button("Refresh panel list"))
             {
                 page.RefreshList();
+                EditorUtility.SetDirty(page);
             }
 
         }
@@ -46,6 +45,7 @@ namespace Comic
             if (GUILayout.Button("Add Page Configuration"))
             {
                 page.AddConfiguration();
+                EditorUtility.SetDirty(page);
             }
         }
     }

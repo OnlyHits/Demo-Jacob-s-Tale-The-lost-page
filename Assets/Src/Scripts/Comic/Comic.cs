@@ -1,10 +1,19 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Rendering.Universal;
 
 namespace Comic
 {
     public static class Comic
     {
+        public enum ComicScreenshot
+        {
+            Screenshot_Page_Left,
+            Screenshot_Page_Right,
+            Screenshot_Cover_Left,
+            Screenshot_Cover_Right,
+        }
+
         // Main game mode scene names
         public static readonly string HUD_SCENE_NAME = "HudScene";
         public static readonly string GAME_SCENE_NAME = "GameScene";

@@ -12,7 +12,7 @@ namespace Comic
         public List<Vector3> m_panelPositions;
     }
 
-    [ExecuteAlways]
+    //[ExecuteAlways]
     public class Page : AutomaticNavigationSystem<Panel>
     {
         // Page content
@@ -254,7 +254,6 @@ namespace Comic
 
         #region PageEdition
 #if UNITY_EDITOR
-
         public void AddConfiguration()
         {
             var config = new PageConfiguration();
@@ -267,7 +266,6 @@ namespace Comic
 
             m_pageConfigurations.Add(config);
         }
-
         // TODO : generalize and made static in utils
         public void RefreshList()
         {
