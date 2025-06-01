@@ -1,11 +1,8 @@
 using System.Collections;
+using Comc;
 using CustomArchitecture;
 using UnityEngine;
 using static CustomArchitecture.CustomArchitecture;
-using static Comic.NavigationManager.NavigationFocus;
-using Unity.Cinemachine;
-using Unity.VisualScripting;
-using Comc;
 
 namespace Comic
 {
@@ -36,10 +33,7 @@ namespace Comic
         // Global managers
         private HudManager m_hudManager;
         private GameManager m_gameManager;
-        //private URP_CameraManager m_cameraManager;
-        //private CinemachineBrainExtended m_cinemachineCamera;
 
-        //private bool m_isInitialized;
         private bool m_isRunning = false;
         private NavigationFocus m_navigationFocus;
 
@@ -90,16 +84,6 @@ namespace Comic
             else
                 m_globalInput = (GlobalInput)parameters[2];
 
-            //if (parameters.Length < 4 || parameters[3] is not URP_CameraManager)
-            //    Debug.LogWarning("Unable to get URP_CameraManager");
-            //else
-            //    m_cameraManager = (URP_CameraManager)parameters[3];
-
-            //if (parameters.Length < 5 || parameters[4] is not CinemachineBrainExtended)
-            //    Debug.LogWarning("Unable to get CinemachineBrain");
-            //else
-            //    m_cinemachineCamera = (CinemachineBrainExtended)parameters[4];
-
             if (!ComponentUtils.GetOrCreateComponent<PageInput>(gameObject, out m_pageInput))
                 Debug.LogWarning("Unable to get or create PageInput");
             else
@@ -124,41 +108,33 @@ namespace Comic
         #region Panel Navigations
         private IEnumerator ActivePanelCameraTransition()
         {
-            yield return null;
+            m_isRunning = true;
 
-            //m_isRunning = true;
+            PauseAllInputs();
 
-            //// switch between main camera and transition camera
-            //m_cameraManager.GetCameraBase().gameObject.SetActive(false);
-            //m_cinemachineCamera.gameObject.SetActive(true);
-            //m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
-            //m_gameManager.GetPageManager().GetCurrentPage().StartNavigate();
+            yield return StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
+                m_gameManager.GetPageManager().GetCurrentPage().GetStartingNavigable().GetCinemachineCamera().Camera,
+                ComicCinemachineMgr.CameraList.Managed_Cameras,
+                true,
+                ComicCinemachineMgr.Instance.SmoothBlend));
 
-            //yield return new WaitForEndOfFrame();
+            m_gameManager.GetPageManager().GetCurrentPage().StartNavigate();
 
-            //yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
-
-            //ChangeInputFocus(NavigationFocus.Focus_Panel);
+            ChangeInputFocus(NavigationFocus.Focus_Panel);
         }
 
         private IEnumerator UnactivePanelCameraTransition()
         {
-            yield return null;
-//            m_isRunning = true;
+            PauseAllInputs();
 
-            //m_cinemachineCamera.UseSmoothBlend();
-            //m_gameManager.GetCinemachineCamera().Camera.Priority = 10;
+            m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
 
-            //yield return new WaitForEndOfFrame();
+            yield return StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(m_gameManager.GetBgCinemachineCamera().Camera,
+                ComicCinemachineMgr.CameraList.Managed_Cameras,
+                true,
+                ComicCinemachineMgr.Instance.SmoothBlend));
 
-            //yield return new WaitWhile(() => m_cinemachineCamera.GetBrain().IsBlending);
-
-            //m_cameraManager.GetCameraBase().gameObject.SetActive(true);
-            //m_cinemachineCamera.gameObject.SetActive(false);
-            //m_gameManager.GetCinemachineCamera().Camera.Priority = 0;
-
-            //ChangeInputFocus(NavigationFocus.Focus_Game);
-            //m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
+            ChangeInputFocus(NavigationFocus.Focus_Game);
 
             m_isRunning = false;
         }
@@ -173,14 +149,12 @@ namespace Comic
 
             if (input == InputType.RELEASED)
             {
-                if (m_isRunning)
-                    return;
 
-                if (m_gameManager.GetPageManager().GetCurrentPage().IsRunning())
+                if (m_isRunning && m_gameManager.GetPageManager().GetCurrentPage().IsRunning())
                 {
                     StartCoroutine(UnactivePanelCameraTransition());
                 }
-                else
+                else if (!m_isRunning && !m_gameManager.GetPageManager().GetCurrentPage().IsRunning())
                 {
                     StartCoroutine(ActivePanelCameraTransition());
                 }
@@ -483,7 +457,7 @@ namespace Comic
         }
 
         /// <summary>
-        /// Called on pause sequence has ended
+        /// Called when pause sequence has ended
         /// </summary>
         /// <param name="pause"></param>
         private void StopPause(bool pause)
@@ -493,11 +467,11 @@ namespace Comic
             m_gameManager.GetPageManager().GetCurrentPage().Pause(pause);
             m_gameManager.GetCharacterManager().PauseAllCharacters(pause);
 
-            ChangeInputFocus(m_navigationFocus == Focus_Hud ? Focus_Game : Focus_Hud);
+            ChangeInputFocus(m_navigationFocus == NavigationFocus.Focus_Hud ? NavigationFocus.Focus_Game : NavigationFocus.Focus_Hud);
         }
 
         /// <summary>
-        /// Called on turn page sequence ended
+        /// Called when turn page sequence ended
         /// </summary>
         /// <param name="pause"></param>
         private void StopTurnPage(bool is_next)
@@ -509,11 +483,11 @@ namespace Comic
             m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
             m_gameManager.GetCharacterManager().PauseAllCharacters(false);
 
-            ChangeInputFocus(Focus_Game);
+            ChangeInputFocus(NavigationFocus.Focus_Game);
         }
 
         /// <summary>
-        /// Called on turn page "OnlyhitProduction" ended
+        /// Called when turn page "OnlyhitProduction" ended
         /// </summary>
         /// <param name="pause"></param>
         private void StopFirstPage()
@@ -523,7 +497,7 @@ namespace Comic
             m_gameManager.GetPageManager().SetStartingPage();
             m_gameManager.GetPageManager().GetCurrentPage().Pause(false);
 
-            ChangeInputFocus(Focus_Game);
+            ChangeInputFocus(NavigationFocus.Focus_Game);
         }
         #endregion
 

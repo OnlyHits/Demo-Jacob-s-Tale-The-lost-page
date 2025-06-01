@@ -81,6 +81,7 @@ namespace Comic
         public NewCharacterManager GetCharacterManager() => m_gameManager?.GetCharacterManager();
         public PowerManager GetPowerManager() => m_gameManager?.GetPowerManager();
         public DialogueManager GetDialogueManager() => m_gameManager?.GetDialogueManager();
+        public GameBackground GetGameBackground() => m_gameManager.GetGameBackground();
         public ViewManager GetViewManager() => m_hudManager?.GetViewManager();
         public HudManager GetHudManager() => m_hudManager;
 

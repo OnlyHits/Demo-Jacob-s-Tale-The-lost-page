@@ -8,7 +8,7 @@ namespace CustomArchitecture
     [DefaultExecutionOrder(-10)] // to be executed before GameCore
     public abstract class CinemachineMgr<T> : BaseBehaviour where T : CinemachineMgr<T>
     {
-        public enum CameraList { All_Cameras, Managed_Cameras}
+        public enum CameraList { All_Cameras, Managed_Cameras }
 
         private static T m_instance;
 
@@ -21,7 +21,7 @@ namespace CustomArchitecture
         // Brain parameters
         private CinemachineBlendDefinition  m_cutBlend;
         private CinemachineBlendDefinition  m_smoothBlend;
-        private float                       m_blendTimeout;
+        private float                       m_blendTimeout = 3f;
         private bool                        m_isLocked = false;
 
         public CinemachineBlendDefinition CutBlend { get { return m_cutBlend; } }
@@ -83,15 +83,23 @@ namespace CustomArchitecture
             m_brain = GetComponentInChildren<CinemachineBrain>();
 
             transform.position = Vector3.zero;
+
+            RefreshTracking();
         }
 
-        private void Start()
+        public void RefreshTracking()
         {
+            if (m_allCameras != null && m_allCameras.Length > 0)
+            {
+                m_allCameras = null;
+            }
+
             m_allCameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
         }
         #endregion Setup
 
         #region Camera register
+        public void ClearManagedCameras() => m_managedCameras.Clear();
         public void RegisterCamera(CinemachineCamera camera) => m_managedCameras.Add(camera);
         public void UnregisterCamera(CinemachineCamera camera) => m_managedCameras.Remove(camera);
         #endregion Camera register
@@ -101,6 +109,14 @@ namespace CustomArchitecture
         {
             if (m_isLocked)
                 yield break;
+
+            //Debug.Log(target.gameObject.name + (IsCameraRegistered(target, list) ? " : registered" : " : not registered"));
+
+            if (!IsCameraRegistered(target, list))
+            {
+                Debug.LogWarning("Camera not registered");
+                yield break;
+            }
 
             OnFocusCamera(target, list);
             m_brain.DefaultBlend = blend_def;
@@ -125,7 +141,24 @@ namespace CustomArchitecture
                 yield return null;
             }
 
+            Debug.LogWarning("Focus camera timeout");
+
             m_isLocked = false;
+        }
+
+        private bool IsCameraRegistered(CinemachineCamera camera, CameraList list)
+        {
+            if (list == CameraList.Managed_Cameras)
+            {
+                foreach (var cam in m_managedCameras)
+                    if (cam == camera) return true;
+            }
+            else if (list == CameraList.All_Cameras)
+            {
+                foreach (var cam in m_allCameras)
+                    if (cam == camera) return true;
+            }
+            return false;
         }
 
         private void OnFocusCamera(CinemachineCamera target, CameraList list, int priority = 10)
@@ -135,7 +168,7 @@ namespace CustomArchitecture
                 foreach (var cam in m_managedCameras)
                     cam.Priority = (cam == target) ? priority : 0;
             }
-            else if (list != CameraList.All_Cameras)
+            else if (list == CameraList.All_Cameras)
             {
                 foreach (var cam in m_allCameras)
                     cam.Priority = (cam == target) ? priority : 0;

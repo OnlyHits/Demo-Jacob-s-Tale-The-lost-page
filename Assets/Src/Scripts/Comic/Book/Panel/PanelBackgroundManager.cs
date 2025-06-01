@@ -65,10 +65,10 @@ namespace Comic
             }
         }
 
-        private void PositionAt(SpriteRenderer parent, SpriteRenderer child, Vector2 anchor)
+        private void PositionAt(SpriteRenderer child, Bounds bounds, Vector2 anchor)
         {
-            Vector3 parentMin = parent.bounds.min;
-            Vector3 parentSize = parent.bounds.size;
+            Vector3 parentMin = bounds.min;
+            Vector3 parentSize = bounds.size;
 
             Vector3 worldAnchor = parentMin + new Vector3(anchor.x * parentSize.x, anchor.y * parentSize.y, 0.0f);
 
@@ -82,20 +82,20 @@ namespace Comic
         private void UpdateFloor(Vector2 worldSize)
         {
             m_floor.size = new Vector2(worldSize.x, m_floor.size.y);
-            PositionAt(m_visualReference.PanelReference(), m_floor, new Vector2(0.5f, 0.0f));
+            PositionAt(m_floor, m_visualReference.PanelReference().bounds, new Vector2(0.5f, 0.0f));
         }
 
         private void UpdateCeil(Vector2 worldSize)
         {
             m_ceiling.size = new Vector2(worldSize.x, m_ceiling.size.y);
-            PositionAt(m_visualReference.PanelReference(), m_ceiling, new Vector2(0.5f, 1.0f));
+            PositionAt(m_ceiling, m_visualReference.PanelReference().bounds, new Vector2(0.5f, 1.0f));
         }
 
         private void UpdateWall(Vector2 worldSize)
         {
             m_wall.transform.localPosition = Vector3.zero;
             m_wall.size = worldSize;
-            PositionAt(m_visualReference.PanelReference(), m_wall, new Vector2(0.5f, 0.5f));
+            PositionAt(m_wall, m_visualReference.PanelReference().bounds, new Vector2(0.5f, 0.5f));
         }
 
         public void UpdateElements()

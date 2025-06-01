@@ -14,6 +14,9 @@ namespace Comic
             Screenshot_Cover_Right,
         }
 
+        // this control where our comic z is (background, pages, panels) 
+        public static readonly float COMIC_BASE_Z;
+
         // Main game mode scene names
         public static readonly string HUD_SCENE_NAME = "HudScene";
         public static readonly string GAME_SCENE_NAME = "GameScene";

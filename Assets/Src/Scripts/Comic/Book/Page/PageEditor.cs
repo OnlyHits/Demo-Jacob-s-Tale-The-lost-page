@@ -17,7 +17,24 @@ namespace Comic
             SpawnPanel(page);
             RefreshPanelList(page);
             AddConfiguration(page);
+
+            RefreshPage(page);
         }
+
+        private void RefreshPage(Page page)
+        {
+            if (GUILayout.Button("Refresh Page"))
+            {
+                page.RefreshList();
+
+                foreach (var panel in page.GetNavigables())
+                {
+                    panel.GetPanel3DBuilder().Build(panel.GetPanelVisual().PanelReference().bounds);
+                }
+                EditorUtility.SetDirty(page);
+            }
+        }
+
 
         private void SpawnPanel(Page page)
         {

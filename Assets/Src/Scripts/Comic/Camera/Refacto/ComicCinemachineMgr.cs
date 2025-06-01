@@ -27,6 +27,8 @@ namespace Comc
                 FitOrthoSize();
                 m_orthoSize = m_mainCamera.orthographicSize;
             }
+
+            FollowPlayer();
         }
         protected override void OnUpdate()
         { }
@@ -42,7 +44,7 @@ namespace Comc
         }
         #endregion
 
-        #region Fov & Ortho size
+        #region Perspectiv Camera Behaviour
         private void FitOrthoSize()
         {
             if (m_mainCamera == null || m_perspectivCamera == null)
@@ -54,6 +56,27 @@ namespace Comc
             float fov = 2f * Mathf.Atan(orthoSize / distance) * Mathf.Rad2Deg;
             m_perspectivCamera.fieldOfView = fov;
         }
+
+        private void FollowPlayer()
+        {
+            if (ComicGameCore.Instance.MainGameMode.GetPageManager().GetCurrentPage().IsPlayerInFocusedPanel())
+            {
+                var player = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
+
+                Vector3 direction = player.transform.position - m_perspectivCamera.transform.position;
+                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+                m_perspectivCamera.transform.rotation = Quaternion.Slerp(
+                    m_perspectivCamera.transform.rotation,
+                    targetRotation,
+                    Time.deltaTime * 3f
+                );
+            }
+            else
+            {
+                m_perspectivCamera.transform.rotation = Quaternion.identity;
+            }
+}
         #endregion Fov & Ortho size
     }
 }

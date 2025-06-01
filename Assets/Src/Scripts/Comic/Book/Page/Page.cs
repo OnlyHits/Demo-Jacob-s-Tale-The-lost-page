@@ -3,6 +3,7 @@ using CustomArchitecture;
 using System.Collections.Generic;
 using System.Linq;
 using static CustomArchitecture.CustomArchitecture;
+using Comc;
 
 namespace Comic
 {
@@ -56,6 +57,8 @@ namespace Comic
         }
         public override void Init(params object[] parameters)
         {
+            base.Init();
+
             ComicGameCore.Instance.MainGameMode.GetNavigationManager()
                 .GetPanelInput().SubscribeToNavigate(OnNavigate);
             ComicGameCore.Instance.MainGameMode.GetNavigationManager()
@@ -132,13 +135,11 @@ namespace Comic
 
         private void OnFocusPanel(Panel panel)
         {
-            foreach (var nav in m_navigables)
-            {
-                if (nav == panel)
-                    nav.GetCinemachineCamera().Camera.Priority = 1;
-                else
-                    nav.GetCinemachineCamera().Camera.Priority = 0;
-            }
+            StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
+                panel.GetCinemachineCamera().Camera,
+                ComicCinemachineMgr.CameraList.Managed_Cameras,
+                false,
+                ComicCinemachineMgr.Instance.SmoothBlend));
         }
 
         private void OnInteract(InputType input, bool b)
@@ -161,6 +162,16 @@ namespace Comic
             }
 
             return true;
+        }
+
+        public bool IsPlayerInFocusedPanel()
+        {
+            var character = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter();
+
+            if (character == null || !m_isRunning || m_focusedNavigable == null)
+                return false;
+
+            return m_focusedNavigable.ContainPosition(character.transform.position);
         }
 
         public override void Pause(bool pause = true)
@@ -201,19 +212,6 @@ namespace Comic
         public void Enable(bool enable)
         {
             gameObject.SetActive(enable);
-        }
-
-        public List<SpriteRenderer> GetPanelsSpriteRenderer()
-        {
-            if (m_navigables == null || m_navigables.Count == 0)
-                return null;
-
-            List<SpriteRenderer> sprites = new();
-
-            foreach (var panel in m_navigables)
-                sprites.Add(panel.GetPanelVisual().PanelReference());
-
-            return sprites;
         }
 
         public List<Bounds> GetPanelsInnerBound()
@@ -281,7 +279,6 @@ namespace Comic
                 }
             }
         }
-
         public void InstantiatePanel()
         {
             GameObject panel_object = Instantiate(m_panelPrefab, m_panelContainer);

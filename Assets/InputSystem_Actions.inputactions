@@ -896,7 +896,7 @@
                 {
                     "name": "",
                     "id": "ee18c087-e71a-4429-b374-4d59f508a72c",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",

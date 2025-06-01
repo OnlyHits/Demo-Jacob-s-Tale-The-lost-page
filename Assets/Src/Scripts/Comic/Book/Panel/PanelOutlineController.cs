@@ -12,7 +12,7 @@ namespace Comic
     [ExecuteAlways]
     public class PanelOutlineController : BaseBehaviour
     {
-        [SerializeField] private SpriteRenderer m_targetPanel;
+        [SerializeField] private SpriteMask m_targetPanel;
 
         public Transform m_outlineContainer;
         [ReadOnly, SerializeField] private List<PanelOutline> m_currentOutlines;

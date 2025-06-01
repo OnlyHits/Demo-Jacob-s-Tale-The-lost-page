@@ -22,6 +22,7 @@ namespace Comic
         [SerializeField] private        PanelVisual             m_panelVisual;
         [SerializeField] private        Transform               m_propsContainer;
         [SerializeField] private        PanelBackgroundManager  m_backroundMgr;
+        [SerializeField] private        Panel3DBuilder          m_panel3DBuilder;
         // this value must be save
         [SerializeField] private bool   m_isLock = false;
 
@@ -37,6 +38,7 @@ namespace Comic
         public List<AProps> GetProps() => m_props;
         public CinemachineCameraExtended GetCinemachineCamera() => m_cinemachineCamera;
         public PanelBackgroundManager GetBackgroundEditor() => m_backroundMgr;
+        public Panel3DBuilder GetPanel3DBuilder() => m_panel3DBuilder;
 
         #region Navigable
         public override Bounds GetGlobalBounds() => m_panelVisual.PanelReference().bounds;
@@ -248,7 +250,7 @@ namespace Comic
 
         public bool IsPlayerInCase()
         {
-            SpriteRenderer sprite = m_panelVisual.PanelReference();
+            SpriteMask sprite = m_panelVisual.PanelReference();
 
             if (sprite == null)
             {

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 132433150429083390}
   - component: {fileID: 1267487190616691909}
   - component: {fileID: 1993183930647778966}
+  - component: {fileID: 9163703413770910539}
   m_Layer: 0
   m_Name: GameBackground
   m_TagString: Untagged
@@ -94,6 +95,20 @@ MonoBehaviour:
   m_fitSelf: 0
   m_widthFactor: 1
   m_heightFactor: 1
+--- !u!114 &9163703413770910539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2538444995188687947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299f2da4ee97d634d9fef58214d35a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_backgroundVisual: {fileID: 6266200535509460966}
+  m_cinemachineCamera: {fileID: 1993183930647778966}
 --- !u!1 &3352302832710769427
 GameObject:
   m_ObjectHideFlags: 0

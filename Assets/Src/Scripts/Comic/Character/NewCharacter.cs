@@ -248,7 +248,6 @@ namespace Comic
             m_rb.constraints = pause ? RigidbodyConstraints2D.FreezeAll : RigidbodyConstraints2D.FreezeRotation;
 
             m_rb.simulated = !pause;
-            //m_collider.enabled = !pause;
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
 using System.Linq;
+using Comc;
 
 namespace Comic
 {
@@ -36,7 +37,6 @@ namespace Comic
         }
 
         #region Page accesibility
-
         // Is panel lock.
         // This function is used internaly during screenshot and compute player position
         // on a given frame. Don't use this function outside NavigationManager
@@ -49,6 +49,9 @@ namespace Comic
 
         public bool CanChangePage(bool nextPage)
         {
+            if (m_unlockedPageList == null)
+                return false;
+
             if (nextPage)
                 return m_currentPageIndex + 1 < m_unlockedPageList.Count;
             else
@@ -122,7 +125,7 @@ namespace Comic
             current_page.Pause(false);
             new_page.Pause(false);
         }
-        #endregion
+        #endregion Screenshot Management
 
         private void SwitchPageByIndex(int index)
         {
@@ -137,7 +140,25 @@ namespace Comic
             m_unlockedPageList[m_currentPageIndex].EnablePage();
 
             m_currentPage = m_unlockedPageList[m_currentPageIndex];
+
+            RegisterPageCameras();
         }
+
+        #region Cinemachine Camera Management
+
+        private void RegisterPageCameras()
+        {
+            ComicCinemachineMgr.Instance.ClearManagedCameras();
+
+            foreach (var panel in m_currentPage.GetNavigables())
+            {
+                ComicCinemachineMgr.Instance.RegisterCamera(panel.GetCinemachineCamera().Camera);
+            }
+
+            ComicCinemachineMgr.Instance.RegisterCamera(ComicGameCore.Instance.GetGameMode<MainGameMode>().GetGameBackground().GetCinemachineCamera().Camera);
+        }
+
+        #endregion Cinemachine Camera Management
 
         #region Player Position Correction
         private Vector3 GetCorrectedPlayerPosition(Page evaluated_page)

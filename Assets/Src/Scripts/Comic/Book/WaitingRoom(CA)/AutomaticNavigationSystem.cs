@@ -22,6 +22,8 @@ namespace CustomArchitecture
         protected Action<T>                     m_onChangeFocus;
 
         public bool IsRunning() => m_isRunning;
+        public T GetStartingNavigable() => m_startingNavigable;
+        public List<T> GetNavigables() => m_navigables;
 
         private Direction GetDirection(Vector2 input)
         {
@@ -88,6 +90,7 @@ namespace CustomArchitecture
             if (m_focusedNavigable != null)
                 m_focusedNavigable.Unfocus();
 
+            m_focusedNavigable = null;
             m_timer = 0f;
             m_isRunning = false;
         }
@@ -119,7 +122,12 @@ namespace CustomArchitecture
         public override void LateInit(params object[] parameters)
         { }
         public override void Init(params object[] parameters)
-        { }
+        {
+            // make sure to have a starting view set
+            if (m_startingNavigable == null && m_navigables != null && m_navigables.Count > 0)
+                m_startingNavigable = m_navigables[0];
+
+        }
         #endregion
     }
 }

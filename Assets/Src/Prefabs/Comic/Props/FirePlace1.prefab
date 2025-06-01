@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: db1a1be865e42c9f0b63c054b3cea30b, type: 3}
+    - target: {fileID: 847555771598633553, guid: dba51c39a18390bd88cb2931ff2dbb2c, type: 3}
+      propertyPath: m_MaskInteraction
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5319454837882306160, guid: dba51c39a18390bd88cb2931ff2dbb2c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
