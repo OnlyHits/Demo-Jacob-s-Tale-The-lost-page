@@ -30,19 +30,13 @@ namespace Comic
             m_sprite.drawMode = SpriteDrawMode.Tiled;
             m_sprite.tileMode = SpriteTileMode.Continuous;
 
-            if (parameters.Length < 1 && parameters[0] is not Sprite)
-            {
-                Debug.LogWarning("Wrong parameters");
-                return;
-            }
-            if (parameters.Length < 2 && parameters[1] is not Material)
+            if (parameters.Length < 1 && parameters[0] is not Material)
             {
                 Debug.LogWarning("Wrong parameters");
                 return;
             }
 
-            m_sprite.sprite = (Sprite)parameters[0];
-            m_sprite.material = (Material)parameters[1];
+            m_sprite.material = (Material)parameters[0];
         }
         #endregion
 

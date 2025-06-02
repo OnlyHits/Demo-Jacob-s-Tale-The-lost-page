@@ -76,7 +76,7 @@ namespace Comic
 
             foreach (var part in m_parts.Values)
             {
-                part.Init(m_sprite, m_material);
+                part.Init(m_material);
             }
 
             //m_oldDepth = Editor_GetDepth();
