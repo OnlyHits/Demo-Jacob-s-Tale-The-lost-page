@@ -4,6 +4,8 @@ using UnityEngine;
 using static Comic.Comic;
 using System;
 using UnityEditor.Build.Reporting;
+using UnityEngine.Experimental.GlobalIllumination;
+
 
 
 
@@ -43,7 +45,9 @@ namespace Comic
 
         // tmp
         [SerializeField] private Material m_material;
-        [SerializeField] private Sprite m_sprite;
+
+        public Color nearColor = Color.white;
+        public Color farColor = Color.black;
 
         private float m_oldDepth;
         private Bounds m_oldBounds;
@@ -79,6 +83,8 @@ namespace Comic
                 part.Init(m_material);
             }
 
+            Editor_RefreshMaterial();
+
             //m_oldDepth = Editor_GetDepth();
             //m_oldBounds = m_parts[PanelPart3D.Panel_FrontWall].GetBounds();
         }
@@ -95,7 +101,6 @@ namespace Comic
 
             for (int i = m_rootTransform.childCount - 1; i >= 0; i--)
             {
-
                 if (!m_rootTransform.GetChild(i).TryGetComponent<Panel3DPart>(out var part))
                     return false;
 
@@ -139,8 +144,6 @@ namespace Comic
         {
             foreach (var part in m_editorParts)
             {
-                Debug.Log(part.Type);
-
                 if (part.Type == type)
                     return part;
             }
@@ -191,12 +194,17 @@ namespace Comic
             }
 
             RefreshBuild(bounds, transform.lossyScale, datas);
+            Editor_RefreshMaterial();
+
+            Editor_GetPanel3DPart(PanelPart3D.Panel_FrontWall).GetSpriteRenderer().enabled = false;
+
+            EditorUtility.SetDirty(this);
         }
 
         private void RefreshBuild(Bounds bounds, Vector3 lossy_scale, PanelVisualData datas)
         {
             foreach (var part in m_editorParts)
-                part.Init(m_sprite, m_material);
+                part.Init(m_material);
 
             var depth = Editor_GetDepth();
 
@@ -208,9 +216,27 @@ namespace Comic
             Editor_GetPanel3DPart(PanelPart3D.Panel_Ground).Editor_Build(bounds, depth, datas.GroundSprite, lossy_scale);
 
             var pos = m_rootTransform.localPosition;
-            pos.z = depth * lossy_scale.z * .5f;
+            pos.z = depth * .5f;
 
             m_rootTransform.localPosition = pos;
+        }
+
+        private void Editor_RefreshMaterial()
+        {
+            var depth = Editor_GetDepth();
+
+            foreach (var part in m_editorParts)
+            {
+                var mpb = new MaterialPropertyBlock();
+
+                part.GetSpriteRenderer().GetPropertyBlock(mpb);
+
+                mpb.SetFloat("_GradientSize", depth);
+                mpb.SetColor("_ColorA", nearColor);
+                mpb.SetColor("_ColorB", farColor);
+
+                part.GetSpriteRenderer().SetPropertyBlock(mpb);
+            }
         }
 
         private float Editor_GetDepth()

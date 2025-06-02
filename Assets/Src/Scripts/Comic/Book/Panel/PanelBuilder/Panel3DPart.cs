@@ -1,6 +1,9 @@
 using UnityEngine;
 using CustomArchitecture;
 using static Comic.Panel3DBuilder.PanelPart3D;
+using Unity.VisualScripting;
+using Microsoft.Win32.SafeHandles;
+using UnityEditor;
 
 namespace Comic
 {
@@ -9,10 +12,11 @@ namespace Comic
     {
         [SerializeField, ReadOnly] private Panel3DBuilder.PanelPart3D  m_type = Panel_None;
         [SerializeField, ReadOnly] private SpriteRenderer              m_sprite = null;
-
+        [SerializeField, ReadOnly] private float                       m_localDepth; // not relativ to parent
         public Panel3DBuilder.PanelPart3D Type { get { return m_type; } set { m_type = value; } }
         public Bounds GetBounds() => m_sprite.bounds;
         public SpriteRenderer GetSpriteRenderer() => m_sprite;
+        public float GetLocalDepth() => m_localDepth;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -73,11 +77,13 @@ namespace Comic
                     pos = new Vector3(-n_size.x * .5f, 0f, 0f);
                     size = new Vector2(depth, n_size.y);
                     rotation = Quaternion.Euler(0f, 90f, 0f);
+                    m_sprite.flipX = true;
                     break;
                 case Panel3DBuilder.PanelPart3D.Panel_RightWall:
                     pos = new Vector3(n_size.x * .5f, 0f, 0f);
                     size = new Vector2(depth, n_size.y);
                     rotation = Quaternion.Euler(0f, -90f, 0f);
+                    m_sprite.flipX = true;
                     break;
                 case Panel3DBuilder.PanelPart3D.Panel_Ceil:
                     pos = new Vector3(0f, n_size.y * .5f, 0f);
@@ -97,6 +103,9 @@ namespace Comic
             transform.rotation = rotation;
             m_sprite.size = size;
             m_sprite.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            m_localDepth = depth * .5f + pos.z;
+
+            EditorUtility.SetDirty(this);
         }
         #endregion Editor
     }

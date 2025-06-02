@@ -13,7 +13,6 @@ namespace Comic
         public List<Vector3> m_panelPositions;
     }
 
-    //[ExecuteAlways]
     public class Page : AutomaticNavigationSystem<Panel>
     {
         // Page content
@@ -275,16 +274,21 @@ namespace Comic
                 if (component != null)
                 {
                     m_navigables.Add(component);
-                    component.Init(m_margin);
                 }
             }
+
+            var nav_list = m_navigables.Cast<Navigable>().ToList();
+
+            foreach (var panel in m_navigables)
+                panel.Init(nav_list, m_margin);
         }
+
         public void InstantiatePanel()
         {
             GameObject panel_object = Instantiate(m_panelPrefab, m_panelContainer);
             Panel panel = panel_object.GetComponent<Panel>();
 
-            panel.Init(m_margin);
+            panel.Init(m_navigables, m_margin);
             m_navigables.Add(panel);
         }
 #endif

@@ -62,7 +62,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 40
     OrthographicSize: 10
-    NearClipPlane: -1
+    NearClipPlane: 0.01
     FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
@@ -107,6 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 299f2da4ee97d634d9fef58214d35a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_pause: 0
   m_backgroundVisual: {fileID: 6266200535509460966}
   m_cinemachineCamera: {fileID: 1993183930647778966}
 --- !u!1 &3352302832710769427
