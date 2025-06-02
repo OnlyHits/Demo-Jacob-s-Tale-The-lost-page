@@ -5,7 +5,7 @@ using static Comic.Panel3DBuilder.PanelPart3D;
 namespace Comic
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class PanelBuilderPart : BaseBehaviour
+    public class Panel3DPart : BaseBehaviour
     {
         [SerializeField, ReadOnly] private Panel3DBuilder.PanelPart3D  m_type = Panel_None;
         [SerializeField, ReadOnly] private SpriteRenderer              m_sprite = null;
@@ -46,8 +46,8 @@ namespace Comic
         }
         #endregion
 
-        #region Build utils
-        public void Build(Bounds front_bounds, float depth, Sprite sprite)
+        #region Editor
+        public void Editor_Build(Bounds front_bounds, float depth, Sprite sprite, Vector3 lossy_scale)
         {
             if (m_sprite == null)
             {
@@ -57,8 +57,9 @@ namespace Comic
 
             m_sprite.sprite = sprite;
 
-            Vector2 n_size = front_bounds.size; //front_bounds.size / new Vector2(transform.lossyScale.x, transform.lossyScale.y);
+            Vector2 n_size = front_bounds.size / new Vector2(lossy_scale.x, lossy_scale.y);
 
+            depth *= lossy_scale.z;
             Quaternion rotation = Quaternion.identity;
             Vector3 pos = Vector3.zero;
             Vector2 size = Vector2.zero;
@@ -68,9 +69,8 @@ namespace Comic
                 case Panel3DBuilder.PanelPart3D.Panel_FrontWall:
                     pos = new Vector3(0f, 0f, -depth * .5f);
                     size = new Vector2(n_size.x, n_size.y);
-                    m_sprite.flipX = true;
+                    m_sprite.color = new Color(0, 0, 0, 0);
                     break;
-
                 case Panel3DBuilder.PanelPart3D.Panel_BackWall:
                     pos = new Vector3(0f, 0f, depth * .5f);
                     size = new Vector2(n_size.x, n_size.y);
@@ -79,13 +79,11 @@ namespace Comic
                     pos = new Vector3(-n_size.x * .5f, 0f, 0f);
                     size = new Vector2(depth, n_size.y);
                     rotation = Quaternion.Euler(0f, 90f, 0f);
-                    m_sprite.flipX = true;
                     break;
                 case Panel3DBuilder.PanelPart3D.Panel_RightWall:
                     pos = new Vector3(n_size.x * .5f, 0f, 0f);
                     size = new Vector2(depth, n_size.y);
                     rotation = Quaternion.Euler(0f, -90f, 0f);
-                    m_sprite.flipX = true;
                     break;
                 case Panel3DBuilder.PanelPart3D.Panel_Ceil:
                     pos = new Vector3(0f, n_size.y * .5f, 0f);
@@ -104,7 +102,8 @@ namespace Comic
             transform.localPosition = pos;
             transform.rotation = rotation;
             m_sprite.size = size;
+            m_sprite.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         }
-        #endregion Build utils
+        #endregion Editor
     }
 }

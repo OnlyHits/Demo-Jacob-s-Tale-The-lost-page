@@ -47,6 +47,9 @@ TagManager:
   - name: LocalUnlit
     uniqueID: 798250207
     locked: 0
+  - name: Panel
+    uniqueID: 845951225
+    locked: 0
   - name: Vfx
     uniqueID: 1898714581
     locked: 0

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 
 namespace Comic
 {
@@ -15,7 +16,6 @@ namespace Comic
             Page page = (Page)target;
 
             SpawnPanel(page);
-            RefreshPanelList(page);
             AddConfiguration(page);
 
             RefreshPage(page);
@@ -29,12 +29,11 @@ namespace Comic
 
                 foreach (var panel in page.GetNavigables())
                 {
-                    panel.GetPanel3DBuilder().Build(panel.GetPanelVisual().PanelReference().bounds);
+                    panel.Editor_Build();
                 }
                 EditorUtility.SetDirty(page);
             }
         }
-
 
         private void SpawnPanel(Page page)
         {
@@ -43,16 +42,6 @@ namespace Comic
                 page.InstantiatePanel();
                 EditorUtility.SetDirty(page);
             }
-        }
-
-        private void RefreshPanelList(Page page)
-        {
-            if (GUILayout.Button("Refresh panel list"))
-            {
-                page.RefreshList();
-                EditorUtility.SetDirty(page);
-            }
-
         }
 
         private void AddConfiguration(Page page)

@@ -5,6 +5,8 @@ using DG.Tweening;
 using System.Collections.Generic;
 using static CustomArchitecture.CustomArchitecture;
 using Unity.Cinemachine;
+using UnityEngine.Rendering;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace Comic
 {
@@ -17,12 +19,17 @@ namespace Comic
 #if UNITY_EDITOR
     [ExecuteAlways]
 #endif
+    [RequireComponent(typeof(PanelVisualData))]
+    [RequireComponent(typeof(SortingGroup))]
     public class Panel : Navigable, PanelInterface
     {
-        [SerializeField] private        PanelVisual             m_panelVisual;
         [SerializeField] private        Transform               m_propsContainer;
-        [SerializeField] private        PanelBackgroundManager  m_backroundMgr;
+
+        [SerializeField, ReadOnly] private PanelVisualData      m_visualDatas;
         [SerializeField] private        Panel3DBuilder          m_panel3DBuilder;
+        [SerializeField] private        Panel2DBuilder          m_panel2DBuilder;
+        [SerializeField] private        PanelOutlineBuilder     m_outlineBuilder;
+
         // this value must be save
         [SerializeField] private bool   m_isLock = false;
 
@@ -34,16 +41,23 @@ namespace Comic
         private CinemachineCameraExtended m_cinemachineCamera = null;
 
         public bool IsLock() => m_isLock;
-        public PanelVisual GetPanelVisual() => m_panelVisual;
         public List<AProps> GetProps() => m_props;
         public CinemachineCameraExtended GetCinemachineCamera() => m_cinemachineCamera;
-        public PanelBackgroundManager GetBackgroundEditor() => m_backroundMgr;
         public Panel3DBuilder GetPanel3DBuilder() => m_panel3DBuilder;
+        public Panel2DBuilder GetPanel2DBuilder() => m_panel2DBuilder;
+        public PanelOutlineBuilder GetOutlineBuilder() => m_outlineBuilder;
+
+        public PanelVisualData GetVisualData() => m_visualDatas != null ? m_visualDatas : GetComponent<PanelVisualData>();
+
+        #region Bounding Utils
+        public Bounds GetInnerPanelBounds() => m_panel2DBuilder.GetInnerPanelBounds(GetGlobalBounds());
+        public Bounds GetGroundToCeilBounds() => m_panel2DBuilder.GetGroundToCeilBounds(GetGlobalBounds());
+        #endregion Bounding Utils
 
         #region Navigable
-        public override Bounds GetGlobalBounds() => m_panelVisual.PanelReference().bounds;
-        public override void Focus() => m_panelVisual.Focus();
-        public override void Unfocus() => m_panelVisual.Unfocus();
+        public override Bounds GetGlobalBounds() => GetVisualData().GetGlobalBounds();
+        public override void Focus() => m_outlineBuilder.Focus();
+        public override void Unfocus() => m_outlineBuilder.Unfocus();
         #endregion
 
         #region BaseBehaviour
@@ -53,17 +67,12 @@ namespace Comic
         { }
         protected override void OnUpdate()
         {
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-                ClampPosition();
-#endif
-
-            m_panelVisual.GetHideSprite().enabled = m_isLock;
+            //m_panelVisual.GetHideSprite().enabled = m_isLock;
         }
         public override void LateInit(params object[] parameters)
         {
             m_cinemachineCamera.LateInit();
-            m_cinemachineCamera.FitBounds(m_panelVisual.PanelReference().bounds);
+            m_cinemachineCamera.FitBounds(GetGlobalBounds());
             m_cinemachineCamera.Camera.Lens.NearClipPlane = -1f;
         }
         public override void Init(params object[] parameters)
@@ -78,10 +87,16 @@ namespace Comic
 
             base.Init(parameters[0]);
 
+            m_visualDatas = GetComponent<PanelVisualData>();
+
             m_cinemachineCamera = GetComponent<CinemachineCameraExtended>();
             m_cinemachineCamera.Init();
+
+            m_outlineBuilder.Init();
+            m_panel2DBuilder.Init();
+            m_panel3DBuilder.Init();
+
             m_margin = (SpriteRenderer)parameters[1];
-            m_panelVisual.Init();
 
             InitProps();
         }
@@ -151,39 +166,15 @@ namespace Comic
 
         #endregion PanelBehaviour
 
-        public Bounds GetInnerPanelBounds()
-        {
-            Bounds panelBounds = m_panelVisual.PanelReference().bounds;
-            Bounds floorBounds = m_backroundMgr.m_floor.bounds;
-
-            float minX = panelBounds.min.x;
-            float maxX = panelBounds.max.x; 
-
-            float maxY = panelBounds.max.y;
-            float minY = floorBounds.max.y;
-
-            if (minY > maxY)
-                minY = maxY;
-
-            Vector3 center = new Vector3(
-                (minX + maxX) / 2f,
-                (minY + maxY) / 2f,
-                panelBounds.center.z // assume same Z
-            );
-
-            Vector3 size = new Vector3(
-                maxX - minX,
-                maxY - minY,
-                panelBounds.size.z // assume same Z
-            );
-
-            return new Bounds(center, size);
-        }
-
-
         public bool ContainPosition(Vector3 position)
         {
-            return m_panelVisual.PanelReference().bounds.Contains(position);
+            return GetVisualData().GetGlobalBounds().Contains(position);
+        }
+
+        public bool IsPlayerInPanel()
+        {
+            Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().transform.position;
+            return ContainPosition(playerPos);
         }
 
         private void InitProps()
@@ -206,26 +197,26 @@ namespace Comic
         }
 
         // could be only in unity editor, will see later if needed
-        private void ClampPosition()
-        {
-            if (m_margin == null || m_panelVisual.PanelReference() == null) return;
+        //private void ClampPosition()
+        //{
+        //    if (m_margin == null || m_panelVisual.PanelReference() == null) return;
 
-            Bounds margin_bounds = m_margin.bounds;
-            Bounds panel_bounds = m_panelVisual.PanelReference().bounds;
+        //    Bounds margin_bounds = m_margin.bounds;
+        //    Bounds panel_bounds = m_panelVisual.PanelReference().bounds;
 
-            Vector3 position = transform.position;
+        //    Vector3 position = transform.position;
 
-            position.x = Mathf.Clamp(position.x,
-                margin_bounds.min.x + (panel_bounds.size.x / 2),
-                margin_bounds.max.x - (panel_bounds.size.x / 2));
+        //    position.x = Mathf.Clamp(position.x,
+        //        margin_bounds.min.x + (panel_bounds.size.x / 2),
+        //        margin_bounds.max.x - (panel_bounds.size.x / 2));
 
-            position.y = Mathf.Clamp(position.y,
-                margin_bounds.min.y + (panel_bounds.size.y / 2),
-                margin_bounds.max.y - (panel_bounds.size.y / 2));
+        //    position.y = Mathf.Clamp(position.y,
+        //        margin_bounds.min.y + (panel_bounds.size.y / 2),
+        //        margin_bounds.max.y - (panel_bounds.size.y / 2));
 
-            transform.position = position;
-            m_panelVisual.LockPosition();
-        }
+        //    transform.position = position;
+        //    m_panelVisual.LockPosition();
+        //}
 
         public bool IsRotating()
         {
@@ -248,39 +239,24 @@ namespace Comic
                 });
         }
 
-        public bool IsPlayerInCase()
+        #region Editor
+#if UNITY_EDITOR
+        public void Editor_Build()
         {
-            SpriteMask sprite = m_panelVisual.PanelReference();
+            var sorting_group = GetComponent<SortingGroup>();
+            sorting_group.sortingLayerName = "Panel";
+            sorting_group.sortAtRoot = true;
+            sorting_group.sortingOrder = 0;
 
-            if (sprite == null)
-            {
-                Debug.LogWarning("Could not check if player in case, no panel visual sprite set");
-                return false;
-            }
+            // hard lock
+            GetVisualData().Ref.transform.localPosition = Vector3.zero;
 
-            bool isPlayerIn = false;
-            bool isInWidth = false;
-            bool isInHeight = false;
-
-            Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().transform.position;
-            Vector3 casePos = sprite.transform.position;
-
-            float width = sprite.bounds.size.x / 2f;
-            float height = sprite.bounds.size.y / 2f;
-
-            if (casePos.x - width < playerPos.x && playerPos.x < casePos.x + width)
-            {
-                isInWidth = true;
-            }
-
-            if (casePos.y - height < playerPos.y && playerPos.y < casePos.y + height)
-            {
-                isInHeight = true;
-            }
-
-            isPlayerIn = isInHeight && isInWidth;
-
-            return isPlayerIn;
+            m_outlineBuilder.Editor_Build(GetGlobalBounds());
+            // Build 2D before 3D. 3D use 2D's datas
+            m_panel2DBuilder.Editor_Build(GetGlobalBounds(), GetVisualData());
+            m_panel3DBuilder.Editor_Build(GetGroundToCeilBounds(), GetVisualData());
         }
+#endif
+        #endregion Editor
     }
 }

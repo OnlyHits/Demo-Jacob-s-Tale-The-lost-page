@@ -3,6 +3,8 @@ using CustomArchitecture;
 using UnityEngine;
 using static Comic.Comic;
 using System;
+using UnityEditor.Build.Reporting;
+
 
 
 #if UNITY_EDITOR
@@ -31,17 +33,13 @@ namespace Comic
         [Tooltip("Use this root if you want to transform 3D panel. His position is dynamically modified to be at the center of the 3D panel")]
         [SerializeField] private Transform m_rootTransform;
         [SerializeField] private float m_defaultDepth = 2f;
+
         // use at runtime, in edit mode it wont be fullfiled
-        [NonSerialized] private Dictionary<PanelPart3D, PanelBuilderPart>   m_parts;
+        [NonSerialized] private Dictionary<PanelPart3D, Panel3DPart> m_parts;
 
 #if UNITY_EDITOR
-        [SerializeField, ReadOnly] private List<PanelBuilderPart> m_editorParts;
+        [SerializeField, ReadOnly] private List<Panel3DPart> m_editorParts;
 #endif
-
-        // tmp
-        [SerializeField] private Sprite m_ceilSprite;
-        [SerializeField] private Sprite m_groundSprite;
-        [SerializeField] private Sprite m_wallSprite;
 
         // tmp
         [SerializeField] private Material m_material;
@@ -61,11 +59,11 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
-            m_parts = new Dictionary<PanelPart3D, PanelBuilderPart>();
+            m_parts = new Dictionary<PanelPart3D, Panel3DPart>();
 
             for (int i = m_rootTransform.childCount - 1; i >= 0; i--)
             {
-                var part = m_rootTransform.GetChild(i).GetComponent<PanelBuilderPart>();
+                var part = m_rootTransform.GetChild(i).GetComponent<Panel3DPart>();
 
                 if (part == null || part.Type == PanelPart3D.Panel_None)
                     continue;
@@ -97,8 +95,8 @@ namespace Comic
 
             for (int i = m_rootTransform.childCount - 1; i >= 0; i--)
             {
-                
-                if (!m_rootTransform.GetChild(i).TryGetComponent<PanelBuilderPart>(out var part))
+
+                if (!m_rootTransform.GetChild(i).TryGetComponent<Panel3DPart>(out var part))
                     return false;
 
                 var type = part.Type;
@@ -131,14 +129,13 @@ namespace Comic
                 GameObject partObj = new(part.ToString());
                 partObj.transform.SetParent(m_rootTransform, false);
 
-                PanelBuilderPart builderPart = partObj.AddComponent<PanelBuilderPart>();
+                Panel3DPart builderPart = partObj.AddComponent<Panel3DPart>();
 
-                builderPart.Init(m_sprite, m_material);
                 builderPart.Type = part;
             }
         }
 
-        private PanelBuilderPart Editor_GetPanelBuilderPart(PanelPart3D type)
+        private Panel3DPart Editor_GetPanel3DPart(PanelPart3D type)
         {
             foreach (var part in m_editorParts)
             {
@@ -152,8 +149,8 @@ namespace Comic
 
         private void Editor_SetDefaultValues()
         {
-            var back = Editor_GetPanelBuilderPart(PanelPart3D.Panel_BackWall);
-            var front = Editor_GetPanelBuilderPart(PanelPart3D.Panel_FrontWall);
+            var back = Editor_GetPanel3DPart(PanelPart3D.Panel_BackWall);
+            var front = Editor_GetPanel3DPart(PanelPart3D.Panel_FrontWall);
 
             front.transform.localPosition = Vector3.zero;
 
@@ -163,10 +160,12 @@ namespace Comic
         }
 
         // do not manually call
-        public void Build(Bounds bounds)
+        public void Editor_Build(Bounds bounds, PanelVisualData datas)
         {
             if (m_rootTransform == null)
                 return;
+
+            transform.localPosition = Vector3.zero;
 
             bool is_valid = Editor_CheckRootValidity();
 
@@ -182,7 +181,7 @@ namespace Comic
 
             foreach (Transform child in m_rootTransform)
             {
-                if (child.TryGetComponent<PanelBuilderPart>(out var part))
+                if (child.TryGetComponent<Panel3DPart>(out var part))
                     m_editorParts.Add(part);
             }
 
@@ -191,30 +190,33 @@ namespace Comic
                 Editor_SetDefaultValues();
             }
 
-            RefreshBuild(bounds);
+            RefreshBuild(bounds, transform.lossyScale, datas);
         }
 
-        private void RefreshBuild(Bounds bounds)
+        private void RefreshBuild(Bounds bounds, Vector3 lossy_scale, PanelVisualData datas)
         {
+            foreach (var part in m_editorParts)
+                part.Init(m_sprite, m_material);
+
             var depth = Editor_GetDepth();
 
-            Editor_GetPanelBuilderPart(PanelPart3D.Panel_FrontWall).Build(bounds, depth, m_wallSprite);
-            Editor_GetPanelBuilderPart(PanelPart3D.Panel_BackWall).Build(bounds, depth, m_wallSprite);
-            Editor_GetPanelBuilderPart(PanelPart3D.Panel_LeftWall).Build(bounds, depth, m_wallSprite);
-            Editor_GetPanelBuilderPart(PanelPart3D.Panel_RightWall).Build(bounds, depth, m_wallSprite);
-            Editor_GetPanelBuilderPart(PanelPart3D.Panel_Ceil).Build(bounds, depth, m_ceilSprite);
-            Editor_GetPanelBuilderPart(PanelPart3D.Panel_Ground).Build(bounds, depth, m_groundSprite);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_FrontWall).Editor_Build(bounds, depth, datas.WallSprite, lossy_scale);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_BackWall).Editor_Build(bounds, depth, datas.WallSprite, lossy_scale);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_LeftWall).Editor_Build(bounds, depth, datas.WallSprite, lossy_scale);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_RightWall).Editor_Build(bounds, depth, datas.WallSprite, lossy_scale);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_Ceil).Editor_Build(bounds, depth, datas.CeilSprite, lossy_scale);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_Ground).Editor_Build(bounds, depth, datas.GroundSprite, lossy_scale);
 
-            var pos = m_rootTransform.position;
-            pos.z = COMIC_BASE_Z + depth * .5f;
+            var pos = m_rootTransform.localPosition;
+            pos.z = depth * lossy_scale.z * .5f;
 
-            m_rootTransform.position = pos;
+            m_rootTransform.localPosition = pos;
         }
 
         private float Editor_GetDepth()
         {
-            var front = Editor_GetPanelBuilderPart(PanelPart3D.Panel_FrontWall);
-            var back = Editor_GetPanelBuilderPart(PanelPart3D.Panel_BackWall);
+            var front = Editor_GetPanel3DPart(PanelPart3D.Panel_FrontWall);
+            var back = Editor_GetPanel3DPart(PanelPart3D.Panel_BackWall);
 
             if (front == null || back == null)
             {

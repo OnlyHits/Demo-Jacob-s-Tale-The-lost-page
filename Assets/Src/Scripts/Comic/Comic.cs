@@ -16,6 +16,14 @@ namespace Comic
 
         // this control where our comic z is (background, pages, panels) 
         public static readonly float COMIC_BASE_Z;
+        
+        public enum PanelSortingOrder : int
+        {
+            Panel_Background = 0,
+            Panel_Props = 1,
+            Panel_Foreground = 2,
+            Panel_Outline = 3,
+        }
 
         // Main game mode scene names
         public static readonly string HUD_SCENE_NAME = "HudScene";

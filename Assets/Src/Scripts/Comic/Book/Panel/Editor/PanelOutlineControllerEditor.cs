@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace Comic
 {
-    [CustomEditor(typeof(PanelOutlineController))]
-    public class PanelOutlineControllerEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            DrawDefaultInspector();
+    //[CustomEditor(typeof(PanelOutlineBuilder))]
+    //public class PanelOutlinePartControllerEditor : Editor
+    //{
+    //    public override void OnInspectorGUI()
+    //    {
+    //        DrawDefaultInspector();
 
-            if (GUILayout.Button("Generate Outline"))
-            {
-                ((PanelOutlineController)target).GenerateOutline();
-            }
-        }
-    }
+    //        if (GUILayout.Button("Generate Outline"))
+    //        {
+    //            ((PanelOutlineBuilder)target).Editor_Build();
+    //        }
+    //    }
+    //}
 }
 #endif

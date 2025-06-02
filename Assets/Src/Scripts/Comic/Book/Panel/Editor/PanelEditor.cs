@@ -1,6 +1,8 @@
+using System.IO;
 using DG.DOTweenEditor;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Comic
 {
@@ -13,7 +15,6 @@ namespace Comic
 
             Panel panel = (Panel)target;
 
-            RefreshBackground(panel);
             RefreshPanelBuilder(panel);
         }
 
@@ -21,34 +22,13 @@ namespace Comic
         {
             if (GUILayout.Button("Refresh 3D Builder"))
             {
-                panel.GetPanel3DBuilder().Build(panel.GetPanelVisual().PanelReference().bounds);
-                EditorUtility.SetDirty(panel);
-            }
-        }
+                var sorting_group = panel.GetComponent<SortingGroup>();
+                sorting_group.sortingLayerName = "Panel";
+                sorting_group.sortAtRoot = true;
+                sorting_group.sortingOrder = 0;
 
-        private void RefreshBackground(Panel panel)
-        {
-            if (GUILayout.Button("Refresh Background"))
-            {
-                if (panel.GetBackgroundEditor() == null)
-                {
-                    Debug.LogWarning($"Decor parent transform not set on [{panel.gameObject.name}]");
-                    return;
-                }
+                panel.Editor_Build();
 
-                var missing = new System.Collections.Generic.List<string>();
-
-                if (panel.GetBackgroundEditor().m_wall == null) missing.Add("wall");
-                if (panel.GetBackgroundEditor().m_floor == null) missing.Add("floor");
-                if (panel.GetBackgroundEditor().m_ceiling == null) missing.Add("ceiling");
-
-                if (missing.Count > 0)
-                {
-                    Debug.LogWarning($"Missing decor children ({string.Join(", ", missing)}) on [{panel.gameObject.name}]");
-                    return;
-                }
-
-                panel.GetBackgroundEditor().UpdateElements();
                 EditorUtility.SetDirty(panel);
             }
         }

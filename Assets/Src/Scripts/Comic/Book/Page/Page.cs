@@ -231,7 +231,7 @@ namespace Comic
         {
             foreach (Panel panel in m_navigables)
             {
-                if (panel.IsPlayerInCase())
+                if (panel.IsPlayerInPanel())
                 {
                     return panel;
                 }
