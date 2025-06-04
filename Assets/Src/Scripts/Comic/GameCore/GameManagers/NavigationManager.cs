@@ -569,7 +569,7 @@ namespace Comic
                 m_pageInput.Pause(true);
 
                 if (m_gameManager != null)
-                    m_gameManager.GetCharacterManager().GetInputController().Pause(true);
+                    m_gameManager.GetCharacterManager().GetInputController().Pause(false);
             }
 
         }

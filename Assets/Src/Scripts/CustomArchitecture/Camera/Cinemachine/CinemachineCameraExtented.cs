@@ -41,18 +41,45 @@ namespace CustomArchitecture
         #region Features
         private void Fit(Bounds bounds)
         {
-            float panelWidth = bounds.size.x;
-            float panelHeight = bounds.size.y;
+            if (m_camera.Lens.Orthographic)
+            {
+                float panelWidth = bounds.size.x * m_heightFactor;
+                float panelHeight = bounds.size.y * m_widthFactor;
 
-            float cameraAspect = (float)Screen.width / Screen.height;
+                float cameraAspect = (float)Screen.width / Screen.height;
 
-            float verticalSize = panelHeight * m_heightFactor / 2f;
-            float horizontalSize = panelWidth * m_widthFactor / 2f / cameraAspect;
+                float verticalSize = panelHeight * .5f;
+                float horizontalSize = panelWidth * .5f / cameraAspect;
 
-            float targetOrthographicSize = Mathf.Max(verticalSize, horizontalSize);
+                float targetOrthographicSize = Mathf.Max(verticalSize, horizontalSize);
 
-            m_camera.Follow = transform;
-            m_camera.Lens.OrthographicSize = targetOrthographicSize;
+                //m_camera.Follow = transform;
+                m_camera.Lens.OrthographicSize = targetOrthographicSize;
+            }
+            else if (m_camera.Lens.IsPhysicalCamera)
+            {
+                Debug.LogWarning("Fit() doesn't support physical camera mode yet.");
+                return;
+            }
+            else
+            {
+                float distance = Mathf.Abs(m_camera.transform.localPosition.z * m_camera.transform.lossyScale.z);
+
+                float panelWidth = bounds.size.x * m_widthFactor;
+                float panelHeight = bounds.size.y * m_heightFactor;
+
+                float aspect = (float)Screen.width / Screen.height;
+
+                float fovVerticalRad = 2f * Mathf.Atan((panelHeight / 2f) / distance);
+                float fovHorizontalRad = 2f * Mathf.Atan((panelWidth / 2f) / distance);
+
+                float fovHorizontalToVerticalRad = 2f * Mathf.Atan(Mathf.Tan(fovHorizontalRad / 2f) / aspect);
+
+                float finalFovRad = Mathf.Max(fovVerticalRad, fovHorizontalToVerticalRad);
+                float finalFovDeg = Mathf.Clamp(finalFovRad * Mathf.Rad2Deg, 1f, 179f);
+
+                m_camera.Lens.FieldOfView = finalFovDeg;
+            }
         }
 
         public void FitSelfBounds()

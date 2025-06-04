@@ -1,13 +1,7 @@
 using System.Collections.Generic;
 using CustomArchitecture;
 using UnityEngine;
-using static Comic.Comic;
 using System;
-using UnityEditor.Build.Reporting;
-using UnityEngine.Experimental.GlobalIllumination;
-
-
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -15,10 +9,6 @@ using UnityEditor;
 
 namespace Comic
 {
-
-#if UNITY_EDITOR
-    [ExecuteInEditMode]
-#endif
     public class Panel3DBuilder : BaseBehaviour
     {
         public enum PanelPart3D
@@ -43,14 +33,10 @@ namespace Comic
         [SerializeField, ReadOnly] private List<Panel3DPart> m_editorParts;
 #endif
 
-        // tmp
-        [SerializeField] private Material m_material;
+        [SerializeField] private Color nearColor = Color.white;
+        [SerializeField] private Color farColor = Color.black;
 
-        public Color nearColor = Color.white;
-        public Color farColor = Color.black;
-
-        private float m_oldDepth;
-        private Bounds m_oldBounds;
+        private Panel m_manager = null; // ref to panel
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -63,6 +49,13 @@ namespace Comic
         { }
         public override void Init(params object[] parameters)
         {
+            if (parameters.Length < 1 || parameters[0] is not Panel)
+            {
+                Debug.LogWarning("Wrong parameters");
+                return;
+            }
+
+            m_manager = (Panel)parameters[0];
             m_parts = new Dictionary<PanelPart3D, Panel3DPart>();
 
             for (int i = m_rootTransform.childCount - 1; i >= 0; i--)
@@ -78,20 +71,97 @@ namespace Comic
                 }
             }
 
-            foreach (var part in m_parts.Values)
-            {
-                part.Init(m_material);
-            }
-
-            Editor_RefreshMaterial();
+            InitParts();
+            SetupMaterials();
 
             //m_oldDepth = Editor_GetDepth();
             //m_oldBounds = m_parts[PanelPart3D.Panel_FrontWall].GetBounds();
         }
         #endregion
 
+        #region Material
+        private void InitParts()
+        {
+            m_parts[PanelPart3D.Panel_LeftWall].Init(m_manager.GetVisualData().DepthMaterial);
+            m_parts[PanelPart3D.Panel_RightWall].Init(m_manager.GetVisualData().DepthMaterial);
+            m_parts[PanelPart3D.Panel_Ceil].Init(m_manager.GetVisualData().DepthMaterial);
+            m_parts[PanelPart3D.Panel_Ground].Init(m_manager.GetVisualData().DepthMaterial);
+            m_parts[PanelPart3D.Panel_FrontWall].Init(m_manager.GetVisualData().DepthMaterial);
+            m_parts[PanelPart3D.Panel_BackWall].Init(m_manager.GetVisualData().BackWallMaterial);
+        }
+        private void SetupMaterials()
+        {
+            float depth = GetDepth();
+
+            SetupDepthMaterial(m_parts[PanelPart3D.Panel_LeftWall].GetSpriteRenderer(), depth);
+            SetupDepthMaterial(m_parts[PanelPart3D.Panel_RightWall].GetSpriteRenderer(), depth);
+            SetupDepthMaterial(m_parts[PanelPart3D.Panel_Ground].GetSpriteRenderer(), depth);
+            SetupDepthMaterial(m_parts[PanelPart3D.Panel_Ceil].GetSpriteRenderer(), depth);
+            SetupDepthMaterial(m_parts[PanelPart3D.Panel_FrontWall].GetSpriteRenderer(), depth);
+            SetupBackWallMaterial(m_parts[PanelPart3D.Panel_BackWall].GetSpriteRenderer());
+        }
+        private void SetupDepthMaterial(SpriteRenderer spr, float depth)
+        {
+            var mpb = new MaterialPropertyBlock();
+
+            spr.GetPropertyBlock(mpb);
+
+            mpb.SetFloat("_GradientSize", depth);
+            mpb.SetColor("_ColorA", nearColor);
+            mpb.SetColor("_ColorB", farColor);
+
+            spr.SetPropertyBlock(mpb);
+        }
+        private void SetupBackWallMaterial(SpriteRenderer spr)
+        {
+            var bounds = spr.sprite.bounds;
+            var mpb = new MaterialPropertyBlock();
+
+            spr.GetPropertyBlock(mpb);
+            mpb.SetVector("_MinPosOS", bounds.min);
+            mpb.SetVector("_MaxPosOS", bounds.max);
+            spr.SetPropertyBlock(mpb);
+        }
+        #endregion Material
+
+        #region Utils
+        private float GetDepth()
+        {
+            var front = m_parts[PanelPart3D.Panel_FrontWall];
+            var back = m_parts[PanelPart3D.Panel_BackWall];
+
+            if (front == null || back == null)
+            {
+                Debug.LogWarning("Front or Back panel is null.");
+                return 0f;
+            }
+
+            return Mathf.Abs(back.transform.position.z - front.transform.position.z);
+        }
+        #endregion Utils
+
         #region Editor
 #if UNITY_EDITOR
+        private void Editor_InitParts(PanelVisualData datas)
+        {
+            Editor_GetPanel3DPart(PanelPart3D.Panel_LeftWall).Init(datas.DepthMaterial);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_RightWall).Init(datas.DepthMaterial);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_Ceil).Init(datas.DepthMaterial);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_Ground).Init(datas.DepthMaterial);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_FrontWall).Init(datas.DepthMaterial);
+            Editor_GetPanel3DPart(PanelPart3D.Panel_BackWall).Init(datas.BackWallMaterial);
+        }
+        private void Editor_SetupMaterials()
+        {
+            float depth = Editor_GetDepth();
+
+            SetupDepthMaterial(Editor_GetPanel3DPart(PanelPart3D.Panel_LeftWall).GetSpriteRenderer(), depth);
+            SetupDepthMaterial(Editor_GetPanel3DPart(PanelPart3D.Panel_RightWall).GetSpriteRenderer(), depth);
+            SetupDepthMaterial(Editor_GetPanel3DPart(PanelPart3D.Panel_Ceil).GetSpriteRenderer(), depth);
+            SetupDepthMaterial(Editor_GetPanel3DPart(PanelPart3D.Panel_Ground).GetSpriteRenderer(), depth);
+            SetupDepthMaterial(Editor_GetPanel3DPart(PanelPart3D.Panel_FrontWall).GetSpriteRenderer(), depth);
+            SetupBackWallMaterial(Editor_GetPanel3DPart(PanelPart3D.Panel_BackWall).GetSpriteRenderer());
+        }
         private bool Editor_CheckRootValidity()
         {
             if (m_rootTransform.childCount != 6)
@@ -140,7 +210,7 @@ namespace Comic
             }
         }
 
-        private Panel3DPart Editor_GetPanel3DPart(PanelPart3D type)
+        public Panel3DPart Editor_GetPanel3DPart(PanelPart3D type)
         {
             foreach (var part in m_editorParts)
             {
@@ -193,18 +263,17 @@ namespace Comic
                 Editor_SetDefaultValues();
             }
 
-            RefreshBuild(bounds, transform.lossyScale, datas);
-            Editor_RefreshMaterial();
+            Editor_RefreshBuild(bounds, transform.lossyScale, datas);
+            Editor_SetupMaterials();
 
             Editor_GetPanel3DPart(PanelPart3D.Panel_FrontWall).GetSpriteRenderer().enabled = false;
 
             EditorUtility.SetDirty(this);
         }
 
-        private void RefreshBuild(Bounds bounds, Vector3 lossy_scale, PanelVisualData datas)
+        private void Editor_RefreshBuild(Bounds bounds, Vector3 lossy_scale, PanelVisualData datas)
         {
-            foreach (var part in m_editorParts)
-                part.Init(m_material);
+            Editor_InitParts(datas);
 
             var depth = Editor_GetDepth();
 
@@ -216,27 +285,10 @@ namespace Comic
             Editor_GetPanel3DPart(PanelPart3D.Panel_Ground).Editor_Build(bounds, depth, datas.GroundSprite, lossy_scale);
 
             var pos = m_rootTransform.localPosition;
+            depth /= lossy_scale.z;
             pos.z = depth * .5f;
 
             m_rootTransform.localPosition = pos;
-        }
-
-        private void Editor_RefreshMaterial()
-        {
-            var depth = Editor_GetDepth();
-
-            foreach (var part in m_editorParts)
-            {
-                var mpb = new MaterialPropertyBlock();
-
-                part.GetSpriteRenderer().GetPropertyBlock(mpb);
-
-                mpb.SetFloat("_GradientSize", depth);
-                mpb.SetColor("_ColorA", nearColor);
-                mpb.SetColor("_ColorB", farColor);
-
-                part.GetSpriteRenderer().SetPropertyBlock(mpb);
-            }
         }
 
         private float Editor_GetDepth()

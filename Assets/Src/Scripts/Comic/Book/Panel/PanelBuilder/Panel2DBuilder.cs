@@ -131,8 +131,12 @@ namespace Comic
         {
             GameObject ceil = new GameObject("2D-Ceil");
             ceil.transform.SetParent(m_container, false);
-            var ceil_sr = ceil.AddComponent<SpriteRenderer>();
+            ceil.AddComponent<SpriteRendererCollider2D>();
+            var ceil_sr = ceil.GetComponent<SpriteRenderer>();
 
+            ceil_sr.sortingLayerName = "Foreground";
+            ceil_sr.sortingOrder = 0;
+            ceil_sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             ceil_sr.drawMode = SpriteDrawMode.Tiled;
             ceil_sr.tileMode = SpriteTileMode.Continuous;
             ceil_sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
@@ -143,9 +147,13 @@ namespace Comic
 
             GameObject ground = new GameObject("2D-Ground");
             ground.transform.SetParent(m_container, false);
-            ground.AddComponent<HalfHeightCollider>();
+            ground.AddComponent<SpriteRendererCollider2D>();
             var ground_sr = ground.GetComponent<SpriteRenderer>();
+            ground_sr.gameObject.layer = LayerMask.NameToLayer("Ground");
 
+            ground_sr.sortingLayerName = "Foreground";
+            ground_sr.sortingOrder = 0;
+            ground_sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             ground_sr.drawMode = SpriteDrawMode.Tiled;
             ground_sr.tileMode = SpriteTileMode.Continuous;
             ground_sr.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
@@ -161,10 +169,18 @@ namespace Comic
             m_ceil.size = new Vector2(n_size.x, m_ceilSize);
             m_ceil.transform.localPosition = new Vector3(0f, n_size.y * .5f, 0f);
 
+            m_ceil.GetComponent<SpriteRendererCollider2D>().Refresh();
+            m_ceil.sortingLayerName = "Foreground";
+            m_ceil.sortingOrder = 0;
+            m_ceil.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+
             m_ground.size = new Vector2(n_size.x, m_groundSize);
             m_ground.transform.localPosition = new Vector3(0f, -n_size.y * .5f, 0f);
 
-//            m_ground.gameObject.GetComponent<HalfHeightCollider>().Setup();
+            m_ground.GetComponent<SpriteRendererCollider2D>().Refresh();
+            m_ground.sortingLayerName = "Foreground";
+            m_ground.sortingOrder = 0;
+            m_ground.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         }
 
         public void Editor_Build(Bounds bounds, PanelVisualData datas)

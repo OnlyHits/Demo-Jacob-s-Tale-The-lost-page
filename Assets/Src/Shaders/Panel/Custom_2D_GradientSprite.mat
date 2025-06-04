@@ -34,11 +34,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _GradientSize: 4
+    - _GradientSize: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorA: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorB: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+    - _ColorB: {r: 1, g: 1, b: 1, a: 1}
     - _Direction: {r: 1, g: 0.02, b: 0, a: 0}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}

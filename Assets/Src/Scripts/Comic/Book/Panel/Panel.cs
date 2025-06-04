@@ -10,7 +10,8 @@ using static UnityEngine.Rendering.DebugUI;
 
 namespace Comic
 {
-    public interface PanelInterface
+    // not updated. Probably not needed, think about removing it
+    public interface IPanelInterface
     {
         public bool ContainPosition(Vector3 position);
         public void Flip(Direction direction);
@@ -21,7 +22,7 @@ namespace Comic
 #endif
     [RequireComponent(typeof(PanelVisualData))]
     [RequireComponent(typeof(SortingGroup))]
-    public class Panel : Navigable, PanelInterface
+    public class Panel : Navigable, IPanelInterface
     {
         [SerializeField] private        Transform               m_propsContainer;
 
@@ -38,7 +39,7 @@ namespace Comic
         private Tween                   m_rotateTween;
         private bool                    m_isRotating = false;
 
-        private CinemachineCameraExtended m_cinemachineCamera = null;
+        [SerializeField] private CinemachineCameraExtended m_cinemachineCamera = null;
 
         public bool IsLock() => m_isLock;
         public List<AProps> GetProps() => m_props;
@@ -89,12 +90,12 @@ namespace Comic
 
             m_visualDatas = GetComponent<PanelVisualData>();
 
-            m_cinemachineCamera = GetComponent<CinemachineCameraExtended>();
+//            m_cinemachineCamera = GetComponent<CinemachineCameraExtended>();
             m_cinemachineCamera.Init();
 
             m_outlineBuilder.Init();
             m_panel2DBuilder.Init();
-            m_panel3DBuilder.Init();
+            m_panel3DBuilder.Init(this);
 
             m_margin = (SpriteRenderer)parameters[1];
 
@@ -181,14 +182,12 @@ namespace Comic
         {
             if (m_props != null && m_props.Count != 0)
                 m_props.Clear();
-            else if (m_props == null)
-                m_props = new();
+            else
+                m_props ??= new();
 
             foreach (Transform child in m_propsContainer)
             {
-                AProps component = child.GetComponent<AProps>();
-
-                if (component != null)
+                if (child.TryGetComponent<AProps>(out var component))
                 {
                     m_props.Add(component);
                     component.Init();
@@ -255,6 +254,11 @@ namespace Comic
             // Build 2D before 3D. 3D use 2D's datas
             m_panel2DBuilder.Editor_Build(GetGlobalBounds(), GetVisualData());
             m_panel3DBuilder.Editor_Build(GetGroundToCeilBounds(), GetVisualData());
+
+            InitProps();
+
+            foreach (var props in m_props)
+                props.Editor_Build(m_panel3DBuilder);
         }
 #endif
         #endregion Editor

@@ -1,8 +1,6 @@
 using UnityEngine;
 using CustomArchitecture;
 using static Comic.Panel3DBuilder.PanelPart3D;
-using Unity.VisualScripting;
-using Microsoft.Win32.SafeHandles;
 using UnityEditor;
 
 namespace Comic
@@ -45,6 +43,7 @@ namespace Comic
         #endregion
 
         #region Editor
+#if UNITY_EDITOR
         public void Editor_Build(Bounds front_bounds, float depth, Sprite sprite, Vector3 lossy_scale)
         {
             if (m_sprite == null)
@@ -57,7 +56,7 @@ namespace Comic
 
             Vector2 n_size = front_bounds.size / new Vector2(lossy_scale.x, lossy_scale.y);
 
-            depth *= lossy_scale.z;
+            depth /= lossy_scale.z;
             Quaternion rotation = Quaternion.identity;
             Vector3 pos = Vector3.zero;
             Vector2 size = Vector2.zero;
@@ -107,6 +106,7 @@ namespace Comic
 
             EditorUtility.SetDirty(this);
         }
+#endif
         #endregion Editor
     }
 }

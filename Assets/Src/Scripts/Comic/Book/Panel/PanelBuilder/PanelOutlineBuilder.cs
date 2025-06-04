@@ -1,11 +1,6 @@
 using UnityEngine;
 using CustomArchitecture;
 using System.Collections.Generic;
-using static Comic.Panel3DBuilder;
-using UnityEditor.U2D.Sprites;
-
-
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,7 +8,6 @@ using UnityEditor;
 
 namespace Comic
 {
-    [ExecuteAlways]
     public class PanelOutlineBuilder : BaseBehaviour
     {
         public enum PanelOutlinePartType
