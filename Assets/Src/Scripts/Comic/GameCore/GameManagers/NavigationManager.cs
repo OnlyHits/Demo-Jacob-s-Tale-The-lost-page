@@ -112,6 +112,8 @@ namespace Comic
 
             PauseAllInputs();
 
+            StartCoroutine(m_gameManager.GetVolumeAnimator().AnimateVignette(true, ComicCinemachineMgr.Instance.SmoothBlend.BlendTime));
+
             yield return StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
                 m_gameManager.GetPageManager().GetCurrentPage().GetStartingNavigable().GetCinemachineCamera().Camera,
                 ComicCinemachineMgr.CameraList.Managed_Cameras,
@@ -128,6 +130,8 @@ namespace Comic
             PauseAllInputs();
 
             m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
+
+            StartCoroutine(m_gameManager.GetVolumeAnimator().AnimateVignette(false, ComicCinemachineMgr.Instance.SmoothBlend.BlendTime));
 
             yield return StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(m_gameManager.GetBgCinemachineCamera().Camera,
                 ComicCinemachineMgr.CameraList.Managed_Cameras,

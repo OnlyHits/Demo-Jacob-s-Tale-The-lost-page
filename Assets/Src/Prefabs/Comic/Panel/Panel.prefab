@@ -901,7 +901,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2640688706878699184}
-  - component: {fileID: 6113861128512176367}
   - component: {fileID: 5460432480693744599}
   m_Layer: 0
   m_Name: EdgeCollider
@@ -925,22 +924,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3845092132172816720}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6113861128512176367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6861378148467460153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6595edee7f51900ab8aea00d53f990a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_caseSprite: {fileID: 3434979825211138100}
-  m_edgeColliderObj: {fileID: 6861378148467460153}
-  m_edgeColliderTransform: {fileID: 2640688706878699184}
-  m_edgeCollider: {fileID: 5460432480693744599}
 --- !u!68 &5460432480693744599
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -1409,6 +1392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4440194828276948735}
   - component: {fileID: 4184487337812323094}
+  - component: {fileID: 2106837222082855964}
   - component: {fileID: 8167271831477378054}
   m_Layer: 0
   m_Name: CinemachineCamera
@@ -1475,6 +1459,23 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &2106837222082855964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8782701504478423180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449ef5ebbe24720439ec31d15f7b6f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Weight: 1
+  FocusTracking: 0
+  FocusTarget: {fileID: 0}
+  FocusOffset: 0
+  Profile: {fileID: 11400000, guid: 8ad5da2a877b88743b868d06f9d640d2, type: 2}
 --- !u!114 &8167271831477378054
 MonoBehaviour:
   m_ObjectHideFlags: 0

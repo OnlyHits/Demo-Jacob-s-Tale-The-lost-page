@@ -2,10 +2,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using Unity.Cinemachine;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace CustomArchitecture
 {
-    [DefaultExecutionOrder(-10)] // to be executed before GameCore
+    [DefaultExecutionOrder((int)CAExecutionOrder.EO_CMCameraMgr)]
     public abstract class CinemachineMgr<T> : BaseBehaviour where T : CinemachineMgr<T>
     {
         public enum CameraList { All_Cameras, Managed_Cameras }
@@ -21,6 +22,7 @@ namespace CustomArchitecture
         // Brain parameters
         private CinemachineBlendDefinition  m_cutBlend;
         private CinemachineBlendDefinition  m_smoothBlend;
+
         private float                       m_blendTimeout = 3f;
         private bool                        m_isLocked = false;
 
@@ -109,8 +111,6 @@ namespace CustomArchitecture
         {
             if (m_isLocked)
                 yield break;
-
-            //Debug.Log(target.gameObject.name + (IsCameraRegistered(target, list) ? " : registered" : " : not registered"));
 
             if (!IsCameraRegistered(target, list))
             {

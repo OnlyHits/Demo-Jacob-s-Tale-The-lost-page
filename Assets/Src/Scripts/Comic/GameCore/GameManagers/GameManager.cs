@@ -13,9 +13,9 @@ namespace Comic
         [SerializeField] private SpriteRenderer m_coverLeftSR;
 
         [SerializeField] private GameBackground m_gameBackground;
-        // todo : should be wrap in a class
-        //[SerializeField] private GameObject m_gameBackground;
-        //[SerializeField] private CinemachineCameraExtended m_backgroundCMCamera = null;
+
+        // has nothing to do here - but no better place for the moment
+        [SerializeField] private VolumeAnimator m_volumeAnimator;
 
         private PageManager m_pageManager;
         private NewCharacterManager m_characterManager;
@@ -23,6 +23,7 @@ namespace Comic
         private GameCameraRegister m_cameras;
         private DialogueManager m_dialogueManager;
 
+        public VolumeAnimator GetVolumeAnimator() => m_volumeAnimator;
         public PageManager GetPageManager() => m_pageManager;
         public NewCharacterManager GetCharacterManager() => m_characterManager;
         public PowerManager GetPowerManager() => m_powerManager;

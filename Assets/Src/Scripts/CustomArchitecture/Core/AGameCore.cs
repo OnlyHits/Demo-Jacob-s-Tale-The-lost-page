@@ -2,13 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using System.Collections;
-using Comic;
+using Comic; // ???
+using static CustomArchitecture.CustomArchitecture;
 
 namespace CustomArchitecture
 {
     // this class heritate from MonoBehaviour and not BaseBehaviour
     // to ensure that there is no confusion with Init/Update functions
-    [DefaultExecutionOrder(-2)]
+    [DefaultExecutionOrder((int)CAExecutionOrder.EO_GameCore)]
     public abstract class AGameCore<T> : MonoBehaviour where T : AGameCore<T>
     {
         private static T m_instance;
@@ -39,6 +40,7 @@ namespace CustomArchitecture
             get
             {
                 // kind of depreciated, until agamecore is abstract
+                // no??
                 if (m_instance == null)
                 {
                     m_instance = FindFirstObjectByType<T>();

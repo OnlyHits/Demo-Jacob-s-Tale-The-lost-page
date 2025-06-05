@@ -4,6 +4,12 @@ namespace CustomArchitecture
 {
     public static class CustomArchitecture
     {
+        public enum CAExecutionOrder : int
+        {
+            EO_Default = 0,
+            EO_CMCameraMgr,
+            EO_GameCore,
+        }
         public enum ControllerType
         {
             NONE,
