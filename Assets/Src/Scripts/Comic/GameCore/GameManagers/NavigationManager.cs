@@ -49,7 +49,24 @@ namespace Comic
         protected override void OnLateUpdate()
         { }
         protected override void OnUpdate()
-        { }
+        {
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                Debug.Log("Focus left");
+                StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
+                    m_gameManager.GetCharacterManager().GetCurrentCharacter().GetLeftCinemachineCamera().Camera,
+                    false,
+                    ComicCinemachineMgr.Instance.SmoothBlend));
+            }
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                Debug.Log("Focus right");
+                StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
+                    m_gameManager.GetCharacterManager().GetCurrentCharacter().GetRightCinemachineCamera().Camera,
+                    false,
+                    ComicCinemachineMgr.Instance.SmoothBlend));
+            }
+        }
         public override void LateInit(params object[] parameters)
         {
             if (m_navigationInput != null)
@@ -114,7 +131,6 @@ namespace Comic
 
             yield return StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
                 m_gameManager.GetPageManager().GetCurrentPage().GetStartingNavigable().GetCinemachineCamera().Camera,
-                ComicCinemachineMgr.CameraList.Managed_Cameras,
                 true,
                 ComicCinemachineMgr.Instance.SmoothBlend));
 
@@ -130,7 +146,6 @@ namespace Comic
             m_gameManager.GetPageManager().GetCurrentPage().StopNavigate();
 
             yield return StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(m_gameManager.GetBgCinemachineCamera().Camera,
-                ComicCinemachineMgr.CameraList.Managed_Cameras,
                 true,
                 ComicCinemachineMgr.Instance.SmoothBlend));
 

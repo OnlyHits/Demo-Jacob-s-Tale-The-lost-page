@@ -1,6 +1,7 @@
+using Comc;
 using CustomArchitecture;
-using Unity.Cinemachine;
 using UnityEngine;
+using static CustomArchitecture.CustomArchitecture;
 
 namespace Comic
 {
@@ -25,6 +26,7 @@ namespace Comic
         public override void Init(params object[] parameters)
         {
             m_cinemachineCamera.Init();
+            ComicCinemachineMgr.Instance.RegisterPermanentCamera(m_cinemachineCamera.Camera);
         }
         #endregion
 

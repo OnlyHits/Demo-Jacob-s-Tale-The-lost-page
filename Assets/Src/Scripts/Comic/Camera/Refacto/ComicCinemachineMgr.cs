@@ -20,9 +20,9 @@ namespace Comc
         { }
         protected override void OnLateUpdate()
         {
-            // hack cause cinemachine blend near plan when switching from otho to perspectiv
-            // to an invalid value (-1)
-            m_mainCamera.nearClipPlane = 0.01f;
+            //// hack cause cinemachine blend near plan when switching from otho to perspectiv
+            //// to an invalid value (-1)
+            //m_mainCamera.nearClipPlane = 0.01f;
         }
         protected override void OnUpdate()
         { }

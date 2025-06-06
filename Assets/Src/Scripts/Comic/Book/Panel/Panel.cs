@@ -17,9 +17,6 @@ namespace Comic
         public void Flip(Direction direction);
     }
 
-#if UNITY_EDITOR
-    [ExecuteAlways]
-#endif
     [RequireComponent(typeof(PanelVisualData))]
     [RequireComponent(typeof(SortingGroup))]
     public class Panel : Navigable, IPanelInterface
@@ -39,11 +36,11 @@ namespace Comic
         private Tween                   m_rotateTween;
         private bool                    m_isRotating = false;
 
-        [SerializeField] private CinemachineCameraExtended m_cinemachineCamera = null;
+        [SerializeField] private PanelCinemachineCamera m_cinemachineCamera = null;
 
         public bool IsLock() => m_isLock;
         public List<AProps> GetProps() => m_props;
-        public CinemachineCameraExtended GetCinemachineCamera() => m_cinemachineCamera;
+        public PanelCinemachineCamera GetCinemachineCamera() => m_cinemachineCamera;
         public Panel3DBuilder GetPanel3DBuilder() => m_panel3DBuilder;
         public Panel2DBuilder GetPanel2DBuilder() => m_panel2DBuilder;
         public PanelOutlineBuilder GetOutlineBuilder() => m_outlineBuilder;
@@ -57,9 +54,19 @@ namespace Comic
 
         #region Navigable
         public override Bounds GetGlobalBounds() => GetVisualData().GetGlobalBounds();
-        public override void Focus() => m_outlineBuilder.Focus();
-        public override void Unfocus() => m_outlineBuilder.Unfocus();
-        #endregion
+        public override void Focus()
+        {
+            base.Focus();
+            m_outlineBuilder.Focus();
+            m_cinemachineCamera.SetPanValue(0f);
+        }
+        public override void Unfocus()
+        {
+            base.Unfocus();
+            m_outlineBuilder.Unfocus();
+            m_cinemachineCamera.SetPanValue(0f);
+        }
+        #endregion Navigable
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -68,13 +75,18 @@ namespace Comic
         { }
         protected override void OnUpdate()
         {
-            //m_panelVisual.GetHideSprite().enabled = m_isLock;
+            if (m_isFocus)
+            {
+                if (IsPlayerInPanel())
+                {
+                    m_cinemachineCamera.SetPanValue(GetPlayerDistanceFromCenterAsRatio());
+                }
+            }
         }
         public override void LateInit(params object[] parameters)
         {
             m_cinemachineCamera.LateInit();
             m_cinemachineCamera.FitBounds(GetGlobalBounds());
-            m_cinemachineCamera.Camera.Lens.NearClipPlane = -1f;
         }
         public override void Init(params object[] parameters)
         {
@@ -166,16 +178,34 @@ namespace Comic
 
         #endregion PanelBehaviour
 
+        #region Panel Utility
+        /// <summary>
+        /// Compute the ratio between player distance from panel center
+        /// and half panel horizontal size
+        /// </summary>
+        /// <returns>ratio between -1 and 1</returns>
+        public float GetPlayerDistanceFromCenterAsRatio()
+        {
+            Vector3 player_pos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().transform.position;
+
+            float distance = Mathf.Abs(transform.position.x - player_pos.x);
+            float width = GetGlobalBounds().size.x * .5f;
+            bool left = player_pos.x < transform.position.x;
+
+            Debug.Log(distance / width);
+
+            return Mathf.Clamp(distance / width, 0f, 1f) * (left ? -1f : 1f);
+        }
         public bool ContainPosition(Vector3 position)
         {
-            return GetVisualData().GetGlobalBounds().Contains(position);
+            return GetVisualData().GetGlobalBounds().Contain2D((Vector2)position);
         }
-
         public bool IsPlayerInPanel()
         {
-            Vector3 playerPos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().transform.position;
-            return ContainPosition(playerPos);
+            Vector3 player_pos = ComicGameCore.Instance.MainGameMode.GetCharacterManager().GetCurrentCharacter().transform.position;
+            return ContainPosition(player_pos);
         }
+        #endregion Panel Utility
 
         private void InitProps()
         {
@@ -193,28 +223,6 @@ namespace Comic
                 }
             }
         }
-
-        // could be only in unity editor, will see later if needed
-        //private void ClampPosition()
-        //{
-        //    if (m_margin == null || m_panelVisual.PanelReference() == null) return;
-
-        //    Bounds margin_bounds = m_margin.bounds;
-        //    Bounds panel_bounds = m_panelVisual.PanelReference().bounds;
-
-        //    Vector3 position = transform.position;
-
-        //    position.x = Mathf.Clamp(position.x,
-        //        margin_bounds.min.x + (panel_bounds.size.x / 2),
-        //        margin_bounds.max.x - (panel_bounds.size.x / 2));
-
-        //    position.y = Mathf.Clamp(position.y,
-        //        margin_bounds.min.y + (panel_bounds.size.y / 2),
-        //        margin_bounds.max.y - (panel_bounds.size.y / 2));
-
-        //    transform.position = position;
-        //    m_panelVisual.LockPosition();
-        //}
 
         public bool IsRotating()
         {

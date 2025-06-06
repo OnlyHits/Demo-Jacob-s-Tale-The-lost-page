@@ -110,7 +110,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &3991242723783237618
 MonoBehaviour:
@@ -133,6 +133,6 @@ SortingGroup:
   m_GameObject: {fileID: 5496932637978407745}
   m_Enabled: 1
   m_SortingLayerID: 1898714581
-  m_SortingLayer: 3
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_SortAtRoot: 1

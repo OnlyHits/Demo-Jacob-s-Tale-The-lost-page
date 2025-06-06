@@ -412,7 +412,7 @@ MonoBehaviour:
   m_panel2DBuilder: {fileID: 7236500208701241280}
   m_outlineBuilder: {fileID: 7344309390740368831}
   m_isLock: 0
-  m_cinemachineCamera: {fileID: 8167271831477378054}
+  m_cinemachineCamera: {fileID: 1759360837895352621}
 --- !u!114 &7059104948658849782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,7 +440,7 @@ SortingGroup:
   m_GameObject: {fileID: 3512051811473100434}
   m_Enabled: 1
   m_SortingLayerID: 845951225
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_SortAtRoot: 1
 --- !u!1 &4990929409505229800
@@ -1077,7 +1077,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1654048833
-  m_SortingLayer: 5
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1fc780c795930a248b9a82e896081586, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1311,7 +1311,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1654048833
-  m_SortingLayer: 5
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3b8612060f7189249a89f60b0c288461, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1392,8 +1392,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4440194828276948735}
   - component: {fileID: 4184487337812323094}
+  - component: {fileID: 584727706522209110}
   - component: {fileID: 2106837222082855964}
-  - component: {fileID: 8167271831477378054}
+  - component: {fileID: 1759360837895352621}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -1459,6 +1460,40 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 1
+--- !u!114 &584727706522209110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8782701504478423180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d54399b04b4fa48a73e121d4937dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReferenceFrame: 2
+  RecenterTarget: 0
+  PanAxis:
+    Value: 0
+    Center: 0
+    Range: {x: -10, y: 10}
+    Wrap: 0
+    Recentering:
+      Enabled: 0
+      Wait: 1
+      Time: 2
+    Restrictions: 0
+  TiltAxis:
+    Value: 0
+    Center: 0
+    Range: {x: -70, y: 70}
+    Wrap: 0
+    Recentering:
+      Enabled: 0
+      Wait: 1
+      Time: 2
+    Restrictions: 0
 --- !u!114 &2106837222082855964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1476,7 +1511,7 @@ MonoBehaviour:
   FocusTarget: {fileID: 0}
   FocusOffset: 0
   Profile: {fileID: 11400000, guid: 8ad5da2a877b88743b868d06f9d640d2, type: 2}
---- !u!114 &8167271831477378054
+--- !u!114 &1759360837895352621
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1485,13 +1520,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8782701504478423180}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb45357f71d8c9b4d9784807e3b2f0de, type: 3}
+  m_Script: {fileID: 11500000, guid: fec7fd8132b9e2e40aae63faab6cfd82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_pause: 0
-  m_fitSelf: 0
   m_widthFactor: 1.1
   m_heightFactor: 1.1
+  m_angle: 5
 --- !u!1 &8895834217860987077
 GameObject:
   m_ObjectHideFlags: 0

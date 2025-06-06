@@ -8,7 +8,6 @@ namespace CustomArchitecture
     public class CinemachineCameraExtended : BaseBehaviour
     {
         [Header("Focus parameters")]
-        [SerializeField] private bool                       m_fitSelf = false;
         [SerializeField, Range(0.1f, 100f)] private float   m_widthFactor = 1f;
         [SerializeField, Range(0.1f, 100f)] private float   m_heightFactor = 1f;
 
@@ -32,9 +31,6 @@ namespace CustomArchitecture
         public override void Init(params object[] parameters)
         {
             m_camera = GetComponent<CinemachineCamera>();
-
-            if (m_fitSelf)
-                FitSelfBounds();
         }
         #endregion
 
@@ -53,7 +49,6 @@ namespace CustomArchitecture
 
                 float targetOrthographicSize = Mathf.Max(verticalSize, horizontalSize);
 
-                //m_camera.Follow = transform;
                 m_camera.Lens.OrthographicSize = targetOrthographicSize;
             }
             else if (m_camera.Lens.IsPhysicalCamera)
@@ -80,19 +75,6 @@ namespace CustomArchitecture
 
                 m_camera.Lens.FieldOfView = finalFovDeg;
             }
-        }
-
-        public void FitSelfBounds()
-        {
-            Bounds? bounds = gameObject.TryGetBounds();
-
-            if (bounds == null)
-            {
-                Debug.LogWarning("CinemachineCameraExtended : can't focus self (no bound source)");
-                return;
-            }
-
-            Fit(bounds.Value);
         }
 
         public void FitBounds(Bounds bounds)

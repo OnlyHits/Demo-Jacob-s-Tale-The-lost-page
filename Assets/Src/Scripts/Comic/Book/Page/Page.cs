@@ -137,7 +137,6 @@ namespace Comic
         {
             StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
                 panel.GetCinemachineCamera().Camera,
-                ComicCinemachineMgr.CameraList.Managed_Cameras,
                 false,
                 ComicCinemachineMgr.Instance.SmoothBlend));
         }

@@ -9,7 +9,7 @@ namespace CustomArchitecture
     {
         private Dictionary<Direction, Navigable> m_links = null;
         [SerializeField] private bool m_isNavigable = true;
-
+        protected bool m_isFocus = false;
         public bool IsNavigable() => m_isNavigable;
 
         // override this function to specify the bounds of your
@@ -20,8 +20,8 @@ namespace CustomArchitecture
         // On a RectTransform construct bounds by calling GetWorldCorners()
         // Todo : make an extension for rectTransform, or a wrapper class to make it generic
         public abstract Bounds GetGlobalBounds();
-        public abstract void Focus();
-        public abstract void Unfocus();
+        public virtual void Focus() => m_isFocus = true;
+        public virtual void Unfocus() => m_isFocus = false;
 
         // /!\ null check this function
         public Navigable GetLinkedNavigable(Direction direction) => m_links?[direction];

@@ -4833,7 +4833,7 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
 --- !u!114 &1912630698063681009
 MonoBehaviour:
   m_ObjectHideFlags: 0

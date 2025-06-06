@@ -148,14 +148,14 @@ namespace Comic
 
         private void RegisterPageCameras()
         {
-            ComicCinemachineMgr.Instance.ClearManagedCameras();
+            ComicCinemachineMgr.Instance.ClearDynamicCameras();
 
             foreach (var panel in m_currentPage.GetNavigables())
             {
-                ComicCinemachineMgr.Instance.RegisterCamera(panel.GetCinemachineCamera().Camera);
+                ComicCinemachineMgr.Instance.RegisterDynamicCamera(panel.GetCinemachineCamera().Camera);
             }
 
-            ComicCinemachineMgr.Instance.RegisterCamera(ComicGameCore.Instance.GetGameMode<MainGameMode>().GetGameBackground().GetCinemachineCamera().Camera);
+            //ComicCinemachineMgr.Instance.RegisterCamera(ComicGameCore.Instance.GetGameMode<MainGameMode>().GetGameBackground().GetCinemachineCamera().Camera);
         }
 
         #endregion Cinemachine Camera Management

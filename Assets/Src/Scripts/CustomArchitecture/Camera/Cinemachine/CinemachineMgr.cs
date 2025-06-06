@@ -9,15 +9,13 @@ namespace CustomArchitecture
     [DefaultExecutionOrder((int)CAExecutionOrder.EO_CMCameraMgr)]
     public abstract class CinemachineMgr<T> : BaseBehaviour where T : CinemachineMgr<T>
     {
-        public enum CameraList { All_Cameras, Managed_Cameras }
-
         private static T m_instance;
 
         private CinemachineBrain            m_brain;
 
         // I choose to don't use CinemachineCameraExtended wrapper to keep it straight forward
-        private List<CinemachineCamera>     m_managedCameras;
-        private CinemachineCamera[]         m_allCameras;
+        [SerializeField, ReadOnly] private List<CinemachineCamera>     m_permanentCameras;
+        [SerializeField, ReadOnly] private List<CinemachineCamera>     m_dynamicCameras;
 
         // Brain parameters
         private CinemachineBlendDefinition  m_cutBlend;
@@ -77,7 +75,8 @@ namespace CustomArchitecture
 
         private void OnAwake()
         {
-            m_managedCameras = new List<CinemachineCamera>(30);
+            m_permanentCameras = new List<CinemachineCamera>(30);
+            m_dynamicCameras = new List<CinemachineCamera>(30);
 
             m_cutBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.Cut, 0f);
             m_smoothBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, 1f);
@@ -85,40 +84,35 @@ namespace CustomArchitecture
             m_brain = GetComponentInChildren<CinemachineBrain>();
 
             transform.position = Vector3.zero;
-
-            RefreshTracking();
-        }
-
-        public void RefreshTracking()
-        {
-            if (m_allCameras != null && m_allCameras.Length > 0)
-            {
-                m_allCameras = null;
-            }
-
-            m_allCameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
         }
         #endregion Setup
 
         #region Camera register
-        public void ClearManagedCameras() => m_managedCameras.Clear();
-        public void RegisterCamera(CinemachineCamera camera) => m_managedCameras.Add(camera);
-        public void UnregisterCamera(CinemachineCamera camera) => m_managedCameras.Remove(camera);
+        public void ClearPermanentCameras() => m_permanentCameras.Clear();
+        public void RegisterPermanentCamera(CinemachineCamera camera) => m_permanentCameras.Add(camera);
+        public void UnregisterPermanentCamera(CinemachineCamera camera) => m_permanentCameras.Remove(camera);
+        public void ClearDynamicCameras() => m_dynamicCameras.Clear();
+        public void RegisterDynamicCamera(CinemachineCamera camera) => m_dynamicCameras.Add(camera);
+        public void UnregisterDynamicCamera(CinemachineCamera camera) => m_dynamicCameras.Remove(camera);
         #endregion Camera register
 
         #region Focus Management
-        public IEnumerator FocusCamera(CinemachineCamera target, CameraList list = CameraList.Managed_Cameras, bool lock_blend = false, CinemachineBlendDefinition blend_def = default)
+        public IEnumerator FocusCamera(CinemachineCamera target, bool lock_blend = false, CinemachineBlendDefinition blend_def = default)
         {
+            //Debug.Log(target.gameObject.name);
             if (m_isLocked)
+            {
+                Debug.LogWarning("Can't focus camera, CinemachineMgr is locked");
                 yield break;
+            }
 
-            if (!IsCameraRegistered(target, list))
+            if (!IsCameraRegistered(target))
             {
                 Debug.LogWarning("Camera not registered");
                 yield break;
             }
 
-            OnFocusCamera(target, list);
+            OnFocusCamera(target);
             m_brain.DefaultBlend = blend_def;
 
             m_isLocked = lock_blend;
@@ -146,33 +140,22 @@ namespace CustomArchitecture
             m_isLocked = false;
         }
 
-        private bool IsCameraRegistered(CinemachineCamera camera, CameraList list)
+        private bool IsCameraRegistered(CinemachineCamera camera)
         {
-            if (list == CameraList.Managed_Cameras)
-            {
-                foreach (var cam in m_managedCameras)
-                    if (cam == camera) return true;
-            }
-            else if (list == CameraList.All_Cameras)
-            {
-                foreach (var cam in m_allCameras)
-                    if (cam == camera) return true;
-            }
+            foreach (var cam in m_dynamicCameras)
+                if (cam == camera) return true;
+            foreach (var cam in m_permanentCameras)
+                if (cam == camera) return true;
+
             return false;
         }
 
-        private void OnFocusCamera(CinemachineCamera target, CameraList list, int priority = 10)
+        private void OnFocusCamera(CinemachineCamera target, int priority = 10)
         {
-            if (list == CameraList.Managed_Cameras)
-            {
-                foreach (var cam in m_managedCameras)
-                    cam.Priority = (cam == target) ? priority : 0;
-            }
-            else if (list == CameraList.All_Cameras)
-            {
-                foreach (var cam in m_allCameras)
-                    cam.Priority = (cam == target) ? priority : 0;
-            }
+            foreach (var cam in m_dynamicCameras)
+                cam.Priority = (cam == target) ? priority : 0;
+            foreach (var cam in m_permanentCameras)
+                cam.Priority = (cam == target) ? priority : 0;
         }
         #endregion Focus Management
     }
