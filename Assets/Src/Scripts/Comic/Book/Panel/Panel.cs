@@ -90,7 +90,6 @@ namespace Comic
 
             m_visualDatas = GetComponent<PanelVisualData>();
 
-//            m_cinemachineCamera = GetComponent<CinemachineCameraExtended>();
             m_cinemachineCamera.Init();
 
             m_outlineBuilder.Init();

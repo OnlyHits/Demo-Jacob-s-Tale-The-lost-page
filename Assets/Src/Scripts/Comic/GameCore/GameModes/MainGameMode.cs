@@ -111,7 +111,6 @@ namespace Comic
         // Add Load function to ABehaviour, or make a inheritance
         public override IEnumerator LoadGameMode()
         {
-
             m_hudManager = ComponentUtils.FindObjectAcrossScenes<HudManager>();
             m_gameManager = ComponentUtils.FindObjectAcrossScenes<GameManager>();
 
@@ -132,7 +131,11 @@ namespace Comic
             if (m_hudManager != null)
             {
                 m_hudManager.Init();
-//                m_cameraManager.RegisterCameras(m_hudManager.GetRegisteredCameras());
+
+                //foreach (var c in m_hudManager.GetRegisteredCameras().m_cameras)
+                //{
+                //    ComicCinemachineMgr.Instance.RegisterCameraStack(c);
+                //}
             }
 
             if (m_gameManager != null)
@@ -144,7 +147,7 @@ namespace Comic
                 m_hudManager.LateInit(m_gameManager.GetCoverSpriteRenderer(true));
             }
 
-            GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
+//            GetDialogueManager().SubscribeToEndDialogue(OnEndMainDialogue);
 
             // Update : is okay but should have a globally better handle of Init/LateInit 
             m_navigationManager.LateInit();

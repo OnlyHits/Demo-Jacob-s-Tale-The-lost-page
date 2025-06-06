@@ -13,7 +13,7 @@ namespace Comic
         {
             base.OnAllocate(parameter);
 
-            if (parameter.Length < 1 || parameter[0] is not Vector2)
+            if (parameter.Length < 1 || parameter[0] is not Vector3)
             {
                 Debug.Log("Wrong parameter");
                 return;
@@ -38,7 +38,8 @@ namespace Comic
             }
 
             float scale = 1f * (float)parameter[2]; // ;)
-            Vector3 pos = new Vector3(((Vector2)parameter[0]).x, ((Vector2)parameter[0]).y, Random.Range(0, 10));
+
+            Vector3 pos = (Vector3)parameter[0];
 
             transform.localScale = (bool)parameter[3] ? Vector3.one : new Vector3(scale, scale, 1f);
             transform.position = pos;

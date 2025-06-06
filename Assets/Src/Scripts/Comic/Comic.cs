@@ -15,7 +15,9 @@ namespace Comic
         }
 
         // this control where our comic z is (background, pages, panels) 
-        public static readonly float COMIC_BASE_Z;
+        public static readonly float PANEL_BASE_Z = 0f;
+        public static readonly float COMIC_BASE_Z = 0f;
+        public static readonly float PLAYER_BASE_Z = 0.2f;
         
         public enum PanelSortingOrder : int
         {
@@ -45,11 +47,11 @@ namespace Comic
     
         public static List<string> characterPath = new()
         {
-            "Characters/Jacob",
-            "Characters/BestFriend",
-            "Characters/Beloved",
-            "Characters/Bully",
-            "Characters/Boss"
+            "Jacob",
+            "BestFriend",
+            "Beloved",
+            "Bully",
+            "Boss"
         };
 
         public enum CharacterType

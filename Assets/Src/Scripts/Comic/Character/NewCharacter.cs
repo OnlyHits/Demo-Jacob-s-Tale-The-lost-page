@@ -197,7 +197,7 @@ namespace Comic
         {
             Bounds bounds = m_collider.bounds;
 
-            Vector2 pos = new(bounds.center.x, bounds.min.y);
+            Vector3 pos = new(bounds.center.x, bounds.min.y, transform.position.z);
 
             m_manager.AllocateFootStep(pos, faceRight, Mathf.Abs(m_moveInputStrength.x), ignoreSpeed);
         }

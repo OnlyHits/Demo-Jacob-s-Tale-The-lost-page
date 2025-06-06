@@ -99,7 +99,7 @@ namespace Comic
         }
 
         #region Vfx
-        public void AllocateFootStep(Vector2 position, bool flip_x, float speed, bool ignoreSpeed = false)
+        public void AllocateFootStep(Vector3 position, bool flip_x, float speed, bool ignoreSpeed = false)
         {
             if (m_footStepVfx == null)
             {
@@ -130,8 +130,9 @@ namespace Comic
                 m_currentCharacter.gameObject.SetActive(false);
             }
             else
-                position = m_characterContainer.transform.position; // small fix to control the first instantiation. need to remake the spawn position logic
+                position = m_characterContainer.transform.position; // hack to control the first instantiation. need to remake the spawn position logic
 
+            position.z = PLAYER_BASE_Z;
             m_currentCharacter = m_characters[type].GetComponent<NewCharacter>();
             m_currentCharacter.GetRigidbody().linearVelocity = velocity;
             m_currentCharacter.GetRigidbody().angularVelocity = angular_velocity;

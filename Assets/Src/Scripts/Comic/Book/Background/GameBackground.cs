@@ -18,7 +18,10 @@ namespace Comic
         protected override void OnUpdate()
         { }
         public override void LateInit(params object[] parameters)
-        { }
+        {
+            m_cinemachineCamera.LateInit();
+            m_cinemachineCamera.FitBounds(m_backgroundVisual.GetComponent<SpriteRenderer>().bounds);
+        }
         public override void Init(params object[] parameters)
         {
             m_cinemachineCamera.Init();

@@ -14,16 +14,12 @@ namespace Comic
 
         [SerializeField] private GameBackground m_gameBackground;
 
-        // has nothing to do here - but no better place for the moment
-        [SerializeField] private VolumeAnimator m_volumeAnimator;
-
         private PageManager m_pageManager;
         private NewCharacterManager m_characterManager;
         private PowerManager m_powerManager;
         private GameCameraRegister m_cameras;
         private DialogueManager m_dialogueManager;
 
-        public VolumeAnimator GetVolumeAnimator() => m_volumeAnimator;
         public PageManager GetPageManager() => m_pageManager;
         public NewCharacterManager GetCharacterManager() => m_characterManager;
         public PowerManager GetPowerManager() => m_powerManager;
@@ -77,6 +73,8 @@ namespace Comic
         { }
         public override void LateInit(params object[] parameters)
         {
+            Debug.Log("Current Graphics API: " + SystemInfo.graphicsDeviceType);
+
             if (m_pageManager != null) m_pageManager.LateInit(parameters);
             if (m_characterManager != null) m_characterManager.LateInit(parameters);
             if (m_powerManager != null) m_powerManager.LateInit(parameters);

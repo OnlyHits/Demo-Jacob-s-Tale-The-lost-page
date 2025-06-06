@@ -118,8 +118,9 @@ namespace Comic
             var mpb = new MaterialPropertyBlock();
 
             spr.GetPropertyBlock(mpb);
-            mpb.SetVector("_MinPosOS", bounds.min);
-            mpb.SetVector("_MaxPosOS", bounds.max);
+            mpb.SetColor("_VignetteColor", farColor);
+            mpb.SetVector("_SpriteSize", new Vector4(spr.size.x, spr.size.y, 0, 0));
+
             spr.SetPropertyBlock(mpb);
         }
         #endregion Material

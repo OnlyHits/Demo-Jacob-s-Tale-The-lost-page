@@ -1,105 +1,85 @@
-Shader "Custom/2D/GradientSpriteLit4Corners"
+Shader "Custom/VignetteWholeSpriteByPosition"
 {
     Properties
     {
-        _MainTex ("Sprite Texture", 2D) = "white" {}
-        _Color ("Tint", Color) = (1,1,1,1)
-
-        _ColorTL ("Top Left Color", Color) = (1, 0, 0, 1)
-        _ColorTR ("Top Right Color", Color) = (0, 1, 0, 1)
-        _ColorBL ("Bottom Left Color", Color) = (0, 0, 1, 1)
-        _ColorBR ("Bottom Right Color", Color) = (1, 1, 0, 1)
-
-        _GradientSize ("Edge Gradient Size", Float) = 0.1
-        _GradientCurve ("Gradient Curve", Float) = 1.0
-
-        [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
-        [HideInInspector] _EnableExternalAlpha ("Enable External Alpha", Float) = 0
+        _MainTex("Sprite Texture", 2D) = "white" {}
+        _VignetteColor("Vignette Color", Color) = (0,0,0,1)
+        _VignetteIntensity("Vignette Intensity", Range(0,1)) = 0.5
+        _VignetteSmoothness("Vignette Smoothness", Range(0.01,1)) = 0.5
+        _SpriteSize("Sprite Size (Width, Height)", Vector) = (1,1,0,0)
     }
-
     SubShader
     {
-        Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
-        LOD 300
+        Tags { "LightMode" = "Universal2D" "RenderType"="Transparent" "Queue"="Transparent" }
+        Blend SrcAlpha OneMinusSrcAlpha
+        Cull Off
+        Lighting Off
+        ZWrite Off
 
         Pass
         {
-            Name "Main"
-            Tags { "LightMode" = "Universal2D" }
-            Blend SrcAlpha OneMinusSrcAlpha
-
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/LightingUtility.hlsl"
 
             struct Attributes
             {
                 float4 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
+                float4 color : COLOR;
             };
 
             struct Varyings
             {
-                float4 positionHCS : SV_POSITION;
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                float2 posOS : TEXCOORD1;
+                float2 uvWhole : TEXCOORD1;
+                float4 color : COLOR;
             };
 
-            sampler2D _MainTex;
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
             float4 _MainTex_ST;
 
-            float4 _Color;
-            float4 _ColorTL, _ColorTR, _ColorBL, _ColorBR;
-            float _GradientSize;
-            float _GradientCurve;
-            float4 _RendererColor;
+            float4 _VignetteColor;
+            float _VignetteIntensity;
+            float _VignetteSmoothness;
+            float2 _SpriteSize;
 
             TEXTURE2D(_ShapeLightTexture0); SAMPLER(sampler_ShapeLightTexture0);
-
-            float2 _MinPosOS;
-            float2 _MaxPosOS;
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                OUT.positionCS = TransformObjectToHClip(IN.positionOS.xyz);
                 OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
-                OUT.posOS = IN.positionOS.xy;
+                OUT.uvWhole = (IN.positionOS.xy + (_SpriteSize * 0.5)) / _SpriteSize;
+                OUT.color = IN.color;
                 return OUT;
             }
 
-            float4 EdgeGradient(float2 posOS)
+            float4 frag(Varyings IN) : SV_Target
             {
-                float2 size = max(_MaxPosOS - _MinPosOS, float2(0.0001, 0.0001));
-                float2 uv = saturate((posOS - _MinPosOS) / size); // 0–1 across the sprite
+                float4 texColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv);
 
-                // Distance to closest edge
-                float2 edgeDist = min(uv, 1.0 - uv); // min distance to horizontal/vertical edge
-                float edgeFactor = saturate(edgeDist.x / _GradientSize);
-                edgeFactor = min(edgeFactor, saturate(edgeDist.y / _GradientSize));
+                float2 dist = IN.uvWhole - 0.5;
+                float radius = length(dist) / 0.7071;
 
-                // Edge gradient blend factor
-                float t = 1.0 - pow(edgeFactor, _GradientCurve); // 1 near edge, 0 in center
+                // Vignette value: 0 at center, 1 at edges
+                float vignette = smoothstep(_VignetteIntensity, _VignetteIntensity + _VignetteSmoothness, radius);
 
-                float4 top = lerp(_ColorTL, _ColorTR, uv.x);
-                float4 bottom = lerp(_ColorBL, _ColorBR, uv.x);
-                float4 edgeColor = lerp(bottom, top, uv.y);
+                // Apply color to the outer area (vignette color outside, original inside)
+                float4 vignetteTint = lerp(float4(1,1,1,1), _VignetteColor, vignette);
 
-                return lerp(float4(1,1,1,1), edgeColor, t); // white = no gradient when t = 0
-            }
-
-            half4 frag(Varyings IN) : SV_Target
-            {
-                float4 texColor = tex2D(_MainTex, IN.uv);
-                float4 gradient = EdgeGradient(IN.posOS);
-
-                float2 lightUV = IN.positionHCS.xy * 0.5 + 0.5;
+                float2 lightUV = IN.positionCS.xy * 0.5 + 0.5;
                 float4 lighting = SAMPLE_TEXTURE2D(_ShapeLightTexture0, sampler_ShapeLightTexture0, lightUV);
 
-                float4 finalColor = texColor * _Color * gradient * _RendererColor * lighting;
-                return finalColor;
+                float4 result = texColor * vignetteTint * lighting;
+                result.rgb *= IN.color.rgb;
+                result.a *= IN.color.a;
+
+                return result;
             }
             ENDHLSL
         }

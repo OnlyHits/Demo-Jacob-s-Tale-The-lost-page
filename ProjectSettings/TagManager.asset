@@ -47,6 +47,12 @@ TagManager:
   - name: LocalUnlit
     uniqueID: 798250207
     locked: 0
+  - name: Background
+    uniqueID: 4144195435
+    locked: 0
+  - name: Comic
+    uniqueID: 2477275151
+    locked: 0
   - name: Panel
     uniqueID: 845951225
     locked: 0

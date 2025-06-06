@@ -30,14 +30,26 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _GradientCurve: 2.96
-    - _GradientSize: 0.4
+    - _GradientCurve: 1.83
+    - _GradientSize: 0.43
+    - _VignetteEnabled: 1
+    - _VignetteInner: 0.3
+    - _VignetteIntensity: 0
+    - _VignetteMargin: 0
+    - _VignetteOuter: 0.7
+    - _VignetteSmoothness: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorBL: {r: 0.5411765, g: 0.5411765, b: 0.5411765, a: 1}
     - _ColorBR: {r: 0.5411765, g: 0.5411765, b: 0.5411765, a: 1}
     - _ColorTL: {r: 0.5411765, g: 0.5411765, b: 0.5411765, a: 1}
     - _ColorTR: {r: 0.5411765, g: 0.5411765, b: 0.5411765, a: 1}
+    - _MainTex_Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _MaxPosOS: {r: 0.88, g: 1, b: 0, a: 0}
+    - _MinPosOS: {r: 0, g: 0, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpriteSize: {r: 10, g: 10, b: 0, a: 0}
+    - _Tiling: {r: 3.4248009, g: 1.75, b: 0, a: 0}
+    - _VignetteColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

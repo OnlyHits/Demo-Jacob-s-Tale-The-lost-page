@@ -1,6 +1,7 @@
 using UnityEngine;
 using CustomArchitecture;
 using Comic;
+using UnityEngine.Rendering.Universal;
 
 namespace Comc
 {
@@ -18,13 +19,13 @@ namespace Comc
         protected override void OnFixedUpdate()
         { }
         protected override void OnLateUpdate()
-        { }
-        protected override void OnUpdate()
         {
             // hack cause cinemachine blend near plan when switching from otho to perspectiv
             // to an invalid value (-1)
             m_mainCamera.nearClipPlane = 0.01f;
         }
+        protected override void OnUpdate()
+        { }
         public override void LateInit(params object[] parameters)
         {
         }
@@ -34,6 +35,18 @@ namespace Comc
                 Debug.LogWarning("Unable to get or create PanelInput");
             else
                 m_screenshoter.Init(m_mainCamera);
+        }
+        #endregion
+
+        #region Camera stacking
+        public void RegisterCameraStack(Camera camera)
+        {
+            var baseData = m_mainCamera.GetUniversalAdditionalCameraData();
+
+            if (!baseData.cameraStack.Contains(camera))
+            {
+                baseData.cameraStack.Add(camera);
+            }
         }
         #endregion
     }

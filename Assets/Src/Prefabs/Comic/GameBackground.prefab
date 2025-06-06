@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 132433150429083390}
   - component: {fileID: 9163703413770910539}
+  - component: {fileID: 7367936270358325611}
   m_Layer: 0
   m_Name: GameBackground
   m_TagString: Untagged
@@ -50,6 +51,18 @@ MonoBehaviour:
   m_pause: 0
   m_backgroundVisual: {fileID: 6266200535509460966}
   m_cinemachineCamera: {fileID: 2925726433299787825}
+--- !u!210 &7367936270358325611
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2538444995188687947}
+  m_Enabled: 1
+  m_SortingLayerID: -150771861
+  m_SortingLayer: 2
+  m_SortingOrder: 0
+  m_SortAtRoot: 1
 --- !u!1 &3352302832710769427
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,7 +73,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5342428443651051993}
   - component: {fileID: 3885386428001314227}
-  - component: {fileID: 727429317209640159}
   m_Layer: 0
   m_Name: Side-Right-Page
   m_TagString: Untagged
@@ -126,9 +138,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 6402278180436502126, guid: 807196392ed5db336b2f202745604692, type: 3}
-  m_Color: {r: 0.8156863, g: 0.8156863, b: 0.8156863, a: 1}
+  m_Color: {r: 0.7433963, g: 0.7433963, b: 0.7433963, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
@@ -138,18 +150,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!210 &727429317209640159
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3352302832710769427}
-  m_Enabled: 1
-  m_SortingLayerID: -506398135
-  m_SortingLayer: -1
-  m_SortingOrder: 2
-  m_SortAtRoot: 0
 --- !u!1 &5225996542606127868
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +195,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4683512878251415634}
   - component: {fileID: 2878613566772189718}
-  - component: {fileID: 3216723025729151810}
   m_Layer: 0
   m_Name: Side-Left-Page
   m_TagString: Untagged
@@ -261,9 +260,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 6402278180436502126, guid: 807196392ed5db336b2f202745604692, type: 3}
-  m_Color: {r: 0.8156863, g: 0.8156863, b: 0.8156863, a: 1}
+  m_Color: {r: 0.7433963, g: 0.7433963, b: 0.7433963, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -273,18 +272,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!210 &3216723025729151810
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5417174716528412319}
-  m_Enabled: 1
-  m_SortingLayerID: -506398135
-  m_SortingLayer: -1
-  m_SortingOrder: 2
-  m_SortAtRoot: 0
 --- !u!1 &6266200535509460966
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +282,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4646255841276131237}
   - component: {fileID: 9000830527807704961}
-  - component: {fileID: 2566201306735985780}
   m_Layer: 0
   m_Name: Background-Visual
   m_TagString: Untagged
@@ -361,7 +347,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -11
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 64659386ab7cb6f8aa3a2e82854be5c4, type: 3}
   m_Color: {r: 0.7608666, g: 0.7608666, b: 0.7608666, a: 1}
   m_FlipX: 0
@@ -373,18 +359,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!210 &2566201306735985780
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6266200535509460966}
-  m_Enabled: 1
-  m_SortingLayerID: -506398135
-  m_SortingLayer: -1
-  m_SortingOrder: 0
-  m_SortAtRoot: 0
 --- !u!1 &6636598810806961369
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,7 +369,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4780694604105317812}
   - component: {fileID: 6495256800224089396}
-  - component: {fileID: 9157781412151493799}
   m_Layer: 0
   m_Name: Side-Left
   m_TagString: Untagged
@@ -461,7 +434,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -10
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 6d6a055dcd3b7d027b716eb37e769550, type: 3}
   m_Color: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 1}
   m_FlipX: 0
@@ -473,18 +446,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!210 &9157781412151493799
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6636598810806961369}
-  m_Enabled: 1
-  m_SortingLayerID: -506398135
-  m_SortingLayer: -1
-  m_SortingOrder: 1
-  m_SortAtRoot: 0
 --- !u!1 &7304169944275928055
 GameObject:
   m_ObjectHideFlags: 0
@@ -495,7 +456,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3690012382756496971}
   - component: {fileID: 2581890517056905544}
-  - component: {fileID: 8214286464384171598}
   m_Layer: 0
   m_Name: Side-Right
   m_TagString: Untagged
@@ -561,7 +521,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -10
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: fb0ac9e26e6f4ee91b52706435bd9b59, type: 3}
   m_Color: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 1}
   m_FlipX: 0
@@ -573,18 +533,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!210 &8214286464384171598
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7304169944275928055}
-  m_Enabled: 1
-  m_SortingLayerID: -506398135
-  m_SortingLayer: -1
-  m_SortingOrder: 1
-  m_SortAtRoot: 0
 --- !u!1 &8797712229027590060
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,6 +544,7 @@ GameObject:
   - component: {fileID: 9111223365014077634}
   - component: {fileID: 5202153959830205459}
   - component: {fileID: 2925726433299787825}
+  - component: {fileID: 1635467885545458780}
   m_Layer: 0
   m_Name: Cinemachine-Camera-Orthographic
   m_TagString: Untagged
@@ -612,7 +561,7 @@ Transform:
   m_GameObject: {fileID: 8797712229027590060}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -644,7 +593,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 40
     OrthographicSize: 10
-    NearClipPlane: 0.1
+    NearClipPlane: 0.01
     FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 1
@@ -675,5 +624,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_pause: 0
   m_fitSelf: 0
-  m_widthFactor: 1
-  m_heightFactor: 1
+  m_widthFactor: 0.9
+  m_heightFactor: 0.9
+--- !u!114 &1635467885545458780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8797712229027590060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449ef5ebbe24720439ec31d15f7b6f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Weight: 1
+  FocusTracking: 0
+  FocusTarget: {fileID: 0}
+  FocusOffset: 0
+  Profile: {fileID: 11400000, guid: 440cdc91ddd7ddb64b5c1d52758f4732, type: 2}
