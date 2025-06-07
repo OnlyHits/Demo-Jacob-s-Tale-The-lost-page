@@ -79,7 +79,7 @@ namespace Comic
             {
                 if (IsPlayerInPanel())
                 {
-                    m_cinemachineCamera.SetPanValue(GetPlayerDistanceFromCenterAsRatio());
+                    m_cinemachineCamera.SetPanValue(GetEffectivPanRatio());
                 }
             }
         }
@@ -179,6 +179,16 @@ namespace Comic
         #endregion PanelBehaviour
 
         #region Panel Utility
+        public float GetEffectivPanRatio()
+        {
+            float pan_ratio = GetPlayerDistanceFromCenterAsRatio();
+            float threshold = m_cinemachineCamera.PanThreshold;
+
+            if (Mathf.Abs(pan_ratio) < threshold) return 0f;
+            else if (pan_ratio > 0) return 1f;
+            else return -1f;
+        }
+
         /// <summary>
         /// Compute the ratio between player distance from panel center
         /// and half panel horizontal size
@@ -192,10 +202,9 @@ namespace Comic
             float width = GetGlobalBounds().size.x * .5f;
             bool left = player_pos.x < transform.position.x;
 
-            Debug.Log(distance / width);
-
             return Mathf.Clamp(distance / width, 0f, 1f) * (left ? -1f : 1f);
         }
+
         public bool ContainPosition(Vector3 position)
         {
             return GetVisualData().GetGlobalBounds().Contain2D((Vector2)position);
