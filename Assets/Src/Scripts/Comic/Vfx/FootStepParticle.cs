@@ -14,7 +14,7 @@ namespace Comic
                 m_particleSystem = GetComponent<ParticleSystem>();
         }
 
-        public void Update()
+        protected override void OnUpdate()
         {
             Compute = m_particleSystem.isPlaying;
         }

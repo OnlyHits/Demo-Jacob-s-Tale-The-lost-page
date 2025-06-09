@@ -48,6 +48,15 @@ namespace CustomArchitecture
             this.type = type;
         }
 
+        public void RecreateTexture(int width, int height)
+        {
+            if (screen_texture != null)
+                UnityEngine.Object.Destroy(screen_texture);
+
+            screen_texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
+            screen_texture.filterMode = FilterMode.Point;
+        }
+
         public void TryUpdateTexture()
         {
             if (screen_bounds != target.GetBounds())
@@ -84,9 +93,9 @@ namespace CustomArchitecture
         protected Dictionary<T, ScreenshotData<ScreenshotBounded>>  m_screenshotDatas = new();
 
 //        protected Action<bool, Sprite> m_onScreenshotSprite;
-        protected Action<T, Sprite> m_onScreenshotDone;
+        protected Action<T, Texture2D> m_onScreenshotDone;
 
-        public void SubscribeToScreenshot(Action<T, Sprite> function) { m_onScreenshotDone -= function; m_onScreenshotDone += function; }
+        public void SubscribeToScreenshot(Action<T, Texture2D> function) { m_onScreenshotDone -= function; m_onScreenshotDone += function; }
         public Camera GetCameraBase() => m_baseCamera;
 
         #region BaseBehaviour
@@ -179,17 +188,24 @@ namespace CustomArchitecture
 
             int rectWidth = Mathf.RoundToInt(screenTopRight.x - screenBottomLeft.x);
             int rectHeight = Mathf.RoundToInt(screenTopRight.y - screenBottomLeft.y);
+            //float rectX = screenBottomLeft.x;
+            //float rectY = screenBottomLeft.y;
+
+            //Rect captureRect = new Rect(rectX, rectY, rectWidth, rectHeight);
             float rectX = screenBottomLeft.x;
             float rectY = screenBottomLeft.y;
+            float flippedY = m_screenshotRenderTexture.height - (rectY + rectHeight);
 
-            Rect captureRect = new Rect(rectX, rectY, data.Texture().width, data.Texture().height);
+            Rect captureRect = new Rect(rectX, flippedY, rectWidth, rectHeight);
+
+            data.RecreateTexture(rectWidth, rectHeight);
 
             data.Texture().ReadPixels(captureRect, 0, 0);
             data.Texture().Apply();
 
-            // SaveTextureAsPNG(texture, front ? "Tests/front.png" : "Tests/back.png");
+//            SaveTextureAsPNG(data.Texture(), "Tests/front.png");
 
-            m_onScreenshotDone?.Invoke((T)data.Type(), data.Texture().ConvertTextureToSprite());
+            m_onScreenshotDone?.Invoke((T)data.Type(), data.Texture());
         }
         #endregion
     }

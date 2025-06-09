@@ -13,6 +13,8 @@ namespace CustomArchitecture
 
         private CinemachineCamera       m_camera = null;
 
+        public float WidthFactor { get { return m_widthFactor; } protected set { } }
+        public float HeightFactor { get { return m_widthFactor; } protected set { } }
         public CinemachineCamera Camera
         {
             get { return m_camera; }

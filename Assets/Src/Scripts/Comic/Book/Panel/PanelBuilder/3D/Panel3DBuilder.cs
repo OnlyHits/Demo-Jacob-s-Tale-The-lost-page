@@ -24,7 +24,14 @@ namespace Comic
 
         [Tooltip("Use this root if you want to transform 3D panel. His position is dynamically modified to be at the center of the 3D panel")]
         [SerializeField] private Transform m_rootTransform;
+        [Space, Header("Containers")]
+        [SerializeField] private Transform m_roomContainer;
+        [SerializeField] private Transform m_propsContainer;
+
+        [Space, Header("Room configuration")]
         [SerializeField] private float m_defaultDepth = 2f;
+        [SerializeField] private Color nearColor = Color.white;
+        [SerializeField] private Color farColor = Color.black;
 
         // use at runtime, in edit mode it wont be fullfiled
         [NonSerialized] private Dictionary<PanelPart3D, Panel3DPart> m_parts;
@@ -32,9 +39,6 @@ namespace Comic
 #if UNITY_EDITOR
         [SerializeField, ReadOnly] private List<Panel3DPart> m_editorParts;
 #endif
-
-        [SerializeField] private Color nearColor = Color.white;
-        [SerializeField] private Color farColor = Color.black;
 
         private Panel m_manager = null; // ref to panel
 
@@ -58,9 +62,9 @@ namespace Comic
             m_manager = (Panel)parameters[0];
             m_parts = new Dictionary<PanelPart3D, Panel3DPart>();
 
-            for (int i = m_rootTransform.childCount - 1; i >= 0; i--)
+            for (int i = m_roomContainer.childCount - 1; i >= 0; i--)
             {
-                var part = m_rootTransform.GetChild(i).GetComponent<Panel3DPart>();
+                var part = m_roomContainer.GetChild(i).GetComponent<Panel3DPart>();
 
                 if (part == null || part.Type == PanelPart3D.Panel_None)
                     continue;
@@ -165,14 +169,14 @@ namespace Comic
         }
         private bool Editor_CheckRootValidity()
         {
-            if (m_rootTransform.childCount != 6)
+            if (m_roomContainer.childCount != 6)
                 return false;
 
             HashSet<PanelPart3D> found_types = new();
 
-            for (int i = m_rootTransform.childCount - 1; i >= 0; i--)
+            for (int i = m_roomContainer.childCount - 1; i >= 0; i--)
             {
-                if (!m_rootTransform.GetChild(i).TryGetComponent<Panel3DPart>(out var part))
+                if (!m_roomContainer.GetChild(i).TryGetComponent<Panel3DPart>(out var part))
                     return false;
 
                 var type = part.Type;
@@ -188,9 +192,9 @@ namespace Comic
 
         private void Editor_ClearRoot()
         {
-            for (int i = m_rootTransform.childCount - 1; i >= 0; i--)
+            for (int i = m_roomContainer.childCount - 1; i >= 0; i--)
             {
-                Transform child = m_rootTransform.GetChild(i);
+                Transform child = m_roomContainer.GetChild(i);
                 GameObject.DestroyImmediate(child.gameObject);
             }
         }
@@ -203,7 +207,7 @@ namespace Comic
                     continue;
 
                 GameObject partObj = new(part.ToString());
-                partObj.transform.SetParent(m_rootTransform, false);
+                partObj.transform.SetParent(m_roomContainer, false);
 
                 Panel3DPart builderPart = partObj.AddComponent<Panel3DPart>();
 
@@ -236,7 +240,7 @@ namespace Comic
         // do not manually call
         public void Editor_Build(Bounds bounds, PanelVisualData datas)
         {
-            if (m_rootTransform == null)
+            if (m_rootTransform == null || m_roomContainer == null)
                 return;
 
             transform.localPosition = Vector3.zero;
@@ -253,7 +257,7 @@ namespace Comic
 
             m_editorParts.Clear();
 
-            foreach (Transform child in m_rootTransform)
+            foreach (Transform child in m_roomContainer)
             {
                 if (child.TryGetComponent<Panel3DPart>(out var part))
                     m_editorParts.Add(part);
@@ -290,6 +294,8 @@ namespace Comic
             pos.z = depth * .5f;
 
             m_rootTransform.localPosition = pos;
+            m_propsContainer.localPosition = Vector3.zero;
+            m_roomContainer.localPosition = Vector3.zero;
         }
 
         private float Editor_GetDepth()

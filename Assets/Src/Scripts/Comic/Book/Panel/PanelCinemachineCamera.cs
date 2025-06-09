@@ -1,8 +1,6 @@
-using Comic;
 using Unity.Cinemachine;
 using UnityEngine;
 using CustomArchitecture;
-using UnityEditor.Rendering;
 
 namespace Comic
 {

@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
+  - TurningPage
   - 
   - 
   - 
@@ -64,6 +64,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 2640918463
+    locked: 0
+  - name: Highest
+    uniqueID: 3136905699
     locked: 0
   m_RenderingLayers:
   - Default

@@ -36,9 +36,7 @@ namespace Comic
         protected override void OnLateUpdate()
         { }
         protected override void OnUpdate()
-        {
-            m_pages?.Update(Time.deltaTime);
-        }
+        { }
         public override void LateInit(params object[] parameters)
         { }
         public override void Init(params object[] parameters)
@@ -182,7 +180,7 @@ namespace Comic
             yield return new WaitUntil(() => !m_pages.IsCompute());
         }
 
-        public IEnumerator TurnPageCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, float duration)
+        public IEnumerator TurningPageCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, float duration)
         {
             var new_page = m_pages.AllocateElement(sprite_bounds, base_camera, m_canvas, m_frontSprite, m_backSprite, (HudTurnPageManager)this);
 
@@ -204,7 +202,7 @@ namespace Comic
             yield return new WaitUntil(() => !m_pages.IsCompute());
         }
 
-        public IEnumerator TurnPageErrorCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, float duration)
+        public IEnumerator TurningPageErrorCoroutine(bool is_next, Bounds sprite_bounds, Camera base_camera, float duration)
         {
             var new_page = m_pages.AllocateElement(sprite_bounds, base_camera, m_canvas, m_frontSprite, m_backSprite, (HudTurnPageManager)this);
 

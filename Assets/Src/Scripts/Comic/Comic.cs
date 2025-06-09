@@ -17,8 +17,8 @@ namespace Comic
         // this control where our comic z is (background, pages, panels) 
         public static readonly float PANEL_BASE_Z = 0f;
         public static readonly float COMIC_BASE_Z = 0f;
-        public static readonly float PLAYER_BASE_Z = 1.0f;
-        
+        public static readonly float PLAYER_BASE_Z = .5f;
+
         public enum PanelSortingOrder : int
         {
             Panel_Background = 0,

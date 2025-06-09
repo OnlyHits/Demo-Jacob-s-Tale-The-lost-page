@@ -41,10 +41,10 @@ namespace Comic
         { }
         protected override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                TestSwitch();
-            }
+            //if (Input.GetKeyDown(KeyCode.L))
+            //{
+            //    TestSwitch();
+            //}
 
             if (m_footStepVfx != null)
                 m_footStepVfx.Update(Time.deltaTime);

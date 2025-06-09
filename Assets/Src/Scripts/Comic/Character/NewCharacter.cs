@@ -32,10 +32,6 @@ namespace Comic
         [SerializeField] private Transform          m_footStepParticleContainer;
         private AllocationPool<FootStepParticle>    m_footStepParticlePool;
 
-        [Header("Cinemachine")]
-        [SerializeField] private CinemachineCameraExtended m_leftCamera;
-        [SerializeField] private CinemachineCameraExtended m_rightCamera;
-
         private Vector2 m_moveInputStrength;
 
         // Reference to CharacterManager which contain vfx
@@ -50,8 +46,6 @@ namespace Comic
 
         public CharacterType GetCharacterType() => m_type;
         public Animator GetAnimator() => m_animator;
-        public CinemachineCameraExtended GetLeftCinemachineCamera() => m_leftCamera;
-        public CinemachineCameraExtended GetRightCinemachineCamera() => m_rightCamera;
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -69,11 +63,11 @@ namespace Comic
         }
         public override void LateInit(params object[] parameters)
         {
-            m_leftCamera.LateInit();
-            m_rightCamera.LateInit();
+            //m_leftCamera.LateInit();
+            //m_rightCamera.LateInit();
 
-            ComicCinemachineMgr.Instance.RegisterPermanentCamera(m_leftCamera.Camera);
-            ComicCinemachineMgr.Instance.RegisterPermanentCamera(m_rightCamera.Camera);
+            //ComicCinemachineMgr.Instance.RegisterPermanentCamera(m_leftCamera.Camera);
+            //ComicCinemachineMgr.Instance.RegisterPermanentCamera(m_rightCamera.Camera);
         }
         public override void Init(params object[] parameters)
         {
@@ -104,9 +98,6 @@ namespace Comic
             m_baseHeadLocalPos = m_head.localPosition;
 
             m_footStepParticlePool = new AllocationPool<FootStepParticle>(m_footStepParticlePrefab, m_footStepParticleContainer, 2);
-
-            m_leftCamera.Init();
-            m_rightCamera.Init();
         }
         #endregion
 

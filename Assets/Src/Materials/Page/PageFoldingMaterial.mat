@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_UnlitSpriteDissolve_Procedural
-  m_Shader: {fileID: 4800000, guid: 5b24afdc1456b5e43914bea4897a3202, type: 3}
+  m_Name: PageFoldingMaterial
+  m_Shader: {fileID: 4800000, guid: 0b3a31cf2a4058f49ab7ff1d1f074ceb, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,19 +23,28 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BackTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FrontTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2059a26bb5c57384e8cf5a8b29944f1a, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BurnAmount: 0
-    - _DissolveAmount: 0.48
-    - _EdgeWidth: 0.134
-    - _TimeY: -47.73
+    - _CurveStrength: 2
+    - _FoldAmount: 1
+    - _FoldCorner: 0.5
+    - _FoldProgress: 1
+    - _FoldRightSide: 1
+    - _FoldSharpness: 1
+    - _FoldTightness: 0.1
     m_Colors:
-    - _BurnColor: {r: 1, g: 0.29999998, b: 0, a: 1}
-    - _Color: {r: 0, g: 0, b: 0, a: 1}
-    - _EdgeColor: {r: 1, g: 0, b: 0, a: 1}
+    - _BackColor: {r: 1, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

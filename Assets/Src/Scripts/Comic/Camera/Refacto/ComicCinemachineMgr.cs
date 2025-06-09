@@ -7,25 +7,36 @@ namespace Comc
 {
     public class ComicCinemachineMgr : CinemachineMgr<ComicCinemachineMgr>
     {
-        [SerializeField] private Camera m_mainCamera;
+        [SerializeField, Space] private Camera m_mainCamera;
 
-        [SerializeField, ReadOnly] private ComicScreenshoter m_screenshoter;
-        private float               m_orthoSize;
+        [SerializeField, Space, Header("Forward camera")] private Camera m_forwardCamera;
+        [SerializeField] private RenderTexture m_forwardRenderTexture;
 
+        [SerializeField, Space, ReadOnly] private ComicScreenshoter m_screenshoter;
+
+        public RenderTexture ForwardRT { get { return m_forwardRenderTexture; } }
         public Camera MainCamera { get { return m_mainCamera; } }
+        public Camera ForwardCamera { get { return m_forwardCamera; } }
         public ComicScreenshoter Screenshoter { get { return m_screenshoter; } }
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
         { }
         protected override void OnLateUpdate()
-        {
-            //// hack cause cinemachine blend near plan when switching from otho to perspectiv
-            //// to an invalid value (-1)
-            //m_mainCamera.nearClipPlane = 0.01f;
-        }
-        protected override void OnUpdate()
         { }
+        protected override void OnUpdate()
+        {
+            // c caca
+            if (m_forwardRenderTexture.width != Screen.width || m_forwardRenderTexture.height != Screen.height)
+            {
+                m_forwardRenderTexture.Release();
+
+                m_forwardRenderTexture.width = Screen.width;
+                m_forwardRenderTexture.height = Screen.height;
+
+                m_forwardRenderTexture.Create();
+            }
+        }
         public override void LateInit(params object[] parameters)
         {
         }
@@ -35,6 +46,8 @@ namespace Comc
                 Debug.LogWarning("Unable to get or create PanelInput");
             else
                 m_screenshoter.Init(m_mainCamera);
+
+            m_forwardCamera.targetTexture = m_forwardRenderTexture;
         }
         #endregion
 

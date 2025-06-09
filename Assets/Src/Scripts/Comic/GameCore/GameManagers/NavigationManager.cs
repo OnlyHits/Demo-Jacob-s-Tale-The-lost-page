@@ -31,7 +31,7 @@ namespace Comic
         private PanelInput m_panelInput;
 
         // Global managers
-        private HudManager m_hudManager;
+//        private HudManager m_hudManager;
         private GameManager m_gameManager;
 
         private bool m_isRunning = false;
@@ -49,24 +49,7 @@ namespace Comic
         protected override void OnLateUpdate()
         { }
         protected override void OnUpdate()
-        {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                Debug.Log("Focus left");
-                StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
-                    m_gameManager.GetCharacterManager().GetCurrentCharacter().GetLeftCinemachineCamera().Camera,
-                    false,
-                    ComicCinemachineMgr.Instance.SmoothBlend));
-            }
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                Debug.Log("Focus right");
-                StartCoroutine(ComicCinemachineMgr.Instance.FocusCamera(
-                    m_gameManager.GetCharacterManager().GetCurrentCharacter().GetRightCinemachineCamera().Camera,
-                    false,
-                    ComicCinemachineMgr.Instance.SmoothBlend));
-            }
-        }
+        { }
         public override void LateInit(params object[] parameters)
         {
             if (m_navigationInput != null)
@@ -91,10 +74,10 @@ namespace Comic
             else
                 m_gameManager = (GameManager)parameters[0];
 
-            if (parameters.Length < 2 || parameters[1] is not HudManager)
-                Debug.LogWarning("Unable to get HudManager");
-            else
-                m_hudManager = (HudManager)parameters[1];
+            //if (parameters.Length < 2 || parameters[1] is not HudManager)
+            //    Debug.LogWarning("Unable to get HudManager");
+            //else
+            //    m_hudManager = (HudManager)parameters[1];
 
             if (parameters.Length < 3 || parameters[2] is not GlobalInput)
                 Debug.LogWarning("Unable to get GlobalInput");
@@ -175,8 +158,6 @@ namespace Comic
                 }
             }
         }
-
-
         #endregion Panel Navigation
 
         #region Navigate Sequence
@@ -184,37 +165,17 @@ namespace Comic
         {
             if (input == InputType.PRESSED)
             {
-                if (m_hudManager != null && m_gameManager == null)
-                {
-                    // not implemented
-                }
-                else if (m_hudManager == null && m_gameManager != null)
-                {
-                    if (m_gameManager.GetPageManager().CanChangePage(true))
-                        m_gameManager.GetPageManager().ChangePageDirty(true);
-                }
-                else if (m_hudManager != null && m_gameManager != null)
+                if (m_gameManager != null)
                 {
                     StartCoroutine(TryChangePageAll(true));
                 }
             }
         }
-
         public void TryPrevPage(InputType input, bool b)
         {
             if (input == InputType.PRESSED)
             {
-                if (m_hudManager != null && m_gameManager == null)
-                {
-                    // not implemented
-                }
-                else if (m_hudManager == null && m_gameManager != null)
-                {
-                    if (m_gameManager.GetPageManager().CanChangePage(false))
-                        m_gameManager.GetPageManager().ChangePageDirty(false);
-                }
-                else
-                if (m_hudManager != null && m_gameManager != null)
+                if (m_gameManager != null)
                 {
                     StartCoroutine(TryChangePageAll(false));
                 }
@@ -237,11 +198,11 @@ namespace Comic
 
                 if (can_change_page)
                 {
-                    yield return StartCoroutine(m_hudManager.TurnPage(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
+                    yield return StartCoroutine(m_gameManager.GetPageManager().TurnPage(is_next, 2.0f));
                 }
                 else
                 {
-                    yield return StartCoroutine(m_hudManager.TurnPageError(is_next, m_gameManager.GetPageSpriteRenderer(true).bounds, 0.8f));
+                    yield return StartCoroutine(m_gameManager.GetPageManager().TurnPageError(is_next, 0.8f));
                 }
 
                 OnTurnSequenceFinish(is_next, TurnSequenceType.Sequence_TurnPage);
@@ -256,7 +217,7 @@ namespace Comic
         #region Begin game sequence
         public void StartGameSequence()
         {
-            if (m_hudManager != null && m_gameManager != null)
+            if (m_gameManager != null)
             {
                 StartCoroutine(StartGameCoroutine());
             }
@@ -277,7 +238,7 @@ namespace Comic
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_OpenBook);
 
-            yield return StartCoroutine(m_hudManager.TurnCover(m_gameManager.GetCoverSpriteRenderer(true).bounds, 4f));
+//            yield return StartCoroutine(m_hudManager.TurnCover(m_gameManager.GetCoverSpriteRenderer(true).bounds, 4f));
 
             OnTurnSequenceFinish(true, TurnSequenceType.Sequence_OpenBook);
 
@@ -289,7 +250,7 @@ namespace Comic
 
             OnAfterScreenshot(true, TurnSequenceType.Sequence_Production);
 
-            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 10, .7f));
+//            yield return StartCoroutine(m_hudManager.TurnMultiplePages(true, m_gameManager.GetPageSpriteRenderer(true).bounds, 10, .7f));
 
             OnTurnSequenceFinish(true, TurnSequenceType.Sequence_Production);
 
@@ -301,15 +262,7 @@ namespace Comic
         #region Pause Sequence
         public void TryPause()
         {
-            if (m_hudManager != null && m_gameManager == null)
-            {
-                // not implemented
-            }
-            else if (m_hudManager == null && m_gameManager != null)
-            {
-                // not implemented
-            }
-            else if (m_hudManager != null && m_gameManager != null)
+            if (m_gameManager != null)
             {
                 StartCoroutine(TryPauseAll());
             }
@@ -320,7 +273,7 @@ namespace Comic
             // mdr
             bool pause = m_navigationFocus == NavigationFocus.Focus_Game;
 
-            if (IsRunning() || (!pause && !m_hudManager.CanResume()))
+            if (IsRunning() || (!pause)) //&& !m_hudManager.CanResume()))
                 yield break;
 
             m_isRunning = true;
@@ -331,7 +284,7 @@ namespace Comic
 
             OnAfterScreenshot(pause, TurnSequenceType.Sequence_Pause);
 
-            yield return StartCoroutine(m_hudManager.TurnMultiplePages(pause, m_gameManager.GetPageSpriteRenderer(true).bounds, 5, .6f));
+//            yield return StartCoroutine(m_hudManager.TurnMultiplePages(pause, m_gameManager.GetPageSpriteRenderer(true).bounds, 5, .6f));
 
             OnTurnSequenceFinish(pause, TurnSequenceType.Sequence_Pause);
 
@@ -375,13 +328,13 @@ namespace Comic
 
         private void SetupBookCover(bool is_next)
         {
-            m_hudManager.GetViewManager().Show<BookCoverView>();
+//            m_hudManager.GetViewManager().Show<BookCoverView>();
             m_gameManager.EnableGameBackground(false);
         }
 
         private void SetupPause(bool pause)
         {
-            m_hudManager.SetupPageForScreenshot(pause);
+            //m_hudManager.SetupPageForScreenshot(pause);
 
             m_gameManager.GetPageManager().GetCurrentPage().Pause(true);
             m_gameManager.GetCharacterManager().PauseAllCharacters(true);
@@ -425,14 +378,14 @@ namespace Comic
 
         private void RestoreOpenBook()
         {
-            m_hudManager.GetViewManager().Show<ProductionView>();
+//            m_hudManager.GetViewManager().Show<ProductionView>();
             m_gameManager.EnableGameBackground(true);
             m_gameManager.EnableBookBackground(false, false);
         }
 
         private void RestorePause(bool pause)
         {
-            m_hudManager.RestorePageAfterScreenshot(pause);
+            //m_hudManager.RestorePageAfterScreenshot(pause);
         }
 
         private void StopBookCover()
@@ -442,7 +395,7 @@ namespace Comic
 
         private void RestoreFirstPage()
         {
-            m_hudManager.GetViewManager().Show<ProgressionView>();
+//            m_hudManager.GetViewManager().Show<ProgressionView>();
             m_gameManager.GetPageManager().DisableCurrentPage();
         }
         #endregion
@@ -477,7 +430,7 @@ namespace Comic
         /// <param name="pause"></param>
         private void StopPause(bool pause)
         {
-            m_hudManager.OnPageChangeEnd(pause);
+            //m_hudManager.OnPageChangeEnd(pause);
 
             m_gameManager.GetPageManager().GetCurrentPage().Pause(pause);
             m_gameManager.GetCharacterManager().PauseAllCharacters(pause);
@@ -519,15 +472,12 @@ namespace Comic
         #region Input Management
         private void InitInputFocus()
         {
-            if (m_hudManager != null && m_gameManager == null)
+
+            if (m_gameManager == null)
             {
                 ChangeInputFocus(NavigationFocus.Focus_Hud);
             }
-            else if (m_hudManager == null && m_gameManager != null)
-            {
-                ChangeInputFocus(NavigationFocus.Focus_Game);
-            }
-            else if (m_hudManager != null && m_gameManager != null)
+            else if (m_gameManager != null)
             {
                 ChangeInputFocus(NavigationFocus.Focus_Game);
             }
@@ -535,7 +485,7 @@ namespace Comic
 
         /// <summary>
         /// Pause all input :
-        //  on turn page sequence or on game start for exemple
+        ///  on turn page sequence or on game start for exemple
         /// </summary>
         public void PauseAllInputs()
         {

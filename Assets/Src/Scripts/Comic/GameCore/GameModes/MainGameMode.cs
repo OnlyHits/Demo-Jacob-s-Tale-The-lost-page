@@ -165,15 +165,6 @@ namespace Comic
             ComicCinemachineMgr.Instance.Screenshoter.RegisterScreenData(ComicScreenshot.Screenshot_Cover_Left, new ScreenshotData<ScreenshotBounded>(cover_left_adapter, camera, ComicScreenshot.Screenshot_Cover_Left));
             ComicCinemachineMgr.Instance.Screenshoter.RegisterScreenData(ComicScreenshot.Screenshot_Cover_Right, new ScreenshotData<ScreenshotBounded>(cover_right_adapter, camera, ComicScreenshot.Screenshot_Cover_Right));
 
-
-            //m_cameraManager.LateInit(
-            //    m_gameManager.GetCoverSpriteRenderer(true),
-            //    m_gameManager.GetCoverSpriteRenderer(false),
-            //    m_gameManager.GetPageSpriteRenderer(true),
-            //    m_gameManager.GetPageSpriteRenderer(false));
-
-            //m_cinemachineCamera.LateInit();
-
             Compute = true;
 
 #if UNITY_EDITOR && !DEVELOPMENT_BUILD

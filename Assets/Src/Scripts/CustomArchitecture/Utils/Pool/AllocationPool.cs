@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Comic;
+using System.Linq;
 using UnityEngine;
 
 namespace CustomArchitecture
@@ -31,28 +33,45 @@ namespace CustomArchitecture
         private List<T>             m_currentObjects = new();
         private SortOrderMethod     m_sortMethod;
         private Action<List<T>>     m_customSort;
+        private Action<T>           m_initCallback;
+        private int m_initialPoosSize;
         public bool IsCompute() => m_currentObjects.Count > 0;
         public List<T> GetComputedElements() => m_currentObjects;
 
-        public AllocationPool(GameObject prefab, Transform parentTransform, int initialPoolSize = 10, SortOrderMethod sort_method = SortOrderMethod.Sort_None, Action<List<T>> callback = null)
+        public AllocationPool(GameObject prefab, Transform parentTransform, int initialPoolSize = 10, SortOrderMethod sort_method = SortOrderMethod.Sort_None, Action<List<T>> callback = null, Action<T> on_init_callback = null)
         {
             m_sortMethod = sort_method;
             m_customSort += callback;
+            m_initCallback += on_init_callback;
             m_prefab = prefab;
             m_parentTransform = parentTransform;
+            m_initialPoosSize = initialPoolSize;
 
-            for (int i = 0; i < initialPoolSize; i++)
+            for (int i = 0; i < m_initialPoosSize; i++)
             {
-                GameObject obj = UnityEngine.Object.Instantiate(prefab, parentTransform);
+                GameObject obj = UnityEngine.Object.Instantiate(m_prefab, m_parentTransform);
                 obj.SetActive(false);
 
-                if (obj.GetComponent<T>() == null)
+                if (!obj.TryGetComponent<T>(out var component))
                 {
                     UnityEngine.Object.Destroy(obj);
                     break;
                 }
 
-                m_objectPool.Enqueue(obj.GetComponent<T>());
+                m_objectPool.Enqueue(component);
+                m_initCallback?.Invoke(component);
+            }
+        }
+        public void Update(float elapsed_time)
+        {
+            for (int i = 0; i < m_currentObjects.Count; ++i)
+            {
+                if (!m_currentObjects[i].Compute)
+                {
+                    DeallocateElement(m_currentObjects[i]);
+
+                    m_currentObjects.RemoveAt(i);
+                }
             }
         }
 
@@ -72,19 +91,22 @@ namespace CustomArchitecture
             else
             {
                 GameObject obj = UnityEngine.Object.Instantiate(m_prefab, m_parentTransform);
-                if (obj.GetComponent<T>() == null)
+
+                if (!obj.TryGetComponent<T>(out var component))
                 {
                     UnityEngine.Object.Destroy(obj);
                     return null;
                 }
 
                 m_currentObjects.Add(obj.GetComponent<T>());
+                m_initCallback?.Invoke(component);
+
                 obj.SetActive(true);
-                obj.GetComponent<T>().OnAllocate(parameters);
+                component.OnAllocate(parameters);
 
                 SortElements(true);
 
-                return obj.GetComponent<T>();
+                return component;
             }
         }
 
@@ -93,19 +115,6 @@ namespace CustomArchitecture
             obj.OnDeallocate();
             obj.gameObject.SetActive(false);
             m_objectPool.Enqueue(obj);
-        }
-
-        public void Update(float deltaTime)
-        {
-            for (int i = 0; i < m_currentObjects.Count; ++i)
-            {
-                if (!m_currentObjects[i].Compute)
-                {
-                    DeallocateElement(m_currentObjects[i]);
-
-                    m_currentObjects.RemoveAt(i);
-                }
-            }
         }
 
         private void SortBySiblingIndex()

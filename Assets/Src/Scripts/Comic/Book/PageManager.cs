@@ -3,6 +3,8 @@ using CustomArchitecture;
 using static CustomArchitecture.CustomArchitecture;
 using Sirenix.Utilities;
 using UnityEngine;
+using Comc;
+using System.Collections;
 
 namespace Comic
 {
@@ -12,7 +14,9 @@ namespace Comic
         [SerializeField, ReadOnly] private Page m_currentPage;
         [SerializeField, ReadOnly] private int m_currentPageIndex;
         [SerializeField, ReadOnly] private List<Page> m_unlockedPageList = new List<Page>();
+        [SerializeField, Header("Turning Page")] private TurningPageManager m_turnPageMgr;
 
+        public TurningPageManager GetTurningPageManager() { return m_turnPageMgr; }
         //public SpriteRenderer GetPageSpriteRenderer() => m_pageRenderSprite;
         public Page GetCurrentPage() => m_currentPage;
         public Panel GetCurrentPanel() => m_currentPage.GetCurrentPanel();
@@ -50,8 +54,43 @@ namespace Comic
                 page.Init();
                 page.gameObject.SetActive(false);
             }
+
+            m_turnPageMgr.Init(this);
         }
         #endregion
+
+        #region Turning Page
+        public IEnumerator TurnMultiplePages(bool is_next, int page_number, float duration)
+        {
+            yield return StartCoroutine(m_turnPageMgr.TurnMultiplePagesCoroutine(is_next, page_number, duration));
+        }
+
+        public IEnumerator TurnCover(float duration)
+        {
+            yield return StartCoroutine(m_turnPageMgr.TurnCoverCoroutine(true, duration));
+        }
+
+        public IEnumerator TurnPage(bool next_page, float duration)
+        {
+            yield return StartCoroutine(m_turnPageMgr.TurnPageCoroutine(next_page, duration));
+        }
+
+        public IEnumerator TurnPageError(bool next_page, float duration)
+        {
+            yield return StartCoroutine(m_turnPageMgr.TurnPageErrorCoroutine(next_page, duration));
+        }
+
+        #endregion Turning Page
+
+        // tmp
+        public Bounds GetValidBounds()
+        {
+            foreach (var p in m_pageList)
+                return p.GetPageSpriteRenderer().bounds;
+
+            return new Bounds();
+        }
+
         public Bounds GetPageBounds()
         {
             return m_currentPage.GetPageSpriteRenderer().sprite.bounds;

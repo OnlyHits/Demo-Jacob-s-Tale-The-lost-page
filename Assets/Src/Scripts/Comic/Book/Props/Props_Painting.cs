@@ -11,7 +11,8 @@ namespace Comic
         [SerializeField] private float m_rotationAngle = 20f;
         [SerializeField] private bool m_move = true;
         private Sequence m_rotateSequence;
-        private Quaternion m_baseRotation;
+        private Vector3 m_baseEulerRotation;
+        [SerializeField] private Vector2 m_intervalRange = new Vector2(20f, 40f);
 
         #region BaseBehaviour
         protected override void OnFixedUpdate()
@@ -26,9 +27,9 @@ namespace Comic
         {
             base.Init();
 
-            m_baseRotation = transform.rotation;
+            m_baseEulerRotation = transform.localEulerAngles;
 
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            transform.localRotation = Quaternion.Euler(m_baseEulerRotation.x, m_baseEulerRotation.y, 0);
         }
         #endregion
 
@@ -36,7 +37,7 @@ namespace Comic
         {
             if (m_move)
             {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                transform.localRotation = Quaternion.Euler(m_baseEulerRotation.x, m_baseEulerRotation.y, 0);
                 SetupRotate();
             }
         }
@@ -48,7 +49,7 @@ namespace Comic
 
             m_rotateSequence = DOTween.Sequence();
 
-            float randomInterval = UnityEngine.Random.Range(20f, 40f);
+            float randomInterval = UnityEngine.Random.Range(m_intervalRange.x, m_intervalRange.y);
             m_rotateSequence.AppendInterval(randomInterval);
 
             int flickerCount = UnityEngine.Random.Range(5, 10);
@@ -58,7 +59,7 @@ namespace Comic
                 float randomRotation = UnityEngine.Random.Range(-m_rotationAngle, m_rotationAngle);
 
                 m_rotateSequence.Append(
-                    transform.DOLocalRotate(new Vector3(0, 0, randomRotation), UnityEngine.Random.Range(0.3f, 0.7f))
+                    transform.DOLocalRotate(new Vector3(m_baseEulerRotation.x, m_baseEulerRotation.y, randomRotation), UnityEngine.Random.Range(0.3f, 0.7f))
                         .SetEase(Ease.InOutSine)
                 );
 
@@ -66,7 +67,7 @@ namespace Comic
             }
 
             m_rotateSequence.Append(
-                transform.DOLocalRotate(m_baseRotation.eulerAngles, 0.4f)
+                transform.DOLocalRotate(m_baseEulerRotation, 0.4f)
                     .SetEase(Ease.InOutSine)
             );
 
@@ -78,7 +79,7 @@ namespace Comic
             if (m_rotateSequence != null)
             {
                 m_rotateSequence.Kill();
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                transform.localRotation = Quaternion.Euler(m_baseEulerRotation.x, m_baseEulerRotation.y, 0);
                 m_rotateSequence = null;
             }
         }

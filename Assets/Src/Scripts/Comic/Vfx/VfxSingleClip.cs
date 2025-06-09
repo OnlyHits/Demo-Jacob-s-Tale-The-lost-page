@@ -33,7 +33,7 @@ namespace CustomArchitecture
             m_isSetup = true;
         }
 
-        private void Update()
+        protected override void OnUpdate()
         {
             if (!Compute && m_isSetup)
                 return;
